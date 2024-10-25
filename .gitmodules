@@ -1,0 +1,3 @@
+[submodule "Blackjack/ThirdParty/glm"]
+	path = Blackjack/ThirdParty/glm
+	url = https://github.com/g-truc/glm
