@@ -16,4 +16,4 @@ This will generate a Visual Studio solution file.
 If changes are made, or if you want to regenerate project files, rerun the [Win-GenProjects.bat](httpps://github.com/SkaLe3/Blackjack/blob/master/Scripts/Win-GenProjects.bat) script file found in `Scripts` folder.
 
 ## License
-VeiM is licensed under the Apache-2.0 License. See the [LICENSE](https://github.com/SkaLe3/Blackjack/blob/main/LICENSE) file for more details.
+Blackjack is licensed under the Apache-2.0 License. See the [LICENSE](https://github.com/SkaLe3/Blackjack/blob/main/LICENSE) file for more details.
