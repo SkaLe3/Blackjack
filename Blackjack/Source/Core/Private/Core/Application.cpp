@@ -26,7 +26,9 @@ namespace Core
 		BJ_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		int status = SDL_Init(SDL_INIT_EVERYTHING);
+		int status = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
+		
+			
 		BJ_ASSERT(status == 0, "Failed to init SDL! SDL_Error: %s", SDL_GetError());
 
 		m_Window = Window::Create(appSpecs.WndConfig);
