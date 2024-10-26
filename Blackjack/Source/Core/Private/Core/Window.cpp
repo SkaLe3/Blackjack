@@ -45,14 +45,14 @@ namespace Core
 
 	bool Window::Init(const WindowConfig& config)
 	{
-		BJ_LOG("Creating Window " + config.Title + "(" + std::to_string(config.Width) + ", " + std::to_string(config.Height) + ")");
+		BJ_LOG_INFO("Creating Window %s (%d, %d)", config.Title.c_str(), config.Width, config.Height);
 
 
 		m_Window = SDL_CreateWindow(config.Title.c_str(), SDL_WINDOWPOS_CENTERED,
 									SDL_WINDOWPOS_CENTERED, config.Width, config.Height,
 									SDL_WINDOW_SHOWN);
 
-		BJ_ASSERT(m_Window, "Failed to create window! SDL_Error: " + std::string(SDL_GetError()));
+		BJ_ASSERT(m_Window, "Failed to create window! SDL_Error: %s", SDL_GetError());
 
 		return true;
 	}

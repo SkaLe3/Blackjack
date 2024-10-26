@@ -13,7 +13,7 @@ namespace Core
 		std::shared_ptr<Window> window = Application::Get().GetWindow();
 		int vsyncFlag = window->IsVSyncEnabled() ? SDL_RENDERER_PRESENTVSYNC : 0;
 		s_Renderer = SDL_CreateRenderer(window->GetNativeWindow(), -1, SDL_RENDERER_ACCELERATED | vsyncFlag);
-		BJ_ASSERT(s_Renderer, "Renderer could not be created! SDL_Error: " + std::string(SDL_GetError()));
+		BJ_ASSERT(s_Renderer, "Renderer could not be created! SDL_Error: %s", SDL_GetError());
 		SDL_SetRenderDrawColor(s_Renderer, 200, 200, 200, 255);
 	}
 

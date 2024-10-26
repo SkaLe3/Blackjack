@@ -27,7 +27,7 @@ namespace Core
 		s_Instance = this;
 
 		int status = SDL_Init(SDL_INIT_EVERYTHING);
-		BJ_ASSERT(status == 0, "Failed to init SDL! SDL_Error: " + std::string(SDL_GetError()));
+		BJ_ASSERT(status == 0, "Failed to init SDL! SDL_Error: %s", SDL_GetError());
 
 		m_Window = Window::Create(appSpecs.WndConfig);
 		m_Window->SetEventCallback([this](SDL_Event& event) { Application::OnEvent(event); });

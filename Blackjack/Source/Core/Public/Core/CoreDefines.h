@@ -2,20 +2,43 @@
 #include "IO/Log.h"
 
 #ifdef BJ_DEBUG
-	#define BJ_DEBUGBREAK() __debugbreak()
-	#define BJ_ENABLE_ASSERTS
+    #define BJ_DEBUGBREAK() __debugbreak()
+    #define BJ_ENABLE_ASSERTS
 #else
-	#define BJ_DEBUGBREAK()
+    #define BJ_DEBUGBREAK()
 #endif
 
 
 #define VM_BIND_EVENT(fn) [this](auto&&... args) -> decltype(auto) {return this->fn(std::forward<decltype(args)>(args)...);}
 
+// Helper function to print formatted messages
+template<typename... Args>
+void PrintFormatted(const char* format, Args... args)
+{
+	// Buffer for formatted message
+	char buffer[1024];
+	snprintf(buffer, sizeof(buffer), format, args...);
+	std::cout << buffer; // Print the formatted message
+}
+
 #ifdef BJ_ENABLE_ASSERTS
-	#define BJ_ASSERT(condition, message) do { if (!(condition)) { std::cout << "Assertion failed: " << (message) << "\n"; BJ_DEBUGBREAK(); }} while (false) 
+#define BJ_ASSERT(condition, ...) do { \
+        if (!(condition)) { \
+            std::cout << "Assertion failed: " << #condition << "\n" \
+                      << "Message: "; \
+            PrintFormatted(__VA_ARGS__); \
+            std::cout << "\nFile: " << __FILE__ << "\n" \
+                      << "Line: " << __LINE__ << "\n" \
+                      << "Function: " << __FUNCTION__ << std::endl; \
+            BJ_DEBUGBREAK(); \
+            std::exit(EXIT_FAILURE);  \
+        } \
+    } while (false)
 #else
-	#define BJ_ASSERT(condition, message)
+#define BJ_ASSERT(condition, ...)
 #endif
+
+
 
 #include <memory>
 #include <string>
