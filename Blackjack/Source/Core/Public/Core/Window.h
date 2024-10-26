@@ -3,11 +3,15 @@
 #include <functional>
 #include <memory>
 
+#include <SDL2/SDL.h>
+
 
 struct SDL_Window;
 
 namespace Core
 {
+	using EventCallbackFN = std::function<void(SDL_Event&)>;
+
 	struct WindowConfig
 	{
 		String Title = "Window";
@@ -22,7 +26,7 @@ namespace Core
 		Window(const WindowConfig& config);
 		~Window() {}
 
-		static std::unique_ptr<Window> Create(const WindowConfig& config);
+		static std::shared_ptr<Window> Create(const WindowConfig& config);
 
 		void PollEvents();
 
@@ -30,6 +34,8 @@ namespace Core
 		uint32 GetHeight() const { return m_Data.Height; }
 		bool IsVSyncEnabled() const { return m_Data.VSync; }
 		SDL_Window* GetNativeWindow() const;
+
+		void SetEventCallback(const EventCallbackFN& callback);
 
 	private:
 		bool Init(const WindowConfig& config);
@@ -41,6 +47,8 @@ namespace Core
 			uint32 Width;
 			uint32 Height;
 			bool VSync;
+
+			EventCallbackFN EventCallback = [](SDL_Event& event) {};
 
 			// TODO: Add callback
 		};

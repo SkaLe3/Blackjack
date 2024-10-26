@@ -1,5 +1,8 @@
 #include "Core/Application.h"
+
 #include "Core/CoreDefines.h"
+#include "Renderer/Renderer.h"
+#include "Core/Utils.h"
 
 // Temporary
 #include <SDL2/SDL.h>
@@ -7,6 +10,9 @@
 
 namespace Core
 {
+
+
+
 	Application* Application::s_Instance = nullptr;
 
 	Application& Application::Get()
@@ -20,18 +26,12 @@ namespace Core
 		BJ_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
+		int status = SDL_Init(SDL_INIT_EVERYTHING);
+		BJ_ASSERT(status == 0, "Failed to init SDL! SDL_Error: " + std::string(SDL_GetError()));
+
 		m_Window = Window::Create(appSpecs.WndConfig);
-
-		m_Renderer = SDL_CreateRenderer(m_Window->GetNativeWindow(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-		if (!m_Renderer)
-		{
-			BJ_LOG("Renderer could not be created! SDL_Error: " + std::string(SDL_GetError()))
-			SDL_DestroyWindow(m_Window->GetNativeWindow());
-			SDL_Quit();
-			return;
-		}
-
-		SDL_SetRenderDrawColor(m_Renderer, 200, 200, 200, 255);
+		m_Window->SetEventCallback([this](SDL_Event& event) { Application::OnEvent(event); });
+		Renderer::Init();
 	}
 
 	Application::~Application()
@@ -47,27 +47,48 @@ namespace Core
 
 	void Application::Shutdown()
 	{
-		SDL_DestroyRenderer(m_Renderer);
 		SDL_Quit();
 	}
 
 	void Application::Run()
 	{
-		SDL_Event event;
+
 		while (m_bRunning)
 		{
-			while (SDL_PollEvent(&event))
-			{
-				if (event.type == SDL_QUIT)
-					m_bRunning = false;
-			}
+			float time = Time::GetTime();
+			m_DeltaTime = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
+
 			m_Window->PollEvents();
 
-			SDL_SetRenderDrawColor(m_Renderer, 200, 200, 200, 255);
-			SDL_RenderClear(m_Renderer);
-			SDL_RenderPresent(m_Renderer);
+			Renderer::BeginFrame();
+
+			Renderer::EndFrame();
 
 		}
+	}
+
+	std::shared_ptr<Window> Application::GetWindow()
+	{
+		return m_Window;
+	}
+
+
+	void Application::ProcessEvents()
+	{
+		m_Window->PollEvents();
+	}
+
+	void Application::OnEvent(SDL_Event event)
+	{
+		if (event.type == SDL_QUIT)
+			OnWindowClose(event);
+	}
+
+	void Application::OnWindowClose(SDL_Event& event)
+	{
+		m_bRunning = false;
 	}
 
 }

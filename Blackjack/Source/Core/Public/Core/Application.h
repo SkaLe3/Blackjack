@@ -1,5 +1,11 @@
+#pragma once
+
 #include "Core/CoreDefines.h"
 #include "Core/Window.h"
+
+#include <SDL2/SDL.h> // Temporary
+
+
 #include <filesystem>
 #include <memory>
 
@@ -37,6 +43,14 @@ namespace Core
 
 		void Run();
 
+		std::shared_ptr<Window> GetWindow();
+
+	private:
+		void ProcessEvents();
+		void OnEvent(SDL_Event event);
+
+		void OnWindowClose(SDL_Event& event);
+
 	private:
 		static Application* s_Instance;
 
@@ -50,8 +64,7 @@ namespace Core
 		float m_FrameTime = 0.0f;
 		float m_LastFrameTime = 0.0f;
 
-		std::unique_ptr<Window> m_Window;
-		SDL_Renderer* m_Renderer;
+		std::shared_ptr<Window> m_Window;
 	};
 
 	Application* CreateApplication(int argc, char** argv);

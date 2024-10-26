@@ -17,15 +17,19 @@ namespace Core
 		Init(config);
 	}
 
-	std::unique_ptr<Window> Window::Create(const WindowConfig& config)
+	std::shared_ptr<Window> Window::Create(const WindowConfig& config)
 	{
-		 return std::make_unique<Window>(config);
+		 return std::make_shared<Window>(config);
 	}
 
 
 	void Window::PollEvents()
 	{
-
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			m_Data.EventCallback(event);
+		}
 
 	}
 
@@ -34,12 +38,15 @@ namespace Core
 		return m_Window;
 	}
 
+	void Window::SetEventCallback(const EventCallbackFN& callback)
+	{
+		m_Data.EventCallback = callback;
+	}
+
 	bool Window::Init(const WindowConfig& config)
 	{
 		BJ_LOG("Creating Window " + config.Title + "(" + std::to_string(config.Width) + ", " + std::to_string(config.Height) + ")");
 
-		int status = SDL_Init(SDL_INIT_EVERYTHING);
-		BJ_ASSERT(status == 0, "Failed to init SDL! SDL_Error: " + std::string(SDL_GetError()));
 
 		m_Window = SDL_CreateWindow(config.Title.c_str(), SDL_WINDOWPOS_CENTERED,
 									SDL_WINDOWPOS_CENTERED, config.Width, config.Height,
