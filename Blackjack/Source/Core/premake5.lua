@@ -41,15 +41,14 @@ project "Core"
     {
         "SDL2", 
         "SDL2_ttf",
+        "SDL2_image",
         "SDL2main"
     }
 
     postbuildcommands {
         "{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/SDL2.dll\" \"%{cfg.targetdir}\"",
         "{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/SDL2_ttf.dll\" \"%{cfg.targetdir}\"",
-        --"{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/libfreetype-6.dll\" \"%{cfg.targetdir}\"",
-        --"{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/zlib1.dll\" \"%{cfg.targetdir}\"",
-
+        "{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/SDL2_image.dll\" \"%{cfg.targetdir}\"",
     }
 
     filter "system:windows"

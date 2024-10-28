@@ -6,6 +6,7 @@
 
 // Temporary
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 
 
@@ -30,6 +31,9 @@ namespace Core
 		int32 initStatus = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);	
 		BJ_ASSERT(initStatus == 0, "Failed to init SDL! SDL_Error: %s", SDL_GetError());
 
+		int32 flags = IMG_INIT_PNG | IMG_INIT_JPG;
+		initStatus = IMG_Init(flags);
+		BJ_ASSERT((initStatus & flags) == flags, "Failed to init SDL_image! IMG_Error: %s", IMG_GetError());
 
 
 
@@ -53,12 +57,24 @@ namespace Core
 
 	void Application::Shutdown()
 	{
+		IMG_Quit();
 		SDL_Quit();
 	}
 
 	void Application::Run()
 	{
+		// Font rendering example
 		textTex = Renderer::Fonts->GetActiveFont()->RenderText("Blackjack", { 0, 0, 0 });
+
+		// Texture loading example
+		SDL_Surface* imgSurface = IMG_Load("./Content/Textures/RedChip.png");
+		if (!imgSurface)
+			BJ_LOG_WARN("Image not loaded... %s", "./Content/Textures/RedChip.png");
+
+		chipPNG = SDL_CreateTextureFromSurface(Renderer::DebugGetRenderer(), imgSurface);
+		SDL_FreeSurface(imgSurface);
+
+
 		while (m_bRunning)
 		{
 			float time = Time::GetTime();
@@ -71,14 +87,25 @@ namespace Core
 			Renderer::BeginFrame();
 
 			// Text rendering example
-			SDL_Rect txtRect{
+			// Will be moved to the Renderer class
+			SDL_Rect textRect{
 				.x = 10,
 				.y = 10,
-				.w = 400,
-				.h = 100,
+				.w = textTex->GetWidth(),
+				.h = textTex->GetHeight(),
+			};
+			SDL_Rect chipRect{
+				.x = 200,
+				.y = 300,
+				.w = 200,
+				.h = 200,
 			};
 
-			SDL_RenderCopy(Renderer::DebugGetRenderer(), textTex->GetInternal(), NULL, &txtRect);
+			SDL_SetRenderDrawColor(Renderer::DebugGetRenderer(), 200, 50, 50, 255);
+			SDL_RenderDrawRect(Renderer::DebugGetRenderer(), &textRect);
+
+			SDL_RenderCopy(Renderer::DebugGetRenderer(), textTex->GetInternal(), NULL, &textRect);
+			SDL_RenderCopy(Renderer::DebugGetRenderer(), chipPNG, NULL, &chipRect);
 
 			Renderer::EndFrame();
 

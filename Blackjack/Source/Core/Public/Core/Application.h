@@ -66,7 +66,9 @@ namespace Core
 		float m_LastFrameTime = 0.0f;
 
 		std::shared_ptr<Window> m_Window;
+		// Temporary
 		std::shared_ptr<Texture> textTex;
+		SDL_Texture* chipPNG;
 	};
 
 	Application* CreateApplication(int argc, char** argv);
