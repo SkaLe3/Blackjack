@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 
 
+
 namespace Core
 {
 
@@ -26,10 +27,11 @@ namespace Core
 		BJ_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		int status = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
-		
-			
+		int status = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);	
 		BJ_ASSERT(status == 0, "Failed to init SDL! SDL_Error: %s", SDL_GetError());
+
+
+
 
 		m_Window = Window::Create(appSpecs.WndConfig);
 		m_Window->SetEventCallback([this](SDL_Event& event) { Application::OnEvent(event); });
@@ -65,6 +67,8 @@ namespace Core
 			m_Window->PollEvents();
 
 			Renderer::BeginFrame();
+
+
 
 			Renderer::EndFrame();
 

@@ -3,6 +3,9 @@
 
 
 struct SDL_Renderer;
+//SDL_ttf testing
+struct _TTF_Font;
+struct SDL_Texture;
 
 namespace Core
 {
@@ -17,6 +20,12 @@ namespace Core
 
 	private:
 		inline static SDL_Renderer* s_Renderer;
+
+
+
+
+		static _TTF_Font* BebasFont;
+		static SDL_Texture* textureText;
 	};
 
 }

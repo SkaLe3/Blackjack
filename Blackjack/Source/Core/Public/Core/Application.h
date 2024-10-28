@@ -65,6 +65,7 @@ namespace Core
 		float m_LastFrameTime = 0.0f;
 
 		std::shared_ptr<Window> m_Window;
+
 	};
 
 	Application* CreateApplication(int argc, char** argv);

@@ -13,6 +13,7 @@ workspace "Blackjack"
     bin_out = "%{wks.location}/Blackjack/Binaries/" .. outputdir .. ""
     int_out = "%{wks.location}/Blackjack/Intermediate/" .. outputdir .. ""
 
+    debugdir "%{wks.location}/Blackjack"
 
 group "Core"
     include "Source/Core"

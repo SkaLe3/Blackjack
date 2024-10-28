@@ -8,7 +8,7 @@ project "Core"
     objdir (int_out)
 
     location "%{wks.location}/Blackjack/Build/ProjectFiles"
-
+    
     files
     {
         "%{wks.location}/Blackjack/Source/Core/**.h",
@@ -37,6 +37,20 @@ project "Core"
         "_CRT_SECURE_NO_WARNINGS"
     }
 
+    links 
+    {
+        "SDL2", 
+        "SDL2_ttf",
+        "SDL2main"
+    }
+
+    postbuildcommands {
+        "{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/SDL2.dll\" \"%{cfg.targetdir}\"",
+        "{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/SDL2_ttf.dll\" \"%{cfg.targetdir}\"",
+        --"{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/libfreetype-6.dll\" \"%{cfg.targetdir}\"",
+        --"{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/zlib1.dll\" \"%{cfg.targetdir}\"",
+
+    }
 
     filter "system:windows"
         systemversion "latest"
@@ -47,12 +61,6 @@ project "Core"
         defines "BJ_DEBUG"
         runtime "Debug"
         symbols "on"
-
-        links { "SDL2d", "SDL2main" }
-
-        postbuildcommands {
-            "{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/SDL2d.dll\" \"%{cfg.targetdir}\""
-        }
     
     filter "configurations:Release"
         defines "BJ_RELEASE"
@@ -60,8 +68,3 @@ project "Core"
         optimize "on"
         symbols "off"
 
-        links { "SDL2", "SDL2main" }
-
-        postbuildcommands {
-            "{COPY} \"%{wks.location}/Blackjack/ThirdParty/SDL/lib/SDL2d.dll\" \"%{cfg.targetdir}\""
-        }
