@@ -1,14 +1,16 @@
 #pragma once
+#include "Renderer/FontManager.h"
 
-
+#include <memory>
 
 struct SDL_Renderer;
-//SDL_ttf testing
-struct _TTF_Font;
-struct SDL_Texture;
+struct SDL_Surface;
 
 namespace Core
 {
+	class Texture;
+
+
 	class Renderer
 	{
 	public:
@@ -18,14 +20,16 @@ namespace Core
 		static void BeginFrame();
 		static void EndFrame();
 
+		static std::shared_ptr<Texture>	CreateTextureFromSurface(SDL_Surface* surface);
+
+
+		static SDL_Renderer* DebugGetRenderer() { return s_Renderer; }
+	public:
+		static std::unique_ptr<FontManager> Fonts;
 	private:
 		inline static SDL_Renderer* s_Renderer;
 
 
-
-
-		static _TTF_Font* BebasFont;
-		static SDL_Texture* textureText;
 	};
 
 }

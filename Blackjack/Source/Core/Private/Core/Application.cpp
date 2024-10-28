@@ -27,8 +27,8 @@ namespace Core
 		BJ_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		int status = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);	
-		BJ_ASSERT(status == 0, "Failed to init SDL! SDL_Error: %s", SDL_GetError());
+		int32 initStatus = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);	
+		BJ_ASSERT(initStatus == 0, "Failed to init SDL! SDL_Error: %s", SDL_GetError());
 
 
 
@@ -36,6 +36,8 @@ namespace Core
 		m_Window = Window::Create(appSpecs.WndConfig);
 		m_Window->SetEventCallback([this](SDL_Event& event) { Application::OnEvent(event); });
 		Renderer::Init();
+
+		Renderer::Fonts->AddFontFromFileTTF("BebasNeue-32", "./Content/Fonts/BebasNeue-Regular.ttf", 32);
 	}
 
 	Application::~Application()
@@ -56,7 +58,7 @@ namespace Core
 
 	void Application::Run()
 	{
-
+		textTex = Renderer::Fonts->GetActiveFont()->RenderText("Blackjack", { 0, 0, 0 });
 		while (m_bRunning)
 		{
 			float time = Time::GetTime();
@@ -68,7 +70,15 @@ namespace Core
 
 			Renderer::BeginFrame();
 
+			// Text rendering example
+			SDL_Rect txtRect{
+				.x = 10,
+				.y = 10,
+				.w = 400,
+				.h = 100,
+			};
 
+			SDL_RenderCopy(Renderer::DebugGetRenderer(), textTex->GetInternal(), NULL, &txtRect);
 
 			Renderer::EndFrame();
 
