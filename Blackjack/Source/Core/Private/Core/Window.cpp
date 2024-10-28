@@ -1,5 +1,7 @@
 #pragma once
 #include "Core/Window.h"
+#include "Core/Event.h"
+
 #include <SDL2/SDL.h>
 
 namespace Core
@@ -26,11 +28,12 @@ namespace Core
 	void Window::PollEvents()
 	{
 		SDL_Event event;
+		
 		while (SDL_PollEvent(&event))
 		{
-			m_Data.EventCallback(event);
+			Event customEvent = (Event)event;
+			m_Data.EventCallback(customEvent);
 		}
-
 	}
 
 	SDL_Window* Window::GetNativeWindow() const

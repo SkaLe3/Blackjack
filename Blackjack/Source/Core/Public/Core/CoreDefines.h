@@ -9,7 +9,7 @@
 #endif
 
 
-#define VM_BIND_EVENT(fn) [this](auto&&... args) -> decltype(auto) {return this->fn(std::forward<decltype(args)>(args)...);}
+#define BJ_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) {return this->fn(std::forward<decltype(args)>(args)...);}
 
 // Helper function to print formatted messages
 template<typename... Args>

@@ -3,6 +3,7 @@
 #include "Core/CoreDefines.h"
 #include "Core/Window.h"
 #include "Core/LayerStack.h"
+#include "Core/Event.h"
 #include "Renderer/Texture.h" // Temporary
 
 #include <SDL2/SDL.h>
@@ -49,9 +50,9 @@ namespace Core
 
 	private:
 		void ProcessEvents();
-		void OnEvent(SDL_Event event);
+		void OnEvent(Event& event);
 
-		void OnWindowClose(SDL_Event& event);
+		bool OnWindowClose(Event& event);
 
 	private:
 		static Application* s_Instance;

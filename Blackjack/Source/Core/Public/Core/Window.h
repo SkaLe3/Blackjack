@@ -1,5 +1,7 @@
 #pragma once
 #include "Core/CoreDefines.h"
+#include "Core/Event.h"
+
 #include <functional>
 #include <memory>
 
@@ -10,7 +12,7 @@ struct SDL_Window;
 
 namespace Core
 {
-	using EventCallbackFN = std::function<void(SDL_Event&)>;
+	using EventCallbackFN = std::function<void(Event&)>;
 
 	struct WindowConfig
 	{
@@ -48,9 +50,7 @@ namespace Core
 			uint32 Height;
 			bool VSync;
 
-			EventCallbackFN EventCallback = [](SDL_Event& event) {};
-
-			// TODO: Add callback
+			EventCallbackFN EventCallback = [](Event& event) {};
 		};
 		WindowData m_Data;
 

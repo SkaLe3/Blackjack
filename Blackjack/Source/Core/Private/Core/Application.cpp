@@ -38,7 +38,7 @@ namespace Core
 
 
 		m_Window = Window::Create(appSpecs.WndConfig);
-		m_Window->SetEventCallback([this](SDL_Event& event) { Application::OnEvent(event); });
+		m_Window->SetEventCallback([this](Event& event) { Application::OnEvent(event); });
 		Renderer::Init();
 
 		Renderer::Fonts->AddFontFromFileTTF("BebasNeue-32", "./Content/Fonts/BebasNeue-Regular.ttf", 32);
@@ -83,8 +83,15 @@ namespace Core
 
 
 			m_Window->PollEvents();
+			if (!m_bMinimized)
+			{
 
 			Renderer::BeginFrame();
+
+			for (std::shared_ptr<Layer> layer : m_LayerStack)
+			{
+				layer->OnUpdate(m_DeltaTime);
+			}
 
 			// Text rendering example
 			// Will be moved to the Renderer class
@@ -108,6 +115,11 @@ namespace Core
 			SDL_RenderCopy(Renderer::DebugGetRenderer(), chipPNG, NULL, &chipRect);
 
 			Renderer::EndFrame();
+			}
+			else
+			{
+				SDL_Delay(10);
+			}
 
 		}
 	}
@@ -123,15 +135,16 @@ namespace Core
 		m_Window->PollEvents();
 	}
 
-	void Application::OnEvent(SDL_Event event)
+	void Application::OnEvent(Event& event)
 	{
-		if (event.type == SDL_QUIT)
-			OnWindowClose(event);
+		EventDispatcher disp(event);
+		disp.Dispatch(SDL_QUIT, BJ_BIND_EVENT_FN(Application::OnWindowClose));
 	}
 
-	void Application::OnWindowClose(SDL_Event& event)
+	bool Application::OnWindowClose(Event& event)
 	{
 		m_bRunning = false;
+		return false;
 	}
 
 }
