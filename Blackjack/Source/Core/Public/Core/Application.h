@@ -2,6 +2,7 @@
 
 #include "Core/CoreDefines.h"
 #include "Core/Window.h"
+#include "Core/LayerStack.h"
 #include "Renderer/Texture.h" // Temporary
 
 #include <SDL2/SDL.h>
@@ -57,7 +58,8 @@ namespace Core
 
 	private:
 		ApplicationConfig m_Config;
-	
+		LayerStack m_LayerStack;
+
 		bool m_bRunning = true;
 		bool m_bMinimized = false;
 
@@ -66,6 +68,7 @@ namespace Core
 		float m_LastFrameTime = 0.0f;
 
 		std::shared_ptr<Window> m_Window;
+
 		// Temporary
 		std::shared_ptr<Texture> textTex;
 		SDL_Texture* chipPNG;
