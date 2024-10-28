@@ -11,15 +11,15 @@ namespace Core
 	class LayerStack
 	{
 	public:
-		using iterator_vec = std::vector<std::shared_ptr<Layer>>::iterator;
-		using const_iterator_vec = std::vector<std::shared_ptr<Layer>>::const_iterator;
+		using iterator_vec = std::vector<SharedPtr<Layer>>::iterator;
+		using const_iterator_vec = std::vector<SharedPtr<Layer>>::const_iterator;
 
 	public:
 		LayerStack() = default;
 		~LayerStack();
 
-		void PushLayer(const std::shared_ptr<Layer> layer);
-		void PopLayer(const std::shared_ptr<Layer> layer);
+		void PushLayer(const SharedPtr<Layer> layer);
+		void PopLayer(const SharedPtr<Layer> layer);
 
 		void Clear();
 
@@ -29,6 +29,6 @@ namespace Core
 		inline const_iterator_vec end() const {return m_Layers.end();}
 
 	private:
-		std::vector<std::shared_ptr<Layer>> m_Layers;
+		std::vector<SharedPtr<Layer>> m_Layers;
 	};
 }

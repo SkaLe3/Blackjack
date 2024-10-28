@@ -19,7 +19,7 @@ namespace Core
 		FontManager();
 		~FontManager();
 
-		static std::unique_ptr<FontManager> Create(); 
+		static UniquePtr<FontManager> Create(); 
 
 		/** First added font becomes active */
 		bool AddFontFromFileTTF(const String& fontId, const String& fontPath, int fontSize);
@@ -28,7 +28,7 @@ namespace Core
 		bool SelectFont(const String& fontId);
 
 	private:
-		std::unordered_map<String, std::unique_ptr<Font>> m_FontAtlas;
+		std::unordered_map<String, UniquePtr<Font>> m_FontAtlas;
 		String m_ActiveFontId;
 	};
 }

@@ -14,14 +14,14 @@ namespace Core
 	   TTF_Quit();
 	}
 
-	std::unique_ptr<FontManager> FontManager::Create()
+	UniquePtr<FontManager> FontManager::Create()
 	{
-		return std::make_unique<FontManager>();
+		return MakeUnique<FontManager>();
 	}
 
 	bool FontManager::AddFontFromFileTTF(const String& fontId, const String& fontPath, int fontSize)
 	{
-		auto font = std::make_unique<Font>(fontPath, fontSize);
+		auto font = MakeUnique<Font>(fontPath, fontSize);
 		if (!font->IsLoaded())
 		{
 			return false;

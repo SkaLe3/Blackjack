@@ -9,7 +9,6 @@
 #include <SDL2/SDL_image.h>
 
 
-
 namespace Core
 {
 
@@ -88,7 +87,7 @@ namespace Core
 
 			Renderer::BeginFrame();
 
-			for (std::shared_ptr<Layer> layer : m_LayerStack)
+			for (SharedPtr<Layer> layer : m_LayerStack)
 			{
 				layer->OnUpdate(m_DeltaTime);
 			}
@@ -124,7 +123,7 @@ namespace Core
 		}
 	}
 
-	std::shared_ptr<Window> Application::GetWindow()
+	SharedPtr<Window> Application::GetWindow()
 	{
 		return m_Window;
 	}

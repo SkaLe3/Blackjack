@@ -46,7 +46,7 @@ namespace Core
 
 		void Run();
 
-		std::shared_ptr<Window> GetWindow();
+		SharedPtr<Window> GetWindow();
 
 	private:
 		void ProcessEvents();
@@ -68,10 +68,10 @@ namespace Core
 		float m_FrameTime = 0.0f;
 		float m_LastFrameTime = 0.0f;
 
-		std::shared_ptr<Window> m_Window;
+		SharedPtr<Window> m_Window;
 
 		// Temporary
-		std::shared_ptr<Texture> textTex;
+		SharedPtr<Texture> textTex;
 		SDL_Texture* chipPNG;
 	};
 

@@ -8,12 +8,12 @@ namespace Core
 		 Clear();
 	}
 
-	void LayerStack::PushLayer(const std::shared_ptr<Layer> layer)
+	void LayerStack::PushLayer(const SharedPtr<Layer> layer)
 	{
 		 m_Layers.emplace_back(layer);
 	}
 
-	void LayerStack::PopLayer(const std::shared_ptr<Layer> layer)
+	void LayerStack::PopLayer(const SharedPtr<Layer> layer)
 	{
 		if (auto it = std::find(m_Layers.begin(), m_Layers.end(), layer); it != m_Layers.end())
 		{
@@ -28,7 +28,7 @@ namespace Core
 
 	void LayerStack::Clear()
 	{
-		for (std::shared_ptr<Layer> layer : m_Layers)
+		for (SharedPtr<Layer> layer : m_Layers)
 		{
 			layer->OnDetach();
 		}

@@ -19,9 +19,9 @@ namespace Core
 		Init(config);
 	}
 
-	std::shared_ptr<Window> Window::Create(const WindowConfig& config)
+	SharedPtr<Window> Window::Create(const WindowConfig& config)
 	{
-		 return std::make_shared<Window>(config);
+		 return MakeShared<Window>(config);
 	}
 
 

@@ -22,7 +22,7 @@ namespace Core
 		~Font();
 
 		// TODO: Move render to FontManager or make it private and class Font friend of the FontManager
-		std::shared_ptr<Texture> RenderText(const String& text, SDL_Color color);
+		SharedPtr<Texture> RenderText(const String& text, SDL_Color color);
 
 		bool IsLoaded() const;
 

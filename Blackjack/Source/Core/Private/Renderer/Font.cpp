@@ -21,7 +21,7 @@ namespace Core
 		}
 	}
 
-	std::shared_ptr<Texture> Font::RenderText(const String& text, SDL_Color color)
+	SharedPtr<Texture> Font::RenderText(const String& text, SDL_Color color)
 	{
 		if (!m_Font) return nullptr;
 

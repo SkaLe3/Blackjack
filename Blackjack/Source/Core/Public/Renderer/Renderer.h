@@ -10,7 +10,6 @@ namespace Core
 {
 	class Texture;
 
-
 	class Renderer
 	{
 	public:
@@ -20,16 +19,15 @@ namespace Core
 		static void BeginFrame();
 		static void EndFrame();
 
-		static std::shared_ptr<Texture>	CreateTextureFromSurface(SDL_Surface* surface);
-
+		static SharedPtr<Texture>	CreateTextureFromSurface(SDL_Surface* surface);
 
 		static SDL_Renderer* DebugGetRenderer() { return s_Renderer; }
+
 	public:
-		static std::unique_ptr<FontManager> Fonts;
+		static UniquePtr<FontManager> Fonts;
+
 	private:
 		inline static SDL_Renderer* s_Renderer;
-
-
 	};
 
 }

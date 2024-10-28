@@ -17,7 +17,6 @@ namespace Core
 		// Main logging function
 		static void Log(LogLevel level, const std::string& message);
 
-
 		template<typename... Args>
 		static void Log(LogLevel level, const char* fmt, Args&&... args)
 		{
@@ -28,7 +27,6 @@ namespace Core
 
 	};
 }
-
 
 
 #ifdef BJ_DEBUG

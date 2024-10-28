@@ -28,7 +28,7 @@ namespace Core
 		Window(const WindowConfig& config);
 		~Window() {}
 
-		static std::shared_ptr<Window> Create(const WindowConfig& config);
+		static SharedPtr<Window> Create(const WindowConfig& config);
 
 		void PollEvents();
 
