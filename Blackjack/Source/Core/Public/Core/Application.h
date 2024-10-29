@@ -4,6 +4,7 @@
 #include "Core/Window.h"
 #include "Core/LayerStack.h"
 #include "Core/Event.h"
+#include "Core/AssetManager.h"
 #include "Renderer/Texture.h" // Temporary
 
 
@@ -68,10 +69,13 @@ namespace Core
 		float m_LastFrameTime = 0.0f;
 
 		SharedPtr<Window> m_Window;
+		UniquePtr<AssetManager> m_AssetManager;
 
 		// Temporary
 		SharedPtr<Texture> textTex;
 		SharedPtr<Texture> chipTex;
+
+		friend AssetManager;
 	};
 
 	Application* CreateApplication(int argc, char** argv);

@@ -20,7 +20,6 @@ namespace Core
 		static void EndFrame();
 
 		static SharedPtr<Texture> CreateTextureFromSurface(SDL_Surface* surface);
-		static SharedPtr<Texture> CreateTextureFromFile(const String& filePath);
 
 		static SDL_Renderer* DebugGetRenderer() { return s_Renderer; }
 

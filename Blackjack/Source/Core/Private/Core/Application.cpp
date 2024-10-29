@@ -41,6 +41,10 @@ namespace Core
 		Renderer::Init();
 
 		Renderer::Fonts->AddFontFromFileTTF("BebasNeue-32", "./Content/Fonts/BebasNeue-Regular.ttf", 32);
+		
+		m_AssetManager = MakeUnique<AssetManager>();
+		m_AssetManager->SetContentPath(".\\Content");
+		m_AssetManager->InitialLoading();
 	}
 
 	Application::~Application()
@@ -66,7 +70,8 @@ namespace Core
 		textTex = Renderer::Fonts->GetActiveFont()->RenderText("Blackjack", { 0, 0, 0 });
 
 		// Texture loading example
-		chipTex = Renderer::CreateTextureFromFile("./Content/Textures/RedChip.png");
+		
+		chipTex = AssetManager::Get().Load<TextureAsset>("T_RedChip")->TextureP;
 
 
 		while (m_bRunning)
