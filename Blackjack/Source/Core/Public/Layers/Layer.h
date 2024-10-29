@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/CoreDefines.h"
-#include <SDL2/SDL.h>
+#include "Core/Event.h"
 
 namespace Core
 {
@@ -15,7 +15,7 @@ namespace Core
 	virtual void OnAttach() {}
 	virtual void OnDetach() {}
 	virtual void OnUpdate(float deltaTime) {}
-	virtual void OnEvent(SDL_Event& event) {}
+	virtual void OnEvent(Event& event) {}
 
 	inline const String& GetName() const { return m_Name; }
 
