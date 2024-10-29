@@ -6,7 +6,6 @@
 #include "Core/Event.h"
 #include "Renderer/Texture.h" // Temporary
 
-#include <SDL2/SDL.h>
 
 
 #include <filesystem>
@@ -72,7 +71,7 @@ namespace Core
 
 		// Temporary
 		SharedPtr<Texture> textTex;
-		SDL_Texture* chipPNG;
+		SharedPtr<Texture> chipTex;
 	};
 
 	Application* CreateApplication(int argc, char** argv);

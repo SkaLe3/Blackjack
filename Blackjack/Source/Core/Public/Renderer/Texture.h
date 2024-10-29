@@ -9,11 +9,13 @@ namespace Core
 	/*
 	* @class Texture
 	*
-	* This class manages the creation, rendering, and destruction of SDL_Texture objects
+	* Manages the creation, rendering, and destruction of SDL_Texture objects.
+	* Note: The surface resource is not managed by this class; the caller is responsible for handling it.
 	*/
 	class Texture
 	{
 	public:
+		/** Constructs a Texture from an SDL_Surface and SDL_Renderer, managing the SDL_Texture lifecycle. */
 		Texture(SDL_Surface* surface, SDL_Renderer* renderer);
 		~Texture();
 

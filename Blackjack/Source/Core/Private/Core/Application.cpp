@@ -66,12 +66,7 @@ namespace Core
 		textTex = Renderer::Fonts->GetActiveFont()->RenderText("Blackjack", { 0, 0, 0 });
 
 		// Texture loading example
-		SDL_Surface* imgSurface = IMG_Load("./Content/Textures/RedChip.png");
-		if (!imgSurface)
-			BJ_LOG_WARN("Image not loaded... %s", "./Content/Textures/RedChip.png");
-
-		chipPNG = SDL_CreateTextureFromSurface(Renderer::DebugGetRenderer(), imgSurface);
-		SDL_FreeSurface(imgSurface);
+		chipTex = Renderer::CreateTextureFromFile("./Content/Textures/RedChip.png");
 
 
 		while (m_bRunning)
@@ -112,7 +107,7 @@ namespace Core
 			SDL_RenderDrawRect(Renderer::DebugGetRenderer(), &textRect);
 
 			SDL_RenderCopy(Renderer::DebugGetRenderer(), textTex->GetInternal(), NULL, &textRect);
-			SDL_RenderCopy(Renderer::DebugGetRenderer(), chipPNG, NULL, &chipRect);
+			SDL_RenderCopy(Renderer::DebugGetRenderer(), chipTex->GetInternal(), NULL, &chipRect);
 
 			Renderer::EndFrame();
 			}

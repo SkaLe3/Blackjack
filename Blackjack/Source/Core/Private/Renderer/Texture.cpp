@@ -11,8 +11,6 @@ namespace Core
 
 		m_Width = surface->w;
 		m_Height = surface->h;
-
-		SDL_FreeSurface(surface);
 	}
 
 	Texture::~Texture()

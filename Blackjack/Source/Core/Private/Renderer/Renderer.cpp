@@ -6,6 +6,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 #include <filesystem>
 #include <iostream>
@@ -46,5 +47,17 @@ namespace Core
 	{
 		return MakeShared<Texture>(surface, s_Renderer);
 	}
+
+	SharedPtr<Texture> Renderer::CreateTextureFromFile(const String& filePath)
+	{
+		SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());
+		if (!loadedSurface)
+			BJ_LOG_WARN("Image not loaded... %s", filePath.c_str());
+
+		auto texture = CreateTextureFromSurface(loadedSurface);
+		SDL_FreeSurface(loadedSurface);
+		return texture;		
+	}
+
 }
 
