@@ -81,6 +81,7 @@ namespace Core
 			m_LastFrameTime = time;
 
 
+
 			m_Window->PollEvents();
 			if (!m_bMinimized)
 			{
