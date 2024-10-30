@@ -3,17 +3,17 @@
 namespace Core
 {
 
-	void QuadComponent::Destroy()
+	void BoxComponent::Destroy()
 	{
 		// TODO: Destroy
 	}
 
-	glm::vec2 QuadComponent::GetHalfSize() const
+	glm::vec2 BoxComponent::GetHalfSize() const
 	{
 		return m_QuadHalfSize;
 	}
 
-	void QuadComponent::SetHalfSize(const glm::vec2& inSize)
+	void BoxComponent::SetHalfSize(const glm::vec2& inSize)
 	{
 		m_QuadHalfSize = inSize;
 	}

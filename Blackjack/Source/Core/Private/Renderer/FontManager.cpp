@@ -21,7 +21,7 @@ namespace Core
 
 	bool FontManager::AddFontFromFileTTF(const String& fontId, const String& fontPath, int fontSize)
 	{
-		auto font = MakeUnique<Font>(fontPath, fontSize);
+		auto font = MakeShared<Font>(fontPath, fontSize);
 		if (!font->IsLoaded())
 		{
 			return false;

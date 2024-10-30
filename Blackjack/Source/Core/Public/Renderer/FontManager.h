@@ -28,7 +28,7 @@ namespace Core
 		bool SelectFont(const String& fontId);
 
 	private:
-		std::unordered_map<String, UniquePtr<Font>> m_FontAtlas;
+		std::unordered_map<String, SharedPtr<Font>> m_FontAtlas;
 		String m_ActiveFontId;
 	};
 }

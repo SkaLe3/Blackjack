@@ -5,11 +5,11 @@
 
 namespace Core
 {
-	class QuadComponent : public SceneComponent
+	class BoxComponent : public SceneComponent
 	{
 		DECLARE_SUPER(SceneComponent)
 	public:
-		 QuadComponent() = default;
+		 BoxComponent() = default;
 
 		 //~ Begin Object Interface
 		 virtual void BeginPlay() override {}

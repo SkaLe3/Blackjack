@@ -6,7 +6,7 @@ namespace Core
 	GameObject::GameObject()
 		: m_Tag("")
 	{
-		m_QuadComponent = CreateComponent<QuadComponent>();
+		m_QuadComponent = CreateComponent<BoxComponent>();
 		m_RootComponent = m_QuadComponent;
 	}
 
@@ -43,7 +43,7 @@ namespace Core
 			BJ_ASSERT(false, "Root component should be always valid!");
 	}
 
-	SharedPtr<QuadComponent> GameObject::GetQuadComponent()
+	SharedPtr<BoxComponent> GameObject::GetQuadComponent()
 	{
 		return m_QuadComponent.lock();
 	}

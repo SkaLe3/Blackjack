@@ -6,7 +6,7 @@
 namespace Core
 {
 	class SceneComponent;
-	class QuadComponent;
+	class BoxComponent;
 	
 	class GameObject : public Object, public std::enable_shared_from_this<GameObject>
 	{
@@ -30,7 +30,7 @@ namespace Core
 		inline WeakPtr<GameObject> GetSelf() { return weak_from_this(); }
 		Transform& GetTransform();
 		Transform GetWorldTransform() const;
-		SharedPtr<QuadComponent> GetQuadComponent();
+		SharedPtr<BoxComponent> GetQuadComponent();
 		inline SharedPtr<SceneComponent> GetRoot() { return m_RootComponent.lock(); }
 		glm::vec2 GetLocation(); /** Location relative to World origin */
 		String GetTag();
@@ -52,7 +52,7 @@ namespace Core
 
 	protected:
 		WeakPtr<SceneComponent> m_RootComponent;
-		WeakPtr<QuadComponent> m_QuadComponent;
+		WeakPtr<BoxComponent> m_QuadComponent;
 
 		String m_Tag;
 
