@@ -18,6 +18,7 @@ namespace Core
 
 		virtual void BeginPlay();
 		virtual void Tick(float deltaTime);
+		void Render();
 
 	public:
 		template<typename T>
