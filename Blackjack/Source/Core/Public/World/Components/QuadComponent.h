@@ -7,10 +7,14 @@ namespace Core
 {
 	class QuadComponent : public SceneComponent
 	{
+		DECLARE_SUPER(SceneComponent)
 	public:
 		 QuadComponent() = default;
 
 		 //~ Begin Object Interface
+		 virtual void BeginPlay() override {}
+		 virtual void Tick(float deltaTime) override {}
+		 virtual void EndPlay() override {}
 		 virtual void Destroy() override;
 		 //~ End Object Interface
 

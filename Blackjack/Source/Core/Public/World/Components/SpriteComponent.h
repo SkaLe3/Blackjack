@@ -8,6 +8,7 @@ namespace Core
 
 	class SpriteComponent : public SceneComponent
 	{
+		DECLARE_SUPER(SceneComponent)
 	public:
 		SpriteComponent();
 		~SpriteComponent() = default;

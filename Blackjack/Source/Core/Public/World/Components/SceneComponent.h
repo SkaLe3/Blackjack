@@ -8,6 +8,7 @@ namespace Core
 {
 	class SceneComponent : public GameComponent
 	{
+		DECLARE_SUPER(GameComponent)
 	public:
 		Transform& GetTransform(); /** Returns Transform relative to parent */
 		Transform GetWorldTransform(); /** Returns Transform relative to World origin */
