@@ -19,9 +19,26 @@ namespace Core
 	void Renderer::Init(/* TODO: RendererConfig*/)
 	{
 		SharedPtr<Window> window = Application::Get().GetWindow();
+
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
 		int vsyncFlag = window->IsVSyncEnabled() ? SDL_RENDERER_PRESENTVSYNC : 0;
-		s_Renderer = SDL_CreateRenderer(window->GetNativeWindow(), -1, SDL_RENDERER_ACCELERATED | vsyncFlag);
+		s_Renderer = SDL_CreateRenderer(window->GetNativeWindow(), 3, SDL_RENDERER_ACCELERATED | vsyncFlag);
 		BJ_ASSERT(s_Renderer, "Renderer could not be created! SDL_Error: %s", SDL_GetError());
+
+		// Uncomment if needed
+		//SDL_RenderSetLogicalSize(s_Renderer, 1920, 1080);
+
+		SDL_RendererInfo info;
+		SDL_GetRendererInfo(s_Renderer, &info);
+		BJ_LOG_INFO("Renderer created. Using %s API", info.name);
+
+		int Buffers, Samples;
+		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &Buffers);
+		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &Samples);
+		BJ_LOG_INFO("Multisample buffers: %d", Buffers);
+		BJ_LOG_INFO("Nultisample samples: %d", Samples);
+
 		SDL_SetRenderDrawColor(s_Renderer, 200, 200, 200, 255);
 
 		Fonts = FontManager::Create();

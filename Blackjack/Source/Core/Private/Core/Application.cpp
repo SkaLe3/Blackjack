@@ -3,11 +3,11 @@
 #include "Core/CoreDefines.h"
 #include "Renderer/Renderer.h"
 #include "Core/Utils.h"
+#include "Layers/GameLayer.h"
 
 // Temporary
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-
 
 namespace Core
 {
@@ -34,13 +34,17 @@ namespace Core
 		initStatus = IMG_Init(flags);
 		BJ_ASSERT((initStatus & flags) == flags, "Failed to init SDL_image! IMG_Error: %s", IMG_GetError());
 
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
+		//glEnable(GL_MULTISAMPLE);
 
 		m_Window = Window::Create(appSpecs.WndConfig);
 		m_Window->SetEventCallback([this](Event& event) { Application::OnEvent(event); });
 		Renderer::Init();
 
-		Renderer::Fonts->AddFontFromFileTTF("BebasNeue-32", "./Content/Fonts/BebasNeue-Regular.ttf", 32);
+		Renderer::Fonts->AddFontFromFileTTF("BebasNeue-32", "./Content/Fonts/BebasNeue/BebasNeue-Regular.ttf", 32);
 		
 		m_AssetManager = MakeUnique<AssetManager>();
 		m_AssetManager->SetContentPath(".\\Content");
@@ -66,6 +70,8 @@ namespace Core
 
 	void Application::Run()
 	{
+
+		PushLayer(MakeShared<GameLayer>());
 		// Font rendering example
 		textTex = Renderer::Fonts->GetActiveFont()->RenderText("Blackjack", { 0, 0, 0 });
 
@@ -82,7 +88,7 @@ namespace Core
 
 
 
-			m_Window->PollEvents();
+			ProcessEvents();
 			if (!m_bMinimized)
 			{
 
@@ -124,6 +130,12 @@ namespace Core
 		}
 	}
 
+	void Application::PushLayer(const SharedPtr<Layer> layer)
+	{
+		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
+	}
+
 	SharedPtr<Window> Application::GetWindow()
 	{
 		return m_Window;
@@ -139,6 +151,13 @@ namespace Core
 	{
 		EventDispatcher disp(event);
 		disp.Dispatch(SDL_QUIT, BJ_BIND_EVENT_FN(Application::OnWindowClose));
+
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+		{
+			(*--it)->OnEvent(event);
+			if (event.bHandled)
+				break;
+		}
 	}
 
 	bool Application::OnWindowClose(Event& event)

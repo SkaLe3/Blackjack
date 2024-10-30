@@ -9,6 +9,7 @@ namespace Core
 {
 	class UILayer : public Layer
 	{
+	public:
 		UILayer();
 
 		void OnAttach() override;

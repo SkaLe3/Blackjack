@@ -53,7 +53,7 @@ namespace Core
 
 		m_Window = SDL_CreateWindow(config.Title.c_str(), SDL_WINDOWPOS_CENTERED,
 									SDL_WINDOWPOS_CENTERED, config.Width, config.Height,
-									SDL_WINDOW_SHOWN);
+									SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
 
 		BJ_ASSERT(m_Window, "Failed to create window! SDL_Error: %s", SDL_GetError());
 

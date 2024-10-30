@@ -69,6 +69,9 @@ constexpr SharedPtr<T> MakeShared(Args&& ... args)
 }
 
 template<typename T>
+using WeakPtr = ::std::weak_ptr<T>;
+
+template<typename T>
 using UniquePtr = ::std::shared_ptr<T>;
 template<typename T, typename ... Args>
 constexpr UniquePtr<T> MakeUnique(Args&& ... args)

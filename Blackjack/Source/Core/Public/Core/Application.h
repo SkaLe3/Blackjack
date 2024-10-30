@@ -46,6 +46,8 @@ namespace Core
 
 		void Run();
 
+		void PushLayer(const SharedPtr<Layer> layer);
+
 		SharedPtr<Window> GetWindow();
 
 	private:

@@ -15,7 +15,7 @@ Core::Application* Core::CreateApplication(int argc, char** argv)
 	Core::ApplicationSpecification specs
 	{
 	.AppConfig {.Name = "Blackjack"},
-	.WndConfig {.Title = "Blackjack", .Width = 1000, .Height = 600, .VSync = true}
+	.WndConfig {.Title = "Blackjack", .Width = 1280, .Height = 720, .VSync = true}
 	};
 
 
