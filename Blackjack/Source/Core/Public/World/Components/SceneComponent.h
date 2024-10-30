@@ -1,5 +1,7 @@
 #pragma once
 #include "World/Components/GameComponent.h"
+#include "World/Components/Transform.h"
+
 #include <glm/glm.hpp>
 
 namespace Core

@@ -1,5 +1,6 @@
 #pragma once
-#include "Entities/Object.h"
+#include "World/Entities/Object.h"
+#include "World/Components/QuadComponent.h"
 
 
 namespace Core
@@ -16,6 +17,9 @@ namespace Core
 
 		inline WeakPtr<GameObject> GetSelf() { return weak_from_this(); }
 
+	protected:
+		WeakPtr<SceneComponent> m_RootComponent;
+		WeakPtr<QuadComponent> m_QuadComponent;
 
 	};
 }
