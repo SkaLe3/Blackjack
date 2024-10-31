@@ -63,13 +63,16 @@ namespace Core
 	{
 		if (m_CachedRegistry.find(assetName) != m_CachedRegistry.end())
 		{
+			BJ_LOG_INFO("[AssetManager]: %s was retrieved from the cache", assetName.c_str());
 			return std::dynamic_pointer_cast<T>(m_CachedRegistry[assetName]);
 		}
 
 		if (m_Registry.find(assetName) == m_Registry.end())
 		{
-			BJ_ASSERT(false, "Invalid asset name: %s", assetName.c_str());
+			BJ_ASSERT(false, "[AssetManager]: Invalid asset name: %s", assetName.c_str());
 		}
+
+		BJ_LOG_INFO("[AssetManager]: %s was loaded from disk", assetName.c_str());
 
 		SharedPtr<Asset> newAsset;
 		switch (m_AssetTypeMap[assetName])

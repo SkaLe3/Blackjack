@@ -52,7 +52,7 @@ namespace Core
 				{
 					String assetName = "T_" + entryPath.stem().string();
 					m_Registry[assetName] = entryPath;
-					BJ_LOG_INFO("Loaded %s asset '%s' from path: %s", "Texture", assetName.c_str(), entryPath.string().c_str());
+					BJ_LOG_INFO("[AssetManager]: Loaded %s asset path for '%s' to asset registry: %s ", "Texture", assetName.c_str(), entryPath.string().c_str());
 
 					m_AssetTypeMap[assetName] = AssetType::ATexture;
 				}
@@ -64,7 +64,7 @@ namespace Core
 	void AssetManager::Unload(const String& assetName)
 	{
 		m_CachedRegistry.erase(assetName);
-		BJ_LOG_INFO("Unloaded asset '%s' with path: %s", assetName, m_Registry[assetName].string().c_str());
+		BJ_LOG_INFO("[AssetManager]: Unloaded asset '%s' from cached registry with path: %s", assetName, m_Registry[assetName].string().c_str());
 	}
 
 	void AssetManager::ClearCache()
@@ -90,7 +90,7 @@ namespace Core
 		uint32 len;
 		bool loadStatus = SDL_LoadWAV(filePath.c_str(), &spec, &start, &len);
 		SharedPtr<SoundCue> sound = MakeShared<SoundCue>(spec, start, len);
-		BJ_ASSERT(loadStatus, "Faild to load wav file: %s", filePath.c_str());
+		BJ_ASSERT(loadStatus, "Failed to load wav file: %s", filePath.c_str());
 	}
 
 }
