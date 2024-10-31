@@ -1,4 +1,4 @@
-#include "World/Components/QuadComponent.h"
+#include "World/Components/BoxComponent.h"
 
 namespace Core
 {
@@ -10,12 +10,12 @@ namespace Core
 
 	glm::vec2 BoxComponent::GetHalfSize() const
 	{
-		return m_QuadHalfSize;
+		return m_BoxHalfSize;
 	}
 
 	void BoxComponent::SetHalfSize(const glm::vec2& inSize)
 	{
-		m_QuadHalfSize = inSize;
+		m_BoxHalfSize = inSize;
 	}
 
 }

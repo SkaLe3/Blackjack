@@ -2,6 +2,7 @@
 
 #include "Core/CoreDefines.h"
 #include "Renderer/Texture.h"
+#include "Sound/Sound.h"
 
 
 namespace Core
@@ -35,6 +36,7 @@ namespace Core
 	class SoundAsset : public Asset
 	{
 	public:
+		SharedPtr<SoundCue> SoundP;
 		ASSET_CLASS_TYPE(ASound);
 	};
 }

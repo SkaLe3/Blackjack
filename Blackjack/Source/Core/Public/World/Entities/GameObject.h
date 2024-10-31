@@ -1,6 +1,6 @@
 #pragma once
 #include "World/Entities/Object.h"
-#include "World/Components/QuadComponent.h"
+#include "World/Components/BoxComponent.h"
 
 
 namespace Core
@@ -30,7 +30,7 @@ namespace Core
 		inline WeakPtr<GameObject> GetSelf() { return weak_from_this(); }
 		Transform& GetTransform();
 		Transform GetWorldTransform() const;
-		SharedPtr<BoxComponent> GetQuadComponent();
+		SharedPtr<BoxComponent> GetBoxComponent();
 		inline SharedPtr<SceneComponent> GetRoot() { return m_RootComponent.lock(); }
 		glm::vec2 GetLocation(); /** Location relative to World origin */
 		String GetTag();
@@ -52,7 +52,7 @@ namespace Core
 
 	protected:
 		WeakPtr<SceneComponent> m_RootComponent;
-		WeakPtr<BoxComponent> m_QuadComponent;
+		WeakPtr<BoxComponent> m_BoxComponent;
 
 		String m_Tag;
 

@@ -83,4 +83,14 @@ namespace Core
 		return texture;
 	}
 
+	SharedPtr<SoundCue> AssetManager::CreateSoundCueFromFile(const String& filePath)
+	{
+		SDL_AudioSpec spec;
+		byte* start;
+		uint32 len;
+		bool loadStatus = SDL_LoadWAV(filePath.c_str(), &spec, &start, &len);
+		SharedPtr<SoundCue> sound = MakeShared<SoundCue>(spec, start, len);
+		BJ_ASSERT(loadStatus, "Faild to load wav file: %s", filePath.c_str());
+	}
+
 }

@@ -22,6 +22,6 @@ namespace Core
 		 void SetHalfSize(const glm::vec2& inSize);
 
 	private:
-		glm::vec2 m_QuadHalfSize;
+		glm::vec2 m_BoxHalfSize;
 	};
 }

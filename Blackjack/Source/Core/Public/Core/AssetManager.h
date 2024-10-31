@@ -2,6 +2,7 @@
 #include "Core/CoreDefines.h"
 #include "Core/Asset.h"
 #include "Renderer/Texture.h"
+#include "Sound/Sound.h"
 
 #include <filesystem>
 #include <unordered_map>
@@ -12,7 +13,7 @@ namespace Core
 {
 	/*
 	* @class AssetManager
-	* 
+	*
 	* Manages the loading, unloading, and caching of assets in the application.
 	*/
 	class AssetManager
@@ -43,6 +44,11 @@ namespace Core
 
 	private:
 		SharedPtr<Texture> CreateTextureFromFile(const String& filePath);
+		SharedPtr<SoundCue>	CreateSoundCueFromFile(const String& filePath);
+
+		/** Possible solution */
+// 		template<typename T>
+// 		SharedPtr<T> LoadInternal(const String& assetName);
 
 	private:
 		std::filesystem::path m_ContentPath;
@@ -65,19 +71,39 @@ namespace Core
 			BJ_ASSERT(false, "Invalid asset name: %s", assetName.c_str());
 		}
 
+		SharedPtr<Asset> newAsset;
 		switch (m_AssetTypeMap[assetName])
 		{
 		case AssetType::ATexture:
 		{
-			auto newAsset = MakeShared<TextureAsset>();
-			newAsset->TextureP = CreateTextureFromFile(m_Registry[assetName].string());
-			return newAsset;
-		}
-		case AssetType::ASound:
-			BJ_ASSERT(false, "Sound assets do not supported yet!");
+			auto texAsset = MakeShared<TextureAsset>();
+			texAsset->TextureP = CreateTextureFromFile(m_Registry[assetName].string());
+			newAsset = texAsset;
 			break;
 		}
+		case AssetType::ASound:
+		{
+			auto soundAsset = MakeShared<SoundAsset>();
+			soundAsset->SoundP = CreateSoundCueFromFile(m_Registry[assetName].string());
+			newAsset = soundAsset;
+			break;
+		}
+		default:
+			BJ_ASSERT(false, "Usupported asset type");
+			return nullptr;
+		}
+
+		m_CachedRegistry[assetName] = newAsset;
+		return std::static_pointer_cast<T>(newAsset);
 	}
+
+// 	template<typename T>
+// 	SharedPtr<T> AssetManager::LoadInternal(const String& assetName){}
+// 
+// 	template<>
+// 	SharedPtr<TextureAsset> AssetManager::LoadInternal(const String&){}
+// 	template<>
+// 	SharedPtr<SoundAsset> AssetManager::LoadInternal(const String&) {}
 
 	template<typename T>
 	std::future<SharedPtr<T>> AssetManager::LoadAssetAsync(const String& assetName)

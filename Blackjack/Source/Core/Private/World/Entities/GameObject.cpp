@@ -6,24 +6,24 @@ namespace Core
 	GameObject::GameObject()
 		: m_Tag("")
 	{
-		m_QuadComponent = CreateComponent<BoxComponent>();
-		m_RootComponent = m_QuadComponent;
+		m_BoxComponent = CreateComponent<BoxComponent>();
+		m_RootComponent = m_BoxComponent;
 	}
 
 	void GameObject::BeginPlay()
 	{
-		if (auto quad = m_QuadComponent.lock())
+		if (auto box = m_BoxComponent.lock())
 		{
-			quad->SetOwner(GetSelf());
+			box->SetOwner(GetSelf());
 		}
 	}
 
 	void GameObject::Destroy()
 	{
 		// TODO: Destroy self in scene
-		if (auto quad = m_QuadComponent.lock())
+		if (auto box = m_BoxComponent.lock())
 		{
-			quad->Destroy();
+			box->Destroy();
 		}
 	}
 
@@ -43,9 +43,9 @@ namespace Core
 			BJ_ASSERT(false, "Root component should be always valid!");
 	}
 
-	SharedPtr<BoxComponent> GameObject::GetQuadComponent()
+	SharedPtr<BoxComponent> GameObject::GetBoxComponent()
 	{
-		return m_QuadComponent.lock();
+		return m_BoxComponent.lock();
 	}
 
 	glm::vec2 GameObject::GetLocation()
@@ -92,7 +92,7 @@ namespace Core
 
 	void GameObject::SetLocation(const glm::vec2 location)
 	{
-		if (auto quad = m_QuadComponent.lock())
+		if (auto box = m_BoxComponent.lock())
 		{
 			Transform worldTransform = GetWorldTransform();
 			Transform& relativeTransform = GetTransform();

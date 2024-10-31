@@ -2,7 +2,7 @@
 #include "Core/CoreDefines.h"
 #include "World/Entities/GameObject.h"
 #include "World/Components/GameComponent.h"
-#include "World/Components/QuadComponent.h"
+#include "World/Components/BoxComponent.h"
 #include "World/Components/SpriteComponent.h"
 
 #include <vector>
