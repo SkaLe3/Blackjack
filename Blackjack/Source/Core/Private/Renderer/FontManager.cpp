@@ -11,7 +11,8 @@ namespace Core
 
 	FontManager::~FontManager()
 	{
-	   TTF_Quit();
+		m_FontAtlas.clear();
+		TTF_Quit();
 	}
 
 	UniquePtr<FontManager> FontManager::Create()
@@ -35,7 +36,7 @@ namespace Core
 	}
 
 	Font* FontManager::GetFont(const String& fontId)
-	{	
+	{
 		if (auto it = m_FontAtlas.find(fontId); it != m_FontAtlas.end())
 		{
 			return it->second.get();

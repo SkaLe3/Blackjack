@@ -4,6 +4,7 @@
 
 // TEMPORARY
 #include "Renderer/Renderer.h"
+#include "Sound/AudioSystem.h"
 
 namespace Core
 {
@@ -52,6 +53,7 @@ namespace Core
 						cardTex = AssetManager::Get().Load<TextureAsset>("T_CardBlackSkin")->TextureP;
 					}
 					triggered = false;
+
 				}
 			}
 			if (elapsedTime >= flipDuration * 2)
@@ -80,10 +82,28 @@ namespace Core
 		if (event.Ev.key.keysym.sym == SDLK_SPACE)
 		{
 			startAnim = true;
+			SharedPtr<SoundBase> sound = AssetManager::Get().Load<SoundAsset>("S_Yipee")->SoundP;
+			SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
+			AudioSystem::PlaySound(sound);
 		}
 		if (event.Ev.key.keysym.sym == SDLK_r)
 		{
-			curHalfsize = cardHalfsize;
+		   AudioSystem::StopAllSounds();
+		   SharedPtr<SoundBase> sound = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
+		   AudioSystem::PlayMusic(sound);
+
+		}
+		if (event.Ev.key.keysym.sym == SDLK_EQUALS)
+		{
+			//AudioSystem::SetMasterVolume(1.0f); 
+			AudioSystem::SetMusicVolume(1.0f);
+			AudioSystem::SetSFXVolume(1.0f);
+		}
+		if (event.Ev.key.keysym.sym == SDLK_MINUS)
+		{
+			AudioSystem::SetMusicVolume(0.1f);
+			AudioSystem::SetSFXVolume(0.1f);
+			//AudioSystem::SetMasterVolume(0.1f);
 		}
 		return true;
 	}

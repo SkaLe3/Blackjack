@@ -44,7 +44,9 @@ namespace Core
 
 	private:
 		SharedPtr<Texture> CreateTextureFromFile(const String& filePath);
-		SharedPtr<SoundCue>	CreateSoundCueFromFile(const String& filePath);
+		template<typename T>
+		SharedPtr<T> CreateSoundFromFile(const String& filePath);
+
 
 		/** Possible solution */
 // 		template<typename T>
@@ -85,9 +87,18 @@ namespace Core
 			break;
 		}
 		case AssetType::ASound:
+		case AssetType::ASoundCue:
+		case AssetType::ASoundMusic:
 		{
 			auto soundAsset = MakeShared<SoundAsset>();
-			soundAsset->SoundP = CreateSoundCueFromFile(m_Registry[assetName].string());
+			if (m_AssetTypeMap[assetName] == AssetType::ASoundCue)
+			{
+				soundAsset->SoundP = CreateSoundFromFile<SoundCue>(m_Registry[assetName].string());
+			}
+			else
+			{
+				soundAsset->SoundP = CreateSoundFromFile<SoundMusic>(m_Registry[assetName].string());
+			}
 			newAsset = soundAsset;
 			break;
 		}
@@ -100,13 +111,13 @@ namespace Core
 		return std::static_pointer_cast<T>(newAsset);
 	}
 
-// 	template<typename T>
-// 	SharedPtr<T> AssetManager::LoadInternal(const String& assetName){}
-// 
-// 	template<>
-// 	SharedPtr<TextureAsset> AssetManager::LoadInternal(const String&){}
-// 	template<>
-// 	SharedPtr<SoundAsset> AssetManager::LoadInternal(const String&) {}
+	// 	template<typename T>
+	// 	SharedPtr<T> AssetManager::LoadInternal(const String& assetName){}
+	// 
+	// 	template<>
+	// 	SharedPtr<TextureAsset> AssetManager::LoadInternal(const String&){}
+	// 	template<>
+	// 	SharedPtr<SoundAsset> AssetManager::LoadInternal(const String&) {}
 
 	template<typename T>
 	std::future<SharedPtr<T>> AssetManager::LoadAssetAsync(const String& assetName)
@@ -116,5 +127,36 @@ namespace Core
 							  return Load(assetName);
 						  });
 	}
+
+	template<typename T>
+	inline SharedPtr<T> AssetManager::CreateSoundFromFile(const String& filePath)
+	{
+		// Should never happen;
+		BJ_ASSERT(false, "Attempt to load unsupported sound type");
+		return nullptr;
+	}
+
+	template<>
+	inline SharedPtr<SoundCue> AssetManager::CreateSoundFromFile<SoundCue>(const String& filePath)
+	{
+		Mix_Chunk* loadedSound = Mix_LoadWAV(filePath.c_str());
+		if (!loadedSound)
+			BJ_LOG_WARN("Sound not loaded... %s", filePath.c_str());
+
+		SharedPtr<SoundCue> sound = MakeShared<SoundCue>(loadedSound);
+		return sound;
+	}
+	template<>
+	inline SharedPtr<SoundMusic> AssetManager::CreateSoundFromFile<SoundMusic>(const String& filePath)
+	{
+		Mix_Music* loadedSound = Mix_LoadMUS(filePath.c_str());
+		if (!loadedSound)
+			BJ_LOG_WARN("Sound not loaded... %s", filePath.c_str());
+
+		SharedPtr<SoundMusic> sound = MakeShared<SoundMusic>(loadedSound);
+		return sound;
+	}
+
+
 
 }

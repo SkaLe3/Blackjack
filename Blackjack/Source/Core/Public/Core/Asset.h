@@ -1,18 +1,21 @@
 #pragma once
-
 #include "Core/CoreDefines.h"
-#include "Renderer/Texture.h"
-#include "Sound/Sound.h"
+
 
 
 namespace Core
 {
 
+	class SoundBase;
+	class Texture;
+
 	enum class AssetType
 	{
 		None = 0,
-		ATexture,
-		ASound
+		ATexture = 1 << 0,
+		ASound = 1 << 1,
+		ASoundCue = ASound | (1 << 2),
+		ASoundMusic = ASound | (1 << 3)
 	};
 
 #define ASSET_CLASS_TYPE(type) static AssetType GetStaticType() { return AssetType::type; } \
@@ -36,7 +39,7 @@ namespace Core
 	class SoundAsset : public Asset
 	{
 	public:
-		SharedPtr<SoundCue> SoundP;
+		SharedPtr<SoundBase> SoundP;
 		ASSET_CLASS_TYPE(ASound);
 	};
 }

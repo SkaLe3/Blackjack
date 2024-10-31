@@ -1,34 +1,65 @@
 #pragma once
 #include "Core/CoreDefines.h"
-#include "Core/AssetManager.h"
+
+#include <SDL2/SDL_mixer.h>
 
 namespace Core
 {
-	class ISound
+	class AudioSystem;
+
+	class SoundBase
 	{
 	public:
-		virtual ~ISound() = default;
+		SoundBase() = default;
+		virtual ~SoundBase() = default;
 
-		virtual void PlaySound() = 0;
-		virtual void StopSound() = 0;
+		virtual bool IsOneShot() const;
+		void SetOneShot(bool os);
+
+		virtual float GetVolumeMultiplier();
+
+	protected:
+		bool m_bOneShot = true;
+		float m_VolumeMultiplier = 1.0f;
+
+		friend AudioSystem;
+
 	};
 
 
-	class SoundCue : public ISound
+	class SoundCue : public SoundBase
 	{
 	public:
-		SoundCue(SDL_AudioSpec spec, byte* start, uint32 len) : m_AudioSpec(spec), m_WaveStart(start), m_WaveLenght(len) {}
-		~SoundCue() {}
+		SoundCue(Mix_Chunk* chunk);
+		~SoundCue();
 
-		virtual void PlaySound() override {}
-		virtual void StopSound() override {}
-		void SetupDevice() {}
+		//~ Begin SoundBase Interface
+		virtual float GetVolumeMultiplier() override;
+		//~ End SoundBase Interface
+
+		inline Mix_Chunk* Get() { return m_Chunk; }
 
 	private:
-		SDL_AudioDeviceID m_Device;
+		Mix_Chunk* m_Chunk;
 
-		SDL_AudioSpec m_AudioSpec;
-		byte* m_WaveStart;
-		uint32 m_WaveLenght;
+	};
+
+	class SoundMusic : public SoundBase
+	{
+	public:
+		SoundMusic(Mix_Music* music);
+		~SoundMusic();
+
+		//~ Begin SoundBase Interface
+		virtual float GetVolumeMultiplier() override;
+		//~ End SoundBase Interface
+
+		inline Mix_Music* Get() { return m_Music; }
+		inline float GetActivetedVolume() { return m_ActivetedVolume; }
+		void OnPlayed(float volume) { m_ActivetedVolume = volume; }
+	private:
+		Mix_Music* m_Music;
+		float m_ActivetedVolume = 1.0f; /** Volume that was passed to PlayMusic function */
+
 	};
 }

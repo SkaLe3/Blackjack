@@ -2,6 +2,7 @@
 
 #include "Core/CoreDefines.h"
 #include "Renderer/Renderer.h"
+#include "Sound/AudioSystem.h"
 #include "Core/Utils.h"
 #include "Layers/GameLayer.h"
 
@@ -46,6 +47,8 @@ namespace Core
 
 		Renderer::Fonts->AddFontFromFileTTF("BebasNeue-32", "./Content/Fonts/BebasNeue/BebasNeue-Regular.ttf", 32);
 		
+		AudioSystem::Init();
+
 		m_AssetManager = MakeUnique<AssetManager>();
 		m_AssetManager->SetContentPath(".\\Content");
 		m_AssetManager->InitialLoading();
@@ -64,6 +67,8 @@ namespace Core
 
 	void Application::Shutdown()
 	{
+		AudioSystem::Shutdown();
+		Renderer::Shutdown();
 		IMG_Quit();
 		SDL_Quit();
 	}

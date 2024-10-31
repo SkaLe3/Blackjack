@@ -56,7 +56,14 @@ namespace Core
 
 					m_AssetTypeMap[assetName] = AssetType::ATexture;
 				}
-				// TODO: Check for sound assets
+				if (entryPath.extension() == ".wav" ||
+					entryPath.extension() == ".mp3")
+				{
+					String assetName = "S_" + entryPath.stem().string();
+					m_Registry[assetName] = entryPath;
+					BJ_LOG_INFO("[AssetManager]: Loaded %s asset path for '%s' to asset registry: %s ", "Music", assetName.c_str(), entryPath.string().c_str());
+					m_AssetTypeMap[assetName] = entryPath.extension() == ".wav" ? AssetType::ASoundCue : AssetType::ASoundMusic;
+				}
 			}
 		}
 	}
@@ -83,14 +90,8 @@ namespace Core
 		return texture;
 	}
 
-	SharedPtr<SoundCue> AssetManager::CreateSoundCueFromFile(const String& filePath)
-	{
-		SDL_AudioSpec spec;
-		byte* start;
-		uint32 len;
-		bool loadStatus = SDL_LoadWAV(filePath.c_str(), &spec, &start, &len);
-		SharedPtr<SoundCue> sound = MakeShared<SoundCue>(spec, start, len);
-		BJ_ASSERT(loadStatus, "Failed to load wav file: %s", filePath.c_str());
-	}
+
+
+
 
 }
