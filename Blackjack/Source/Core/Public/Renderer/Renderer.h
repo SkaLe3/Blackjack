@@ -1,10 +1,13 @@
 #pragma once
 #include "Renderer/FontManager.h"
 
+#include <glm/glm.hpp>
 #include <memory>
+
 
 struct SDL_Renderer;
 struct SDL_Surface;
+class SceneRenderer;
 
 namespace Core
 {
@@ -23,11 +26,17 @@ namespace Core
 
 		static SDL_Renderer* DebugGetRenderer() { return s_Renderer; }
 
+		static void Clear();
+		static void DrawTexturedRect(SharedPtr<Texture> texture, const glm::vec4& source, const glm::vec4 target, const glm::vec4 color);
+		static void DrawRect(const glm::vec4 target, const glm::vec4 color);
+
 	public:
 		static UniquePtr<FontManager> Fonts;
 
 	private:
 		inline static SDL_Renderer* s_Renderer;
+
+		friend SceneRenderer;
 	};
 
 }

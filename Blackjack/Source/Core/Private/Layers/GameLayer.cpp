@@ -17,6 +17,12 @@ namespace Core
 	void GameLayer::OnAttach()
 	{
 		cardTex = AssetManager::Get().Load<TextureAsset>("T_CardBlackSkin")->TextureP;
+		// Font rendering example
+		textTex = Renderer::Fonts->GetActiveFont()->RenderText("Blackjack", { 0, 0, 0 });
+
+		// Texture loading example
+
+		chipTex = AssetManager::Get().Load<TextureAsset>("T_RedChip")->TextureP;
 	}
 
 	void GameLayer::OnDetach()
@@ -69,6 +75,18 @@ namespace Core
 
 		SDL_Rect card{ cardPos.x - curHalfsize.x, cardPos.y - curHalfsize.y, curHalfsize.x * 2, curHalfsize.y * 2 };
 		SDL_RenderCopy(Renderer::DebugGetRenderer(), cardTex->GetInternal(), NULL, &card);
+
+		// Rendering example
+		glm::vec4 textSource = { 0, 0, textTex->GetWidth(), textTex->GetHeight() };
+		glm::vec4 chipSource = { 0, 0,  chipTex->GetWidth(), chipTex->GetHeight()};
+
+		glm::vec4 textRect = { 10, 10, textTex->GetWidth(), textTex->GetHeight() };
+		glm::vec4 chipRect = { 200, 300, 200, 200 };
+
+		Renderer::DrawRect(textRect, { 0.8f, 0.1f, 0.15f, 1.f });
+
+		Renderer::DrawTexturedRect(textTex, textSource, textRect, { 1.f, 1.f, 1.f, 1.f });
+		Renderer::DrawTexturedRect(chipTex, chipSource, chipRect, { 1.f, 1.f, 1.f, 1.f });
 	}
 
 	void GameLayer::OnEvent(Event& event)
@@ -88,9 +106,9 @@ namespace Core
 		}
 		if (event.Ev.key.keysym.sym == SDLK_r)
 		{
-		   AudioSystem::StopAllSounds();
-		   SharedPtr<SoundBase> sound = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
-		   AudioSystem::PlayMusic(sound);
+			AudioSystem::StopAllSounds();
+			SharedPtr<SoundBase> sound = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
+			AudioSystem::PlayMusic(sound);
 
 		}
 		if (event.Ev.key.keysym.sym == SDLK_EQUALS)

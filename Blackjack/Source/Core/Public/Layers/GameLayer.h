@@ -41,6 +41,10 @@ namespace Core
 		glm::vec2 cardHalfsize = {109, 153};
 		glm::vec2 curHalfsize = cardHalfsize;
 		SharedPtr<Texture> cardTex;
+
+		// Temporary
+		SharedPtr<Texture> textTex;
+		SharedPtr<Texture> chipTex;
 	
 	};
 }

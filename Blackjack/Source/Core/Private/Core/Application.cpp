@@ -75,15 +75,7 @@ namespace Core
 
 	void Application::Run()
 	{
-
 		PushLayer(MakeShared<GameLayer>());
-		// Font rendering example
-		textTex = Renderer::Fonts->GetActiveFont()->RenderText("Blackjack", { 0, 0, 0 });
-
-		// Texture loading example
-		
-		chipTex = AssetManager::Get().Load<TextureAsset>("T_RedChip")->TextureP;
-
 
 		while (m_bRunning)
 		{
@@ -98,32 +90,12 @@ namespace Core
 			{
 
 			Renderer::BeginFrame();
+			Renderer::Clear();
 
 			for (SharedPtr<Layer> layer : m_LayerStack)
 			{
 				layer->OnUpdate(m_DeltaTime);
 			}
-
-			// Text rendering example
-			// Will be moved to the Renderer class
-			SDL_Rect textRect{
-				.x = 10,
-				.y = 10,
-				.w = textTex->GetWidth(),
-				.h = textTex->GetHeight(),
-			};
-			SDL_Rect chipRect{
-				.x = 200,
-				.y = 300,
-				.w = 200,
-				.h = 200,
-			};
-
-			SDL_SetRenderDrawColor(Renderer::DebugGetRenderer(), 200, 50, 50, 255);
-			SDL_RenderDrawRect(Renderer::DebugGetRenderer(), &textRect);
-
-			SDL_RenderCopy(Renderer::DebugGetRenderer(), textTex->GetInternal(), NULL, &textRect);
-			SDL_RenderCopy(Renderer::DebugGetRenderer(), chipTex->GetInternal(), NULL, &chipRect);
 
 			Renderer::EndFrame();
 			}

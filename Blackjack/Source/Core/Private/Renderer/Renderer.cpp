@@ -52,12 +52,32 @@ namespace Core
 	void Renderer::BeginFrame()
 	{
 		SDL_SetRenderDrawColor(s_Renderer, 200, 200, 200, 255);
-		SDL_RenderClear(s_Renderer);
 	}
 
 	void Renderer::EndFrame()
 	{
 		SDL_RenderPresent(s_Renderer);
+	}
+
+	void Renderer::Clear()
+	{
+		SDL_RenderClear(s_Renderer);
+	}
+
+	void Renderer::DrawTexturedRect(SharedPtr<Texture> texture, const glm::vec4& source, const glm::vec4 target, const glm::vec4 color)
+	{
+		SDL_Rect src = { source.x, source.y, source.z, source.w };
+		SDL_Rect tgt = { target.x, target.y, target.z, target.w };
+		SDL_SetTextureColorMod(texture->GetInternal(), 255 * color.x, 255 * color.y, 255 * color.z);
+		SDL_SetTextureAlphaMod(texture->GetInternal(), 255 * color.w);
+		SDL_RenderCopy(s_Renderer, texture->GetInternal(), &src, &tgt);
+	}
+
+	void Renderer::DrawRect(const glm::vec4 target, const glm::vec4 color)
+	{
+		SDL_Rect tgt = { target.x, target.y, target.z, target.w };
+		SDL_SetRenderDrawColor(s_Renderer, 255 * color.x, 255 * color.y, 255 * color.z, 255 * color.w);
+		SDL_RenderDrawRect(s_Renderer, &tgt);
 	}
 
 	SharedPtr<Texture> Renderer::CreateTextureFromSurface(SDL_Surface* surface)

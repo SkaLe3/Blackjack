@@ -1,10 +1,12 @@
 #pragma once
 #include "Core/CoreDefines.h"
 
-#include <>
+#include <glm/glm.hpp>
 
 namespace Core
 {
+	class Font;
+	
 	class SceneRenderer
 	{
 	public:

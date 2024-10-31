@@ -73,10 +73,6 @@ namespace Core
 		SharedPtr<Window> m_Window;
 		UniquePtr<AssetManager> m_AssetManager;
 
-		// Temporary
-		SharedPtr<Texture> textTex;
-		SharedPtr<Texture> chipTex;
-
 		friend AssetManager;
 	};
 
