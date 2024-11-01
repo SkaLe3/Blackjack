@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/CoreDefines.h"
 #include "World/World/Registry.h"
+#include "World/Entities/GameMode.h"
 
 #include <vector>
 
@@ -27,13 +28,17 @@ namespace Core
 		template<typename T>
 		void DestroyObject(WeakPtr<Object> object);
 		void DestroyAll();
+		void UpdateObjects(float deltaTime);
+		void RemoveDestroyed();
+		void ClearDestroyed();
 
-	private:
+	protected:
 		Registry m_Registry;
-		// TODO: GameMode
+		SharedPtr<GameMode> m_GameMode;
+
 		uint32 m_ViewportWidth;
 		uint32 m_ViewportHeight;
-	
+
 		bool m_bStarted = false;
 	};
 
@@ -60,7 +65,7 @@ namespace Core
 	template<typename T>
 	void World::DestroyObject(WeakPtr<Object> object)
 	{
-		m_Registry.RemoveObject(object);
+		m_Registry.SetPendingDestroy(object);
 	}
 
 }

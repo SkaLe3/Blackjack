@@ -16,10 +16,12 @@ namespace Core
 		template<typename T>
 		void AddObject(SharedPtr<T> object);
 		template<typename T>
-		void RemoveObject(WeakPtr<Object> object);
-		void RemoveAll();
+		void SetPendingDestroy(WeakPtr<Object> object);
+		void SetPendingDestroyAll();
+		void RemoveDestroyed();
+		void ClearDestroyed();
 
-		std::vector<SharedPtr<Object>>&& GetAllTick();
+		std::vector<SharedPtr<Object>> GetAllObjects();
 		std::vector<SharedPtr<SpriteComponent>>& GetAllDrawable();
 
 
@@ -51,7 +53,7 @@ namespace Core
 	}
 
 	template<typename T>
-	void Registry::RemoveObject(WeakPtr<Object> object)
+	void Registry::SetPendingDestroy(WeakPtr<Object> object)
 	{
 		auto obj = object.lock();
 		if constexpr (std::is_same<T, SpriteComponent>::value)
@@ -60,7 +62,6 @@ namespace Core
 			
 			if (auto it = std::find(v.begin(), v.end(), obj); it != v.end())
 			{
-			   v.erase(it);
 			   m_PendingDestroyObjects.emplace_back(obj);
 			}	
 
@@ -71,7 +72,6 @@ namespace Core
 
 			if (auto it = std::find(v.begin(), v.end(), obj); it != v.end())
 			{
-				v.erase(it);
 				m_PendingDestroyObjects.emplace_back(obj);
 			}
 		}
@@ -81,7 +81,6 @@ namespace Core
 
 			if (auto it = std::find(v.begin(), v.end(), obj); it != v.end())
 			{
-				v.erase(it);
 				m_PendingDestroyObjects.emplace_back(obj);
 			}
 		}
