@@ -83,10 +83,10 @@ namespace Core
 		glm::vec4 textRect = { 10, 10, textTex->GetWidth(), textTex->GetHeight() };
 		glm::vec4 chipRect = { 200, 300, 200, 200 };
 
-		Renderer::DrawRect(textRect, { 0.8f, 0.1f, 0.15f, 1.f });
+		Renderer::DrawRect(textRect, { 0.8f, 0.1f, 0.15f, 1.f }, false);
 
-		Renderer::DrawTexturedRect(textTex, textSource, textRect, { 1.f, 1.f, 1.f, 1.f });
-		Renderer::DrawTexturedRect(chipTex, chipSource, chipRect, { 1.f, 1.f, 1.f, 1.f });
+		Renderer::DrawTexturedRect(textTex, textSource, textRect, { 1.f, 1.f, 1.f, 1.f }, 30, {0, 0},0 );
+		Renderer::DrawTexturedRect(chipTex, chipSource, chipRect, { 1.f, 1.f, 1.f, 1.f }, 0, { 0, 0 }, 0);
 	}
 
 	void GameLayer::OnEvent(Event& event)

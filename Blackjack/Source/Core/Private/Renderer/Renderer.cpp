@@ -64,20 +64,29 @@ namespace Core
 		SDL_RenderClear(s_Renderer);
 	}
 
-	void Renderer::DrawTexturedRect(SharedPtr<Texture> texture, const glm::vec4& source, const glm::vec4 target, const glm::vec4 color)
+	void Renderer::DrawTexturedRect(SharedPtr<Texture> texture, const glm::vec4& source, const glm::vec4 target, const glm::vec4 color,
+									float angle, const glm::vec2& center, byte flip)
 	{
 		SDL_Rect src = { source.x, source.y, source.z, source.w };
 		SDL_Rect tgt = { target.x, target.y, target.z, target.w };
+		SDL_Point ctr = { center.x, center.y };
 		SDL_SetTextureColorMod(texture->GetInternal(), 255 * color.x, 255 * color.y, 255 * color.z);
 		SDL_SetTextureAlphaMod(texture->GetInternal(), 255 * color.w);
-		SDL_RenderCopy(s_Renderer, texture->GetInternal(), &src, &tgt);
+		SDL_RenderCopyEx(s_Renderer, texture->GetInternal(), &src, &tgt, angle, &ctr, (SDL_RendererFlip)flip);
 	}
 
-	void Renderer::DrawRect(const glm::vec4 target, const glm::vec4 color)
+	void Renderer::DrawRect(const glm::vec4 target, const glm::vec4 color, bool bFill)
 	{
 		SDL_Rect tgt = { target.x, target.y, target.z, target.w };
 		SDL_SetRenderDrawColor(s_Renderer, 255 * color.x, 255 * color.y, 255 * color.z, 255 * color.w);
-		SDL_RenderDrawRect(s_Renderer, &tgt);
+		if (bFill)
+		{
+			SDL_RenderFillRect(s_Renderer, &tgt);
+		}
+		else
+		{
+			SDL_RenderDrawRect(s_Renderer, &tgt);
+		}
 	}
 
 	SharedPtr<Texture> Renderer::CreateTextureFromSurface(SDL_Surface* surface)

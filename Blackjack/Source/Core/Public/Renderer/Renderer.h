@@ -27,8 +27,9 @@ namespace Core
 		static SDL_Renderer* DebugGetRenderer() { return s_Renderer; }
 
 		static void Clear();
-		static void DrawTexturedRect(SharedPtr<Texture> texture, const glm::vec4& source, const glm::vec4 target, const glm::vec4 color);
-		static void DrawRect(const glm::vec4 target, const glm::vec4 color);
+		static void DrawTexturedRect(SharedPtr<Texture> texture, const glm::vec4& source, const glm::vec4 target,
+										const glm::vec4 color, float angle, const glm::vec2& center, byte flip);
+		static void DrawRect(const glm::vec4 target, const glm::vec4 color, bool bFill);
 
 	public:
 		static UniquePtr<FontManager> Fonts;
