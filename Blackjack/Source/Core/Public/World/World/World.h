@@ -1,9 +1,6 @@
 #pragma once
 #include "Core/CoreDefines.h"
-#include "World/Entities/GameObject.h"
-#include "World/Components/GameComponent.h"
-#include "World/Components/BoxComponent.h"
-#include "World/Components/SpriteComponent.h"
+#include "World/World/Registry.h"
 
 #include <vector>
 
@@ -23,18 +20,47 @@ namespace Core
 	public:
 		template<typename T>
 		SharedPtr<T> CreateComponent();
-		{
-			 SharedPtr<T> component = MakeShared<T>();
-			 m_TickComponents.push_back(component);
-			 if (m_bStarted)
-				component->BeginPlay();
-			return component;		 
-		}
+
+		template<typename T>
+		SharedPtr<T> SpawnGameObject();
+
+		template<typename T>
+		void DestroyObject(WeakPtr<Object> object);
+		void DestroyAll();
 
 	private:
-		std::vector<SharedPtr<GameComponent>> m_TickComponents;
-
-		
+		Registry m_Registry;
+		// TODO: GameMode
+		uint32 m_ViewportWidth;
+		uint32 m_ViewportHeight;
+	
 		bool m_bStarted = false;
 	};
+
+	template<typename T>
+	SharedPtr<T> World::CreateComponent()
+	{
+		SharedPtr<T> component = MakeShared<T>();
+		m_Registry.AddObject(component);
+		if (m_bStarted)
+			component->BeginPlay();
+		return component;
+	}
+
+	template<typename T>
+	SharedPtr<T> World::SpawnGameObject()
+	{
+		SharedPtr<T> object = MakeShared<T>();
+		m_Registry.AddObject(object);
+		if (m_bStarted)
+			object->BeginPlay();
+		return object;
+	}
+
+	template<typename T>
+	void World::DestroyObject(WeakPtr<Object> object)
+	{
+		m_Registry.RemoveObject(object);
+	}
+
 }

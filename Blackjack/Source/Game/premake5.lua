@@ -1,7 +1,7 @@
 project "Blackjack"
     kind "ConsoleApp"
     language "C++"
-    cppdialect "C++20"
+    cppdialect "C++latest" -- For now it is 23
     staticruntime "off"
 
     targetdir (bin_out)
