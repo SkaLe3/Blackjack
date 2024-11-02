@@ -1,11 +1,13 @@
 #pragma once
 #include "Core/CoreDefines.h"
+#include "Renderer/Camera.h"
 
 #include <glm/glm.hpp>
 
 namespace Core
 {
 	class Font;
+	class Sprite;
 	
 	class SceneRenderer
 	{
@@ -16,10 +18,10 @@ namespace Core
 		void Init();
 		void Shutdown();
 
-		void BeginScene(const glm::mat4 viewMatrix, const glm::mat4 projectionMatrix);
+		void BeginScene(const CameraInfo& cameraInfo);
 		void EndScene();
 
-		void DrawSprite(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color);
+		void DrawSprite(const glm::mat4& transform, SharedPtr<Sprite> sprite);
 		//void DrawText();
 
 	private:
@@ -28,7 +30,7 @@ namespace Core
 		glm::mat4 m_ViewProjection;
 		glm::mat4 m_InverseView;
 		
-		glm::vec2 m_QuadVertexPos[4];
+		glm::vec4 m_QuadCornerPos[2];
 		float m_LineWidth = 1.0f;
 		SharedPtr<Font> m_CurrentFont;
 	};

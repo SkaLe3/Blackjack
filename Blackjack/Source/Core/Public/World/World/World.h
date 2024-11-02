@@ -1,22 +1,35 @@
 #pragma once
 #include "Core/CoreDefines.h"
-#include "World/World/Registry.h"
 #include "World/Entities/GameMode.h"
-
+#include "World/World/Registry.h"
+#include "Renderer/SceneRenderer.h"
+#include "Renderer/Camera.h"
+#include "Layers/GameLayer.h"
+#include "Core/Event.h"
 #include <vector>
 
 
 namespace Core
 {
+	class Registry;
+	class CameraComponent;
+	
 	class World
-	{
+	{		  
+	public:	
+		template<typename T>
+		static void OpenScene();
 	public:
-		World() = default;
+		World();
 		virtual ~World() {}
+
+		void SetViewportSize(uint32 w, uint32 h);
 
 		virtual void BeginPlay();
 		virtual void Tick(float deltaTime);
+		virtual void OnEvent(Event& event) = 0;
 		void Render();
+		void RenderScene(const SharedPtr<SceneRenderer>& renderer, const CameraInfo& cameraInfo);
 
 	public:
 		template<typename T>
@@ -25,16 +38,23 @@ namespace Core
 		template<typename T>
 		SharedPtr<T> SpawnGameObject();
 
-		template<typename T>
 		void DestroyObject(WeakPtr<Object> object);
 		void DestroyAll();
 		void UpdateObjects(float deltaTime);
 		void RemoveDestroyed();
 		void ClearDestroyed();
 
+		void ClearWorld();
+
+
+		void UseCamera(SharedPtr<CameraComponent> cc);
+
 	protected:
-		Registry m_Registry;
+		UniquePtr<Registry> m_Registry;
 		SharedPtr<GameMode> m_GameMode;
+		SharedPtr<CameraComponent> m_ActiveCamera;
+
+		SharedPtr<SceneRenderer> m_Renderer;
 
 		uint32 m_ViewportWidth;
 		uint32 m_ViewportHeight;
@@ -43,29 +63,10 @@ namespace Core
 	};
 
 	template<typename T>
-	SharedPtr<T> World::CreateComponent()
+	void World::OpenScene()
 	{
-		SharedPtr<T> component = MakeShared<T>();
-		m_Registry.AddObject(component);
-		if (m_bStarted)
-			component->BeginPlay();
-		return component;
-	}
-
-	template<typename T>
-	SharedPtr<T> World::SpawnGameObject()
-	{
-		SharedPtr<T> object = MakeShared<T>();
-		m_Registry.AddObject(object);
-		if (m_bStarted)
-			object->BeginPlay();
-		return object;
-	}
-
-	template<typename T>
-	void World::DestroyObject(WeakPtr<Object> object)
-	{
-		m_Registry.SetPendingDestroy(object);
+		 g_GameRef->OpenScene<T>();
 	}
 
 }
+#include "World/World/World.inl"

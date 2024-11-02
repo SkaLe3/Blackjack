@@ -1,7 +1,7 @@
 #pragma once
 #include "World/Entities/Object.h"
 #include "World/Components/BoxComponent.h"
-
+#include "World/World/World.h"
 
 namespace Core
 {
@@ -22,9 +22,10 @@ namespace Core
 		//~ End Object Interface
 
 		template<typename T>
-		WeakPtr<T> CreateComponent()
+		SharedPtr<T> CreateComponent()
 		{
-			return MakeShared<T>(); // TODO: Create component
+			//return MakeShared<T>();
+			return GetWorld()->CreateComponent<T>();
 		}
 
 		inline WeakPtr<GameObject> GetSelf() { return weak_from_this(); }

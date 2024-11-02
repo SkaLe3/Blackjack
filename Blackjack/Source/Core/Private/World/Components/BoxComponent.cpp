@@ -1,12 +1,9 @@
 #include "World/Components/BoxComponent.h"
+#include "World/World/World.h"
 
 namespace Core
 {
 
-	void BoxComponent::Destroy()
-	{
-		// TODO: Destroy
-	}
 
 	glm::vec2 BoxComponent::GetHalfSize() const
 	{

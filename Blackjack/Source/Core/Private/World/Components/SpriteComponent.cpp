@@ -9,9 +9,19 @@ namespace Core
 
 	}
 
-	void SpriteComponent::Destroy()
+	bool SpriteComponent::HasAtlas()
 	{
-		// TODO: Delete from scene
+		return m_Atlas != nullptr;
+	}
+
+	SharedPtr<Sprite> SpriteComponent::GetSprite()
+	{
+		return m_Sprite;
+	}
+
+	SharedPtr<TextureAtlas> SpriteComponent::GetAtlas()
+	{
+		return m_Atlas;
 	}
 
 	void SpriteComponent::SetSprite(SharedPtr<Sprite> inSprite)

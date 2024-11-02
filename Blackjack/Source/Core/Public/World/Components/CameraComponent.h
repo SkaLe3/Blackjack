@@ -8,17 +8,13 @@ namespace Core
 	{
 		DECLARE_SUPER(GameComponent)
 	public:
-		CameraComponent() = default;
+		CameraComponent() : m_bPrimary(true) { m_Camera = MakeShared<Camera>(); }
 
-		//~Begin Object Interface
-		virtual void BeginPlay() override {}
-		virtual void Tick(float deltaTime) override {}
-		virtual void EndPlay() override {}
-		virtual void Destroy() override {}
-		//~End Object Interface
+		SharedPtr<Camera> GetCamera() { return m_Camera; }
 
 	private:
 		SharedPtr<Camera> m_Camera;
 		bool m_bPrimary;
 	};
+
 }

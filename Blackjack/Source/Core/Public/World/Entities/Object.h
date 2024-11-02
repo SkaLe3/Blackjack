@@ -12,6 +12,8 @@
 
 namespace Core
 {
+	class World;
+
 	class Object
 	{
 	public:
@@ -21,6 +23,8 @@ namespace Core
 		virtual void Tick(float deltaTime) = 0;
 		virtual void EndPlay() = 0;
 		virtual void Destroy() = 0;
+
+		SharedPtr<World> GetWorld();
 
 		OBJECT_DEBUG_NAME()
 	};

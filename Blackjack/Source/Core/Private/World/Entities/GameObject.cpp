@@ -1,4 +1,5 @@
 #include "World/Entities/GameObject.h"
+#include "World/World/World.h"
 
 namespace Core
 {
@@ -20,7 +21,7 @@ namespace Core
 
 	void GameObject::Destroy()
 	{
-		// TODO: Destroy self in scene
+		GetWorld()->DestroyObject(GetSelf());
 		if (auto box = m_BoxComponent.lock())
 		{
 			box->Destroy();

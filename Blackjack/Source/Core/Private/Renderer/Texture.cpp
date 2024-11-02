@@ -28,12 +28,17 @@ namespace Core
 
 	int32 Texture::GetWidth() const
 	{
-	   return m_Width;
+		return m_Width;
 	}
 
 	int32 Texture::GetHeight() const
 	{
-	   return m_Height;
+		return m_Height;
+	}
+
+	glm::vec2 Texture::GetSize() const
+	{
+		return { m_Width, m_Height };
 	}
 
 }

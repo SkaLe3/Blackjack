@@ -1,21 +1,21 @@
 #pragma once
 #include "Core/CoreDefines.h"
-#include "World/Entities/GameObject.h"
+//#include "World/Entities/GameObject.h"
 #include "World/Components/GameComponent.h"
 #include "World/Components/BoxComponent.h"
 #include "World/Components/SpriteComponent.h"
 #include <vector>
 #include <type_traits>
-#include <ranges>
 
 namespace Core
 {
+	class GameObject;
+
 	class Registry
 	{
 	public:
 		template<typename T>
 		void AddObject(SharedPtr<T> object);
-		template<typename T>
 		void SetPendingDestroy(WeakPtr<Object> object);
 		void SetPendingDestroyAll();
 		void RemoveDestroyed();
@@ -23,6 +23,7 @@ namespace Core
 
 		std::vector<SharedPtr<Object>> GetAllObjects();
 		std::vector<SharedPtr<SpriteComponent>>& GetAllDrawable();
+		std::vector<SharedPtr<SpriteComponent>>& GetAllDrawableSorted();
 
 
 	private:
@@ -42,7 +43,7 @@ namespace Core
 		{
 			m_DrawableComponents.push_back(object);
 		}
-		else if constexpr (std::is_same<T, GameObject>::value)
+		else if constexpr (std::is_base_of<GameObject, T>::value)
 		{
 			m_TickGameObjects.push_back(object);
 		}
@@ -52,38 +53,6 @@ namespace Core
 		}
 	}
 
-	template<typename T>
-	void Registry::SetPendingDestroy(WeakPtr<Object> object)
-	{
-		auto obj = object.lock();
-		if constexpr (std::is_same<T, SpriteComponent>::value)
-		{
-			auto& v = m_DrawableComponents;
-			
-			if (auto it = std::find(v.begin(), v.end(), obj); it != v.end())
-			{
-			   m_PendingDestroyObjects.emplace_back(obj);
-			}	
 
-		}
-		else if constexpr (std::is_same<T, GameObject>::value)
-		{
-			auto& v = m_TickGameObjects;
-
-			if (auto it = std::find(v.begin(), v.end(), obj); it != v.end())
-			{
-				m_PendingDestroyObjects.emplace_back(obj);
-			}
-		}
-		else
-		{
-			auto& v = m_TickComponents;
-
-			if (auto it = std::find(v.begin(), v.end(), obj); it != v.end())
-			{
-				m_PendingDestroyObjects.emplace_back(obj);
-			}
-		}
-	}
 
 }

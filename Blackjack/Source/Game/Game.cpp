@@ -1,4 +1,8 @@
 #include <Core/EntryPoint.h>
+#include "Scenes/MenuScene.h"
+#include "Scenes/GameplayScene.h"
+
+#include <functional>
 
 class Game : public Core::Application
 {
@@ -10,15 +14,23 @@ public:
 	}
 };
 
-Core::Application* Core::CreateApplication(int argc, char** argv)
+namespace Core
 {
-	Core::ApplicationSpecification specs
+
+	Application* CreateApplication(int argc, char** argv)
 	{
-	.AppConfig {.Name = "Blackjack"},
-	.WndConfig {.Title = "Blackjack", .Width = 1280, .Height = 720, .VSync = true}
-	};
+		GameplayConfig config;
+		std::function<SharedPtr<World>()> startingScene = []() { return static_pointer_cast<World>(MakeShared<MenuScene>()); };
+		config.StartingScene = startingScene;
+		Core::ApplicationSpecification specs
+		{
+		.AppConfig {.Name = "Blackjack"},
+		.WndConfig {.Title = "Blackjack", .Width = 1280, .Height = 720, .VSync = true},
+		.GPConfig = config
+		};
 
 
-	Core::Application* game = new Game(specs);
-	return game;
+		Core::Application* game = new Game(specs);
+		return game;
+	}
 }

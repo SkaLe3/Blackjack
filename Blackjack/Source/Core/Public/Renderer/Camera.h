@@ -5,6 +5,13 @@
 
 namespace Core
 {
+
+	struct CameraInfo
+	{
+		glm::mat4 ViewMatrix;
+		glm::mat4 ProjectionMatrix;
+	};
+
 	/*
 	* Camera has only orthographic mode
 	* Should be used for Scene rendering
@@ -20,6 +27,8 @@ namespace Core
 		void SetOrthoSize(float size);
 		float GetAspectRatio() const;
 
+		CameraInfo GetCameraInfo() const;
+
 	private:
 		void RecalculateProjection();
 
@@ -27,6 +36,8 @@ namespace Core
 		/** Stands for vertical size*/
 		float m_Size;
 		float m_AspectRatio;
+		float m_ViewportWidth;
+		float m_ViewportHeight;
 
 		glm::mat4 m_ProjectionMatrix;
 	};

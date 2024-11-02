@@ -5,16 +5,15 @@
 #include "Layers/LayerStack.h"
 #include "Core/Event.h"
 #include "Core/AssetManager.h"
+#include "World/World/World.h"
 #include "Renderer/Texture.h" // Temporary
 
 
 
 #include <filesystem>
 #include <memory>
+#include <functional>
 
-
-struct SDL_Window;
-struct SDL_Renderer;
 
 namespace Core
 {
@@ -24,10 +23,16 @@ namespace Core
 		std::filesystem::path ContentPath;
 	};
 
+	struct GameplayConfig
+	{
+		std::function<SharedPtr<World>()> StartingScene;
+	};
+
 	struct ApplicationSpecification
 	{
 		ApplicationConfig AppConfig;
 		WindowConfig WndConfig;
+		GameplayConfig GPConfig;
 	};
 	
 
@@ -61,6 +66,7 @@ namespace Core
 
 	private:
 		ApplicationConfig m_Config;
+		GameplayConfig m_GPConfig;
 		LayerStack m_LayerStack;
 
 		bool m_bRunning = true;

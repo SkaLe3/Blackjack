@@ -9,6 +9,13 @@ namespace Core
 	{
 		DECLARE_SUPER(Object)
 	public:
+		//~ Begine Object Interface
+		virtual void BeginPlay() override {}
+		virtual void Tick(float deltaTime) override {}
+		virtual void EndPlay() override {}
+		virtual void Destroy() override;
+		//~ End Object Interface
+
 		void SetOwner(WeakPtr<GameObject> object) { m_Owner = object; }
 		void RemoveOwner() { m_Owner.reset(); }
 		inline WeakPtr<GameObject> GetOwner() { return m_Owner; }

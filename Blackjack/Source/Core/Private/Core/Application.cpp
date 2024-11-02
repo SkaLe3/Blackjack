@@ -23,7 +23,7 @@ namespace Core
 	}
 
 	Application::Application(const ApplicationSpecification& appSpecs)
-		: m_Config(appSpecs.AppConfig)
+		: m_Config(appSpecs.AppConfig), m_GPConfig(appSpecs.GPConfig)
 	{
 		BJ_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
@@ -72,10 +72,11 @@ namespace Core
 		IMG_Quit();
 		SDL_Quit();
 	}
-
+											
 	void Application::Run()
 	{
-		PushLayer(MakeShared<GameLayer>());
+		PushLayer(MakeShared<GameLayer>(m_GPConfig.StartingScene, m_Window->GetWidth(), m_Window->GetHeight()));	   
+
 
 		while (m_bRunning)
 		{

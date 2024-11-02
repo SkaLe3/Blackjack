@@ -13,9 +13,9 @@ namespace Core
 		SpriteComponent();
 		~SpriteComponent() = default;
 
-		//~ Begin Object Interface
-		virtual void Destroy() override;
-		//~ End Object Interface
+		bool HasAtlas();
+		SharedPtr<Sprite> GetSprite();
+		SharedPtr<TextureAtlas> GetAtlas();
 
 		void SetSprite(SharedPtr<Sprite> inSprite);
 		void SetAtlas(SharedPtr<TextureAtlas> inAtlas);

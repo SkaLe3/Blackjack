@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Core/CoreDefines.h"
+
 #include <SDL2/SDL.h>
+#include <glm/glm.hpp>
 
 
 namespace Core
@@ -23,6 +25,8 @@ namespace Core
 
 		int32 GetWidth() const;
 		int32 GetHeight() const;
+
+		glm::vec2 GetSize() const;
 
 	private:
 		SDL_Texture* m_Texture;
