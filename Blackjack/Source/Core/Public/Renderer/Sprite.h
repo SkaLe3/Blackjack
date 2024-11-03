@@ -10,9 +10,11 @@ namespace Core
 	class Sprite
 	{
 	public:
-		Sprite(SharedPtr<Texture> inTexture, glm::vec2 inSrcSize, glm::vec2 inSrcPos);
-		Sprite(SharedPtr<Texture> inTexture);
+		static SharedPtr<Sprite> Create(SharedPtr<Texture> inTexture, const glm::vec2& inSrcSize, const glm::vec2& inSrcPos);
+		static SharedPtr<Sprite> Create(SharedPtr<Texture> inTexture);
+		Sprite(SharedPtr<Texture> inTexture, const glm::vec2& inSrcSize, const glm::vec2& inSrcPos);
 
+		void MapToAtlas(const glm::vec4& region);
 	protected:
 		SharedPtr<Texture> m_Texture;
 		glm::vec2 m_SourceSize;

@@ -22,6 +22,7 @@ namespace Core
 		return m_Transform.ToMat4();
 	}
 
+
 	void SceneComponent::SetupAttachment(WeakPtr<SceneComponent> component)
 	{
 		m_Parent = component;

@@ -1,6 +1,5 @@
 #pragma once
 #include "World/Entities/Object.h"
-#include "World/Components/BoxComponent.h"
 #include "World/World/World.h"
 
 namespace Core
@@ -37,7 +36,7 @@ namespace Core
 		String GetTag();
 
 		/* 
-		* This object transform will become relative to the parent.
+		* Current object transform will become relative to the parent.
 		* Might be reasonable to calculate relative transform instead
 		*/
 		void AttachToObject(WeakPtr<GameObject> parentObject);
@@ -45,8 +44,11 @@ namespace Core
 		void SetRoot(WeakPtr<SceneComponent> root);
 
 		/*
-		* This function sets location relative to World origin.
-		* Use Transform to change Translation relative to parent
+		* This function sets the location relative to the world origin.
+		* Use Transform to change the translation relative to the parent.
+		*
+		* Important: Use this function to set the location relative to the world origin
+		* only after attaching to the object. Otherwise, the set location will be relative to the object.
 		*/
 		void SetLocation(const glm::vec2 location);
 		void SetTag(const String& tag);

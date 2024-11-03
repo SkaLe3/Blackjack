@@ -3,6 +3,7 @@
 namespace Core
 {
 
+
 	TextureAtlas::TextureAtlas(SharedPtr<Texture> inTexture)
 		: m_Texture(inTexture)
 	{
@@ -18,6 +19,11 @@ namespace Core
 	{
 		auto it = m_Regions.find(name);
 		return (it != m_Regions.end()) ? it->second : glm::vec4(0, 0, 0, 0);
+	}
+
+	SharedPtr<Core::Texture> TextureAtlas::GetTexture() const
+	{
+		return m_Texture; 
 	}
 
 }

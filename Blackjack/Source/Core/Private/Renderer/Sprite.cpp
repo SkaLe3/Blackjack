@@ -3,13 +3,25 @@
 namespace Core
 {
 
-	Sprite::Sprite(SharedPtr<Texture> inTexture, glm::vec2 inSrcSize, glm::vec2 inSrcPos)
-		: m_Texture(inTexture), m_SourceSize(inSrcSize), m_SourcePos(inSrcPos) {}
-
-	Sprite::Sprite(SharedPtr<Texture> inTexture)
-		: m_Texture(inTexture), m_SourceSize(m_Texture->GetSize()), m_SourcePos({0, 0})
+	SharedPtr<Sprite> Sprite::Create(SharedPtr<Texture> inTexture, const glm::vec2& inSrcSize, const glm::vec2& inSrcPos)
 	{
+		return MakeShared<Sprite>(inTexture, inSrcSize, inSrcPos);
+	}
 
+	SharedPtr<Sprite> Sprite::Create(SharedPtr<Texture> inTexture)
+	{
+		return MakeShared<Sprite>(inTexture, inTexture->GetSize(), glm::vec2{ 0, 0 });
+	}
+
+	Sprite::Sprite(SharedPtr<Texture> inTexture, const glm::vec2& inSrcSize, const glm::vec2& inSrcPos)
+		: m_Texture(inTexture), m_SourceSize(inSrcSize), m_SourcePos(inSrcPos)
+	{}
+
+
+	void Sprite::MapToAtlas(const glm::vec4& region)
+	{
+		m_SourcePos = { region.x, region.y };
+		m_SourceSize = { region.z, region.w };
 	}
 
 }

@@ -14,10 +14,12 @@ namespace Core
 		void AddRegion(const String& name, const glm::vec4 rect);
 		glm::vec4 GetRegion(const String& name) const;
 
-		inline SharedPtr<Texture> GetTexture() const { m_Texture; }
+		SharedPtr<Texture> GetTexture() const;
 
 	private:
 		SharedPtr<Texture> m_Texture;
 		std::unordered_map<String, glm::vec4> m_Regions;
 	};
+
+
 }

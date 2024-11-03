@@ -81,7 +81,7 @@ namespace Core
 
 	SharedPtr<Texture> AssetManager::CreateTextureFromFile(const String& filePath)
 	{
-		SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());   // TODO: Replace with IMG_LoadTexture()
+		SDL_Surface* loadedSurface = IMG_Load(filePath.c_str()); // Could be replaced with IMG_LoadTexture()
 		if (!loadedSurface)
 			BJ_LOG_WARN("Image not loaded... %s", filePath.c_str());
 

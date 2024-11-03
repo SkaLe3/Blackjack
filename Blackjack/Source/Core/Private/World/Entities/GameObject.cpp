@@ -1,4 +1,5 @@
 #include "World/Entities/GameObject.h"
+#include "World/Components/BoxComponent.h"
 #include "World/World/World.h"
 
 namespace Core

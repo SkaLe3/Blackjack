@@ -19,6 +19,7 @@ namespace Core
 
 		void SetSprite(SharedPtr<Sprite> inSprite);
 		void SetAtlas(SharedPtr<TextureAtlas> inAtlas);
+		void SetRegion(const String& name);
 
 	private:
 		SharedPtr<Sprite> m_Sprite;

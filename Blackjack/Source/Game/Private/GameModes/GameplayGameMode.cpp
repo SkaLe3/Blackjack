@@ -4,8 +4,14 @@
 #include "Core/AssetManager.h"
 #include "Renderer/Sprite.h"
 #include "World/Entities/CameraObject.h"
+#include "Assets/CardTextureAtlas.h"
 
 #include "Scenes/MenuScene.h"
+
+
+#include "GameObjects/Card.h"
+
+#include <glm/ext/scalar_constants.hpp>
 
 using namespace Core;
 
@@ -16,22 +22,40 @@ void GameplayGameMode::BeginPlay()
 
 void GameplayGameMode::RestartGame()
 {
-	SharedPtr<GameObject> card = GetWorld()->SpawnGameObject<GameObject>();
-	card->SetTag("Carad");
-	SharedPtr<SpriteComponent> sprite2 = card->CreateComponent<SpriteComponent>();
-	sprite2->SetupAttachment(card->GetBoxComponent());
-	SharedPtr<Texture> cardText = AssetManager::Get().Load<TextureAsset>("T_CardBlackSkin")->TextureP;
-	sprite2->SetSprite(MakeShared<Sprite>(cardText));
 
-	sprite2->SetOwner(card);
-	sprite2->GetTransform().Scale = { 5.f, 5.f, 1.f };
-	card->GetTransform().Translation = { 5, 0, 2 };
 
 	SharedPtr<CameraObject> camera = GetWorld()->SpawnGameObject<CameraObject>();
 
 	auto cameraComp = camera->GetCameraComponent();
 	cameraComp->GetCamera()->SetOrthoSize(100);
-}											  
+
+
+	SharedPtr<TextureAtlas> atlas = MakeShared<CardTextureAtlas>();
+
+
+	SharedPtr<Card> card = GetWorld()->SpawnGameObject<Card>();
+	auto cardSprite = card->GetSpriteComponent();
+	cardSprite->SetAtlas(atlas);
+	cardSprite->SetRegion("2_spades");
+
+	SharedPtr<Card> card2 = GetWorld()->SpawnGameObject<Card>();
+	auto cardSprite2 = card2->GetSpriteComponent();
+	cardSprite2->SetAtlas(atlas);
+	cardSprite2->SetRegion("back");
+
+	SharedPtr<Card> card3 = GetWorld()->SpawnGameObject<Card>();
+	auto cardSprite3 = card3->GetSpriteComponent();
+	cardSprite3->SetAtlas(atlas);
+	cardSprite3->SetRegion("J_diamonds");
+
+	card->SetLocation({ -30, 0 });
+	card2->SetLocation({ 0, 0 });
+	card3->GetTransform().Translation.z = -1;
+	card3->SetLocation({ 30, 0 });
+	//cardSprite2->GetTransform().Translation.x = 40;	
+	//card->GetTransform().Translation.x = 40;
+	//card->GetTransform().Rotation.z = 1.5708;
+}
 
 void GameplayGameMode::LeaveGame()
 {

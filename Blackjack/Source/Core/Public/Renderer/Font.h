@@ -21,7 +21,7 @@ namespace Core
 		Font(const String& fontPath, int32 fontSize);
 		~Font();
 
-		// TODO: Move render to FontManager or make it private and class Font friend of the FontManager
+		// TODO: Move render to FontManager or make it private and class Font as friend of the FontManager
 		SharedPtr<Texture> RenderText(const String& text, SDL_Color color);
 
 		bool IsLoaded() const;

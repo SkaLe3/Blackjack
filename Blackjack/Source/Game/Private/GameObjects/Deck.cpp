@@ -8,6 +8,5 @@ void Deck::BeginPlay()
 
 	SetTag("deck");
 
-	GetTransform().Translation = {-50, 20, 0};
 }
 
