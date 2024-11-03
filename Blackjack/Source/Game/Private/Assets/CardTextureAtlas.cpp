@@ -13,8 +13,8 @@ CardTextureAtlas::CardTextureAtlas()
 	{
 		for (int j = 0; j < 13; j++)
 		{
-			AddRegion(String(ranks[j]) + '_' + suits[i], {j * 400, i * 560, 400, 560});
+			AddRegion(String(ranks[j]) + '_' + suits[i], { j * 400, i * 560, 400, 560 });
 		}
 	}
-	AddRegion("back", {0, 5200, 400, 560});
+	AddRegion("back", { 13 * 400, 0 , 400, 560 });
 }

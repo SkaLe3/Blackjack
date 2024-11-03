@@ -1,6 +1,8 @@
 #pragma once
 
-#include "World/Entities/GameObject.h"
+#include "World/Entities/SpriteObject.h"
+
+#include <unordered_map>
 
 enum class CardFace : byte
 {
@@ -8,11 +10,10 @@ enum class CardFace : byte
 	Back = 1
 };
 
-class Core::SpriteComponent;
 
-class Card : public Core::GameObject
+class Card : public Core::SpriteObject
 {
-	DECLARE_SUPER(Core::GameObject)
+	DECLARE_SUPER(Core::SpriteObject)
 public:
 	Card();
 
@@ -20,14 +21,20 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
-	SharedPtr<Core::SpriteComponent> GetSpriteComponent() { return m_SpriteComponent.lock(); }
-
 	void TurnOver();
+	void AssignFrontFace(const String& faceName);
+	void AssignBackFace(const String& backName);
+	void SetInitialState(CardFace initialFace);
+private:
+	void SelectFace();
 
 private:
-	WeakPtr<Core::SpriteComponent> m_SpriteComponent;
-
 	CardFace m_CardFace;
+
+	String m_FaceName;
+	String m_BackName;
+
+	std::unordered_map<CardFace, String> m_FacesMapping;
 
 
 };

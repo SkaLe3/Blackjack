@@ -55,7 +55,7 @@ namespace Core
 		m_ProjectionMatrix = glm::ortho(ortholeft, orthoRight, orthoBottom, orthoTop);
 		float scale = m_ViewportHeight / 2;
 
-		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scale, scale, 1.0f));
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scale, -scale, 1.0f));
 		glm::mat4 translateMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(m_ViewportWidth / 2.0f, m_ViewportHeight / 2.0f, 0.0f));
 		m_ProjectionMatrix = translateMatrix * scaleMatrix * m_ProjectionMatrix;
 	}
