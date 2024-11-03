@@ -47,6 +47,7 @@ namespace Core
 			SetWorld(m_NextWorld);
 			m_CurrentWorld->BeginPlay();
 			m_bSwtichWorld = false;
+			AssetManager::Get().ClearCache();
 		}
 
 		if (startAnim)
