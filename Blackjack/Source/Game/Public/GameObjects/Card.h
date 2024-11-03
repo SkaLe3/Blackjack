@@ -1,6 +1,6 @@
 #pragma once
+#include <World/Entities/SpriteObject.h>
 
-#include "World/Entities/SpriteObject.h"
 
 #include <unordered_map>
 

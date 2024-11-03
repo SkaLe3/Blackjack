@@ -10,7 +10,7 @@ Card::Card()
 {
 	auto sprite = GetSpriteComponent();
 
-	sprite->GetTransform().Scale = { 25, 35, 1 };
+	sprite->GetTransform().Scale = { 20, 28, 1 };
 }
 
 void Card::BeginPlay()

@@ -27,7 +27,7 @@ void Deck::PopulateDeck()
 			m_Cards.push(newCard);
 			newCard->AttachToObject(GetSelf());
 			float index = i * 13 + j;
-			newCard->GetTransform().Translation = { index * 0.1, index * 0.1, -100 + index };
+			newCard->GetTransform().Translation = { index * 0.1, index * 0.1, index };
 			auto spriteComp = newCard->GetSpriteComponent();
 			spriteComp->SetAtlas(atlas);
 			newCard->AssignFrontFace(String(ranks[j]) + '_' + suits[i])	;

@@ -20,12 +20,6 @@ namespace Core
 
 	void GameLayer::OnAttach()
 	{
-		// Examples 
-		cardTex = AssetManager::Get().Load<TextureAsset>("T_CardBlackSkin")->TextureP;
-		textTex = Renderer::Fonts->GetActiveFont()->RenderText("Blackjack", { 0, 0, 0 });
-		chipTex = AssetManager::Get().Load<TextureAsset>("T_RedChip")->TextureP;
-
-
 		SetWorld(m_StartingSceneFN());
 		m_CurrentWorld->SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 		m_CurrentWorld->BeginPlay();
@@ -50,61 +44,45 @@ namespace Core
 			AssetManager::Get().ClearCache();
 		}
 
-		if (startAnim)
-		{
-			elapsedTime += deltaTime;
-			if (elapsedTime < flipDuration * 2)
-			{
-				float t = elapsedTime / flipDuration;
-				float f = glm::abs(glm::cos(t * glm::pi<float>() / 2));
-
-				curHalfsize.x = f * cardHalfsize.x;
-				if (elapsedTime >= flipDuration && !notify)
-				{
-					notify = true;
-					triggered = true;
-					selectedFace = !selectedFace;
-				}
-
-				if (triggered)
-				{
-					if (selectedFace)
-					{
-						cardTex = AssetManager::Get().Load<TextureAsset>("T_CardKing")->TextureP;
-					}
-					else
-					{
-						cardTex = AssetManager::Get().Load<TextureAsset>("T_CardBlackSkin")->TextureP;
-					}
-					triggered = false;
-
-				}
-			}
-			if (elapsedTime >= flipDuration * 2)
-			{
-				startAnim = false;
-				curHalfsize = cardHalfsize;
-				elapsedTime = 0;
-				notify = false;
-				triggered = false;
-			}
-		}
-
-
-		SDL_Rect card{ cardPos.x - curHalfsize.x, cardPos.y - curHalfsize.y, curHalfsize.x * 2, curHalfsize.y * 2 };
-		//SDL_RenderCopy(Renderer::DebugGetRenderer(), cardTex->GetInternal(), NULL, &card);
-
-		// Rendering example
-		glm::vec4 textSource = { 0, 0, textTex->GetWidth(), textTex->GetHeight() };
-		glm::vec4 chipSource = { 0, 0,  chipTex->GetWidth(), chipTex->GetHeight()};
-
-		glm::vec4 textRect = { 10, 10, textTex->GetWidth(), textTex->GetHeight() };
-		glm::vec4 chipRect = { 200, 300, 200, 200 };
-
-		//Renderer::DrawRect(textRect, { 0.8f, 0.1f, 0.15f, 1.f }, false);
-
-		//Renderer::DrawTexturedRect(textTex, textSource, textRect, { 1.f, 1.f, 1.f, 1.f }, 30, {0, 0},0 );
-		//Renderer::DrawTexturedRect(chipTex, chipSource, chipRect, { 1.f, 1.f, 1.f, 1.f }, 0, { 0, 0 }, 0);
+// 		if (startAnim)
+// 		{
+// 			elapsedTime += deltaTime;
+// 			if (elapsedTime < flipDuration * 2)
+// 			{
+// 				float t = elapsedTime / flipDuration;
+// 				float f = glm::abs(glm::cos(t * glm::pi<float>() / 2));
+// 
+// 				curHalfsize.x = f * cardHalfsize.x;
+// 				if (elapsedTime >= flipDuration && !notify)
+// 				{
+// 					notify = true;
+// 					triggered = true;
+// 					selectedFace = !selectedFace;
+// 				}
+// 
+// 				if (triggered)
+// 				{
+// 					if (selectedFace)
+// 					{
+// 						cardTex = AssetManager::Get().Load<TextureAsset>("T_CardKing")->TextureP;
+// 					}
+// 					else
+// 					{
+// 						cardTex = AssetManager::Get().Load<TextureAsset>("T_CardBlackSkin")->TextureP;
+// 					}
+// 					triggered = false;
+// 
+// 				}
+// 			}
+// 			if (elapsedTime >= flipDuration * 2)
+// 			{
+// 				startAnim = false;
+// 				curHalfsize = cardHalfsize;
+// 				elapsedTime = 0;
+// 				notify = false;
+// 				triggered = false;
+// 			}
+// 		}
 	}
 
 	void GameLayer::OnEvent(Event& event)

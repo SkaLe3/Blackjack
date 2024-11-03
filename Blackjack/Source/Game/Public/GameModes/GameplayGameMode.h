@@ -1,5 +1,5 @@
 #pragma once
-#include "World/Entities/GameMode.h"
+#include <World/Entities/GameMode.h>
 
 class GameplayGameMode : public Core::GameMode
 {
