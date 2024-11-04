@@ -111,6 +111,7 @@ void GameplayGameMode::StartRound()
 	m_Deck = GetWorld()->SpawnGameObject<Deck>();
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
 	m_Deck->PopulateDeck();
+	m_Deck->Shuffle();
 }
 
 void GameplayGameMode::EndRound()

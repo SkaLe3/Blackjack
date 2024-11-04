@@ -2,6 +2,10 @@
 #include "GameObjects/Card.h"
 #include "Assets/CardTextureAtlas.h"
 
+#include <vector>
+#include <algorithm>
+#include <random>
+
 using namespace Core;
 
 void Deck::BeginPlay()
@@ -48,5 +52,28 @@ SharedPtr<Card> Deck::PullCard()
 		return topCard;
 	}
 	return nullptr;
+}
+
+void Deck::Shuffle()
+{
+	// Consider using a vector for the deck to improve performance.
+	// Although this approach is inefficient, it only runs once per round and is acceptable in this context.
+
+	 std::vector<SharedPtr<Card>> cards;
+	 while (!m_Cards.empty())
+	 {
+		 cards.push_back(m_Cards.top());
+		 m_Cards.pop();
+	 }
+
+	 std::random_device rd;
+	 std::mt19937 g(rd());
+	 std::shuffle(cards.begin(), cards.end(), g);
+
+	 for (size_t index = 0; index < cards.size(); index++)
+	 {
+		 m_Cards.push(cards[index]);
+		 cards[index]->GetTransform().Translation = {index * 0.1, index * 0.1, index * 0.1f};
+	 }
 }
 

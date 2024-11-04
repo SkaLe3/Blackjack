@@ -17,6 +17,8 @@ public:
 	void PopulateDeck();
 	SharedPtr<Card> PullCard();
 
+	void Shuffle();
+
 private:
 	std::stack<SharedPtr<Card>> m_Cards;
 };
