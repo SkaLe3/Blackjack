@@ -35,7 +35,7 @@ void ChipStack::RemoveChip()
 	{
 		m_Chips.top()->Destroy();
 		m_Chips.pop();
-		
+
 		AudioSystem::PlaySound(m_ChipRemoveSound);
 	}
 
@@ -45,4 +45,15 @@ void ChipStack::RemoveChip()
 uint32 ChipStack::GetChipsCount()
 {
 	return m_Chips.size();
+}
+
+void ChipStack::CorrectRotation()
+{
+	SharedPtr<GameObject> parent = GetOwner();
+	if (parent)
+	{
+		float parentRotation = parent->GetWorldTransform().Rotation.z;
+		GetTransform().Rotation.z = -parentRotation;
+
+	}
 }

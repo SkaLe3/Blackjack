@@ -15,6 +15,7 @@ namespace Core
 		glm::mat4 GetTransformMatrix();
 		void SetupAttachment(WeakPtr<SceneComponent> component);
 		void DetachFromParent();
+		WeakPtr<SceneComponent> GetParent();
 
 	protected:
 		/** Transform is relative to the parent unless there is none */

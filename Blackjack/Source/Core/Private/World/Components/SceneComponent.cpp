@@ -33,4 +33,9 @@ namespace Core
 		m_Parent.reset();
 	}
 
+	WeakPtr<SceneComponent> SceneComponent::GetParent()
+	{
+	   return m_Parent;
+	}
+
 }

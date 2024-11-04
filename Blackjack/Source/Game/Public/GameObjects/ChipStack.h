@@ -16,6 +16,8 @@ public:
 	void AddChip(EChipType chip);
 	void RemoveChip();
 	uint32 GetChipsCount();
+
+	void CorrectRotation();
 	
 
 private:

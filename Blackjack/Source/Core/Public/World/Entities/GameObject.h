@@ -7,6 +7,11 @@ namespace Core
 	class SceneComponent;
 	class BoxComponent;
 	
+	/*
+	 * Note: Objects inheriting from this class should be stored as WeakPtr in other objects,
+	 *       or ensure that cyclic dependencies are avoided.
+	 */
+
 	class GameObject : public Object, public std::enable_shared_from_this<GameObject>
 	{
 		DECLARE_SUPER(Object)
@@ -41,6 +46,7 @@ namespace Core
 		*/
 		void AttachToObject(WeakPtr<GameObject> parentObject);
 		void DetachFromObject();
+		SharedPtr<GameObject> GetOwner();
 		void SetRoot(WeakPtr<SceneComponent> root);
 
 		/*

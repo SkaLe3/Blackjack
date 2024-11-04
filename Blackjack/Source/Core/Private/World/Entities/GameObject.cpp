@@ -87,6 +87,15 @@ namespace Core
 		}
 	}
 
+	SharedPtr<GameObject> GameObject::GetOwner()
+	{
+		if (SharedPtr<SceneComponent> rootComp = GetRoot())
+		{
+			return rootComp->GetParent().lock()->GetOwner().lock();
+		}
+		return nullptr;
+	}
+
 	void GameObject::SetRoot(WeakPtr<SceneComponent> root)
 	{
 		m_RootComponent = root;

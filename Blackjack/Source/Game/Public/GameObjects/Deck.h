@@ -1,7 +1,7 @@
 #pragma once
 #include "World/Entities/GameObject.h"
 
-#include <queue>
+#include <stack>
 
 class Card;
 
@@ -15,7 +15,8 @@ public:
 	//~ End Object Interface
 
 	void PopulateDeck();
+	SharedPtr<Card> PullCard();
 
 private:
-	std::queue<SharedPtr<Card>> m_Cards;
+	std::stack<SharedPtr<Card>> m_Cards;
 };

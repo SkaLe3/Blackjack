@@ -30,12 +30,24 @@ void Deck::PopulateDeck()
 			newCard->GetTransform().Translation = { index * 0.1, index * 0.1, index };
 			auto spriteComp = newCard->GetSpriteComponent();
 			spriteComp->SetAtlas(atlas);
-			newCard->AssignFrontFace(String(ranks[j]) + '_' + suits[i])	;
+			newCard->AssignFrontFace(String(ranks[j]) + '_' + suits[i]);
 			newCard->AssignBackFace("back");
 			newCard->SetInitialState(ECardFace::Back);
 
 		}
 	}
 
+}
+
+SharedPtr<Card> Deck::PullCard()
+{
+	if (!m_Cards.empty())
+	{
+		SharedPtr<Card> topCard = m_Cards.top();
+		topCard->DetachFromObject();
+		m_Cards.pop();
+		return topCard;
+	}
+	return nullptr;
 }
 

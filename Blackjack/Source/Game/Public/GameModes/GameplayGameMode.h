@@ -3,6 +3,8 @@
 #include <Core/Event.h>
 
 class ChipStack;
+class Player;
+class Deck;
 
 class GameplayGameMode : public Core::GameMode
 {
@@ -21,6 +23,8 @@ public:
 	void LeaveGame();
 
 private:
-	// TESTING
-	SharedPtr<ChipStack> m_ChipStack;
+	SharedPtr<Deck> m_Deck;
+	SharedPtr<Player> m_Player;
+	SharedPtr<Player> m_Bot1;
+	SharedPtr<Player> m_Bot2;
 };
