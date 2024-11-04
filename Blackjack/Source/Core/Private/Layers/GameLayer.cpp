@@ -43,46 +43,6 @@ namespace Core
 			m_bSwtichWorld = false;
 			AssetManager::Get().ClearCache();
 		}
-
-// 		if (startAnim)
-// 		{
-// 			elapsedTime += deltaTime;
-// 			if (elapsedTime < flipDuration * 2)
-// 			{
-// 				float t = elapsedTime / flipDuration;
-// 				float f = glm::abs(glm::cos(t * glm::pi<float>() / 2));
-// 
-// 				curHalfsize.x = f * cardHalfsize.x;
-// 				if (elapsedTime >= flipDuration && !notify)
-// 				{
-// 					notify = true;
-// 					triggered = true;
-// 					selectedFace = !selectedFace;
-// 				}
-// 
-// 				if (triggered)
-// 				{
-// 					if (selectedFace)
-// 					{
-// 						cardTex = AssetManager::Get().Load<TextureAsset>("T_CardKing")->TextureP;
-// 					}
-// 					else
-// 					{
-// 						cardTex = AssetManager::Get().Load<TextureAsset>("T_CardBlackSkin")->TextureP;
-// 					}
-// 					triggered = false;
-// 
-// 				}
-// 			}
-// 			if (elapsedTime >= flipDuration * 2)
-// 			{
-// 				startAnim = false;
-// 				curHalfsize = cardHalfsize;
-// 				elapsedTime = 0;
-// 				notify = false;
-// 				triggered = false;
-// 			}
-// 		}
 	}
 
 	void GameLayer::OnEvent(Event& event)

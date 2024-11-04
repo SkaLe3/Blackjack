@@ -90,7 +90,7 @@ namespace Core
 
 		// Offset sprite origin to its geometrical center
 		glm::vec2 offset = { sizeX / 2.0f, sizeY / 2.0f };
-		Renderer::DrawTexturedRect(sprite->m_Texture, { sprite->m_SourcePos, sprite->m_SourceSize }, { position.x - offset.x, position.y - offset.y, sizeX, sizeY }, { 1.f, 1.f, 1.f, 1.f }, rot_degrees, { sizeX / 2.0f, sizeY / 2.0f }, 0);
+		Renderer::DrawTexturedRect(sprite->m_Texture, { sprite->m_SourcePos, sprite->m_SourceSize }, { position.x - offset.x, position.y - offset.y, sizeX, sizeY }, { 1.f, 1.f, 1.f, 1.f }, rot_degrees, { sizeX / 2.0f, sizeY / 2.0f }, sprite->GetFlip());
 
 	}
 

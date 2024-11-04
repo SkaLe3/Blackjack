@@ -63,15 +63,18 @@ void GameplayGameMode::OnEvent(Event& event)
 
 		if (event.Ev.key.keysym.sym == SDLK_q)
 		{
-			m_Bot1->TakeCard(m_Deck->PullCard());
+			if (m_Bot1->IsAbleToTakeCard())
+				m_Bot1->TakeCard(m_Deck->PullCard());
 		}
 		if (event.Ev.key.keysym.sym == SDLK_w)
 		{
-			m_Player->TakeCard(m_Deck->PullCard());
+			if (m_Player->IsAbleToTakeCard())
+				m_Player->TakeCard(m_Deck->PullCard());
 		}
 		if (event.Ev.key.keysym.sym == SDLK_e)
 		{
-			m_Bot2->TakeCard(m_Deck->PullCard());
+			if (m_Bot2->IsAbleToTakeCard())
+				m_Bot2->TakeCard(m_Deck->PullCard());
 		}
 
 
@@ -79,16 +82,21 @@ void GameplayGameMode::OnEvent(Event& event)
 }
 
 void GameplayGameMode::BeginPlay()
-{		
+{
 	Super::BeginPlay();
 	RestartGame();
+	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
+	AudioSystem::PlayMusic(music);
+	AudioSystem::SetMusicVolume(0.2);
+	SharedPtr<SoundBase> ambient = AssetManager::Get().Load<SoundAsset>("S_PokerAmbient")->SoundP;
+	ambient->SetOneShot(false);
+	AudioSystem::PlaySound(ambient, 0.2f);
+
 }
 
 void GameplayGameMode::RestartGame()
 {
-	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
-	AudioSystem::PlayMusic(music);
-	AudioSystem::SetMusicVolume(0.2);
+
 
 	SharedPtr<CameraObject> camera = GetWorld()->SpawnGameObject<CameraObject>();
 
@@ -102,18 +110,18 @@ void GameplayGameMode::RestartGame()
 
 	m_Deck = GetWorld()->SpawnGameObject<Deck>();
 	m_Deck->PopulateDeck();
-	m_Deck->GetTransform().Translation = { -60, 26, -100 };
+	m_Deck->GetTransform().Translation = { -66, 32, -100 };
 
 	m_Player = GetWorld()->SpawnGameObject<Player>();
-	m_Player->SetLocation({0, -30});
+	m_Player->SetLocation({ 0, -41 });
 
 	m_Bot1 = GetWorld()->SpawnGameObject<Player>();
-	m_Bot1->SetLocation({-60, -20});
-	m_Bot1->GetTransform().Rotation.z = -glm::pi<float>() / 4;
+	m_Bot1->SetLocation({ -70, -28 });
+	m_Bot1->GetTransform().Rotation.z = -glm::pi<float>() / 9;
 	m_Bot2 = GetWorld()->SpawnGameObject<Player>();
-	m_Bot2->SetLocation({60, -20});
-	m_Bot2->GetTransform().Rotation.z = glm::pi<float>() / 4;
-	
+	m_Bot2->SetLocation({ 70, -28 });
+	m_Bot2->GetTransform().Rotation.z = glm::pi<float>() / 9;
+
 
 
 

@@ -9,6 +9,11 @@
 #define SET_BOX_DEBUG_COLOR(c) GetBoxComponent()->SetColor(c);
 #define GET_BOX_DEBUG_VISIBILITY() GetBoxComponent()->IsVisible();
 #define SET_BOX_DEBUG_VISIBILITY(v) GetBoxComponent()->SetVisibility(v);
+#else
+#define GET_BOX_DEBUG_COLOR() 
+#define SET_BOX_DEBUG_COLOR(c) 
+#define GET_BOX_DEBUG_VISIBILITY() 
+#define SET_BOX_DEBUG_VISIBILITY(v)
 #endif
 
 namespace Core

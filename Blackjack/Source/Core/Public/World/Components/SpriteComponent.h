@@ -21,6 +21,10 @@ namespace Core
 		void SetAtlas(SharedPtr<TextureAtlas> inAtlas);
 		void SetRegion(const String& name);
 
+		void FlipHorizontal();
+		void FlipVertical();
+		void FlipNone();
+
 	private:
 		SharedPtr<Sprite> m_Sprite;
 		SharedPtr<TextureAtlas> m_Atlas;

@@ -18,12 +18,15 @@ namespace Core
 
 		void SetVisibility(bool bVisible) { m_bVisible = bVisible; }
 		bool IsVisible() const { return m_bVisible; }
+		void SetFlip(byte flip) { m_Flip = flip; }
+		byte GetFlip() const { return m_Flip; }
 	protected:
 		SharedPtr<Texture> m_Texture;
 		glm::vec2 m_SourceSize;
 		glm::vec2 m_SourcePos;
 
 		bool m_bVisible;
+		byte m_Flip; // 0: none, 1: horizontal, 2: vertical 
 
 		friend SceneRenderer;
 	};

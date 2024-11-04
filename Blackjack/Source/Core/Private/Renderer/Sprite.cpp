@@ -14,7 +14,7 @@ namespace Core
 	}
 
 	Sprite::Sprite(SharedPtr<Texture> inTexture, const glm::vec2& inSrcSize, const glm::vec2& inSrcPos)
-		: m_Texture(inTexture), m_SourceSize(inSrcSize), m_SourcePos(inSrcPos), m_bVisible(true)
+		: m_Texture(inTexture), m_SourceSize(inSrcSize), m_SourcePos(inSrcPos), m_bVisible(true), m_Flip(0)
 	{}
 
 

@@ -51,4 +51,19 @@ namespace Core
 		m_Sprite->MapToAtlas(region);
 	}
 
+	void SpriteComponent::FlipHorizontal()
+	{
+		m_Sprite->SetFlip(1);
+	}
+
+	void SpriteComponent::FlipVertical()
+	{
+		m_Sprite->SetFlip(2);
+	}
+
+	void SpriteComponent::FlipNone()
+	{
+		m_Sprite->SetFlip(0);
+	}
+
 }

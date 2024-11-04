@@ -44,7 +44,6 @@ SharedPtr<Card> Deck::PullCard()
 	if (!m_Cards.empty())
 	{
 		SharedPtr<Card> topCard = m_Cards.top();
-		topCard->DetachFromObject();
 		m_Cards.pop();
 		return topCard;
 	}

@@ -1,28 +1,50 @@
 #include "GameObjects/Card.h"
-#include "World/Components/SpriteComponent.h"
-#include "Renderer/Sprite.h"
-#include "Core/AssetManager.h"
+#include <World/Components/SpriteComponent.h>
+#include <Renderer/Sprite.h>
+#include <Core/AssetManager.h>
+
+#include "Components/CardAnimationComponent.h"
 
 using namespace Core;
 
 
 Card::Card()
 {
-	auto sprite = GetSpriteComponent();
+	m_AnimComp = CreateComponent<CardAnimationComponent>();
 
-	sprite->GetTransform().Scale = { 20, 28, 1 };
+	auto sprite = GetSpriteComponent();
+	sprite->GetTransform().Scale = { 17.5, 24.5, 1 };
 }
 
 void Card::BeginPlay()
 {
 	Super::BeginPlay();
+	GetAnimationComponent()->SetOwner(GetSelf());
 }
 
-void Card::TurnOver()
+void Card::Destroy()
+{
+	Super::Destroy();
+	GetAnimationComponent()->Destroy();
+}
+
+
+void Card::TurnOver(float duration, byte axis /*= 0*/)
+{
+	GetAnimationComponent()->StartFlipAnimation(duration, axis);
+}
+
+void Card::Flip()
 {
 	m_CardFace = static_cast<ECardFace>(static_cast<byte>(m_CardFace) ^ 1);
 	SelectFace();
+	GetSpriteComponent()->GetTransform().Rotation.z += glm::radians(180.0f);
 	glm::mat4 mmm = GetSpriteComponent()->GetTransformMatrix();
+}
+
+void Card::Move(float duration, const glm::vec2& start, const glm::vec2& target, float startRot /*= 0*/, float targetRot /*= 0*/, bool clockwise /*= false*/)
+{
+	GetAnimationComponent()->StartTransformAnimation(duration, start, target, startRot, targetRot, clockwise);
 }
 
 void Card::AssignFrontFace(const String& faceName)
@@ -39,6 +61,11 @@ void Card::SetInitialState(ECardFace initialFace)
 {
 	m_CardFace = initialFace;
 	SelectFace();
+}
+
+SharedPtr<CardAnimationComponent> Card::GetAnimationComponent()
+{
+	return m_AnimComp.lock();
 }
 
 void Card::SelectFace()

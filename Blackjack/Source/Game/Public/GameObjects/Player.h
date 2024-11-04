@@ -22,6 +22,7 @@ public:
 	void PlaceChip(EChipType chip);
 	void TakeLastChip();
 
+	bool IsAbleToTakeCard();
 	void TakeCard(SharedPtr<Card> card);
 
 private:

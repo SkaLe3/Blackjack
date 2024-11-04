@@ -10,11 +10,13 @@ void Player::BeginPlay()
 	auto bet = GetWorld()->SpawnGameObject<ChipStack>();
 	bet->AttachToObject(GetSelf());
 	bet->GetTransform().Translation.y = 3;
+	bet->GetTransform().Translation.z = 10;
 	m_Bet = bet;
 
 	auto cards = GetWorld()->SpawnGameObject<CardsHand>();
 	cards->AttachToObject(GetSelf());
-	cards->GetTransform().Translation.y = 8;
+	cards->GetTransform().Translation.y = 24;
+	cards->GetTransform().Translation.z = 0;
 	m_Cards = cards;
 
 	SET_BOX_DEBUG_VISIBILITY(true);
@@ -39,10 +41,19 @@ void Player::TakeLastChip()
 	}
 }
 
+bool Player::IsAbleToTakeCard()
+{
+	if (auto cards = m_Cards.lock())
+	{
+		return cards->CanAcceptCard();
+	}
+	return false;
+}
+
 void Player::TakeCard(SharedPtr<Card> card)
 {
 	if (auto cards = m_Cards.lock())
 	{
-		cards->AddCard(card);
+		cards->AcceptCard(card);
 	}
 }
