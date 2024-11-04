@@ -22,6 +22,7 @@ void Card::TurnOver()
 {
 	m_CardFace = static_cast<ECardFace>(static_cast<byte>(m_CardFace) ^ 1);
 	SelectFace();
+	glm::mat4 mmm = GetSpriteComponent()->GetTransformMatrix();
 }
 
 void Card::AssignFrontFace(const String& faceName)

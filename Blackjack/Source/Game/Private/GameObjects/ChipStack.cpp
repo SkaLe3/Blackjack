@@ -9,11 +9,19 @@
 
 using namespace Core;
 
-ChipStack::ChipStack()
+ChipStack::ChipStack() : GameObject()
 {
 	m_ChipsTexture = MakeShared<ChipTextureAtlas>();
 	m_ChipSetSound = AssetManager::Get().Load<SoundAsset>("S_PokerChip")->SoundP;
 	m_ChipRemoveSound = AssetManager::Get().Load<SoundAsset>("S_PokerChips")->SoundP;
+}
+
+void ChipStack::BeginPlay()
+{
+	Super::BeginPlay();
+	SET_BOX_DEBUG_VISIBILITY(true);
+	SET_BOX_DEBUG_COLOR((glm::vec4{ 1, 0, 0, 1 })); // Red
+	GetBoxComponent()->SetHalfSize({ 2, 2 });
 }
 
 void ChipStack::AddChip(EChipType chip)

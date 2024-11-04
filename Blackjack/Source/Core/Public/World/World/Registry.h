@@ -25,6 +25,9 @@ namespace Core
 		std::vector<SharedPtr<SpriteComponent>>& GetAllDrawable();
 		std::vector<SharedPtr<SpriteComponent>>& GetAllDrawableSorted();
 
+#ifdef BJ_DEBUG
+		std::vector<SharedPtr<GameComponent>>& GetTickComponents();
+#endif
 
 	private:
 		std::vector<SharedPtr<GameComponent>> m_TickComponents;

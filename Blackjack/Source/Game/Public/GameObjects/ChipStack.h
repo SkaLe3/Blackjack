@@ -13,6 +13,10 @@ class ChipStack : public Core::GameObject
 public:
 	ChipStack();
 
+	//~ Begin Object Interface
+	virtual void BeginPlay() override;
+	//~ End Object Interface
+
 	void AddChip(EChipType chip);
 	void RemoveChip();
 	uint32 GetChipsCount();

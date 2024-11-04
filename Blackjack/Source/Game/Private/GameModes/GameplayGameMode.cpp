@@ -63,7 +63,15 @@ void GameplayGameMode::OnEvent(Event& event)
 
 		if (event.Ev.key.keysym.sym == SDLK_q)
 		{
+			m_Bot1->TakeCard(m_Deck->PullCard());
+		}
+		if (event.Ev.key.keysym.sym == SDLK_w)
+		{
 			m_Player->TakeCard(m_Deck->PullCard());
+		}
+		if (event.Ev.key.keysym.sym == SDLK_e)
+		{
+			m_Bot2->TakeCard(m_Deck->PullCard());
 		}
 
 
@@ -101,10 +109,10 @@ void GameplayGameMode::RestartGame()
 
 	m_Bot1 = GetWorld()->SpawnGameObject<Player>();
 	m_Bot1->SetLocation({-60, -20});
-	m_Bot1->GetTransform().Rotation.z = glm::pi<float>() / 6;
+	m_Bot1->GetTransform().Rotation.z = -glm::pi<float>() / 4;
 	m_Bot2 = GetWorld()->SpawnGameObject<Player>();
 	m_Bot2->SetLocation({60, -20});
-	m_Bot2->GetTransform().Rotation.z = - glm::pi<float>() / 6;
+	m_Bot2->GetTransform().Rotation.z = glm::pi<float>() / 4;
 	
 
 

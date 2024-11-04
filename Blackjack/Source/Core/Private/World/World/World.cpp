@@ -25,12 +25,12 @@ namespace Core
 	void World::BeginPlay()
 	{
 		m_GameMode->BeginPlay();
+		m_bStarted = true;
 		auto objects = m_Registry->GetAllObjects();
 		for (auto object : objects)
 		{
 			object->BeginPlay();
 		}
-		m_bStarted = true;
 	}
 
 	void World::Tick(float deltaTime)
@@ -58,8 +58,18 @@ namespace Core
 		for (SharedPtr<SpriteComponent>& object : drawable)
 		{
 			if (!object->GetSprite()->IsVisible()) continue;
-			renderer->DrawSprite(object->GetTransformMatrix(), object->GetSprite());
+			renderer->DrawSprite(object->GetTransformMatrix(), object->GetTransform().Scale, object->GetSprite());
 		}
+#ifdef BJ_DEBUG
+		auto ticks = m_Registry->GetTickComponents();
+		for (SharedPtr<GameComponent>& object : ticks)
+		{
+			if (auto box = std::dynamic_pointer_cast<BoxComponent>(object); box && box->IsVisible())
+			{
+				renderer->DrawRect(box->GetTransformMatrix(), box->GetHalfSize(),  box->GetColor(), false);
+			}
+		}
+#endif
 
 		renderer->EndScene();
 	}

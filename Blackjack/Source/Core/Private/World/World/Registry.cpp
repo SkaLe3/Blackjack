@@ -90,11 +90,17 @@ namespace Core
 	std::vector<SharedPtr<SpriteComponent>>& Registry::GetAllDrawableSorted()
 	{
 		std::sort(m_DrawableComponents.begin(), m_DrawableComponents.end(),
-			[](SharedPtr<SpriteComponent>& s1, SharedPtr<SpriteComponent>& s2)
-			{
-				return s1->GetWorldTransform().Translation.z < s2->GetWorldTransform().Translation.z;
-			});
+				  [](SharedPtr<SpriteComponent>& s1, SharedPtr<SpriteComponent>& s2)
+				  {
+					  return s1->GetWorldTransform().Translation.z < s2->GetWorldTransform().Translation.z;
+				  });
 		return m_DrawableComponents;
 	}
+#ifdef BJ_DEBUG
+	std::vector<SharedPtr<Core::GameComponent>>& Registry::GetTickComponents()
+	{
+		return m_TickComponents;
+	}
+#endif
 
 }

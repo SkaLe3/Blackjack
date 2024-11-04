@@ -22,7 +22,7 @@ Chip::Chip()
 
 void Chip::BeginPlay()
 {
-
+	Super::BeginPlay();
 }
 
 float Chip::GetHeight()

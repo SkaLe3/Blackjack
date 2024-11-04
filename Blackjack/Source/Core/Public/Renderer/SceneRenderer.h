@@ -8,7 +8,7 @@ namespace Core
 {
 	class Font;
 	class Sprite;
-	
+
 	class SceneRenderer
 	{
 	public:
@@ -21,7 +21,8 @@ namespace Core
 		void BeginScene(const CameraInfo& cameraInfo);
 		void EndScene();
 
-		void DrawSprite(const glm::mat4& transform, SharedPtr<Sprite> sprite);
+		void DrawSprite(const glm::mat4& transform, const glm::vec3& objScale, SharedPtr<Sprite> sprite);
+		void DrawRect(const glm::mat4& transform, const glm::vec2& box, const glm::vec4& color = {1, 0, 0, 1}, bool bFill = false);
 		//void DrawText();
 
 	private:
@@ -29,7 +30,7 @@ namespace Core
 		glm::vec3 m_CameraPos;
 		glm::mat4 m_ViewProjection;
 		glm::mat4 m_InverseView;
-		
+
 		glm::vec4 m_QuadCornerPos[2];
 		float m_LineWidth = 1.0f;
 		SharedPtr<Font> m_CurrentFont;

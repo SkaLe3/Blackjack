@@ -8,6 +8,11 @@ class CardsHand : public Core::GameObject
 {
 	DECLARE_SUPER(Core::GameObject)
 public:
+
+	//~ Begin Object Interface
+	virtual void BeginPlay() override;
+	//~ End Object Interface
+
 	void AddCard(SharedPtr<Card> card);
 	
 
