@@ -1,5 +1,5 @@
 #pragma once
-#include <World/Entities/GameObject.h>
+#include "GameObjects/Person.h"
 
 #include "GameObjects/ChipStack.h" // Required for EChipType
 
@@ -11,9 +11,9 @@ class Card;
 *
 * Represents player sitting in front of the game table
 */
-class Player : public Core::GameObject
+class Player : public Person
 {
-	DECLARE_SUPER(Core::GameObject)
+	DECLARE_SUPER(Person)
 public:
 	//~ Begin Object Interface
 	virtual void BeginPlay() override;
@@ -22,10 +22,7 @@ public:
 	void PlaceChip(EChipType chip);
 	void TakeLastChip();
 
-	bool IsAbleToTakeCard();
-	void TakeCard(SharedPtr<Card> card);
-
-private:
+protected:
 	WeakPtr<ChipStack> m_Bet;
-	WeakPtr<CardsHand> m_Cards;
+
 };

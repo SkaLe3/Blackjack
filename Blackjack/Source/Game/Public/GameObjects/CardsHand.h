@@ -16,11 +16,11 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
-	void AcceptCard(SharedPtr<Card> card);
+	void AcceptCard(SharedPtr<Card> card, bool bTurnOver = true);
 	void AddCard();
-
 	bool CanAcceptCard();
 
+	void Clear();
 private:
 	std::vector<WeakPtr<Card>> m_FirstHand;
 	std::vector<WeakPtr<Card>> m_SecondHand;

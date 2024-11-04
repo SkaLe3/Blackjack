@@ -22,7 +22,7 @@ void CardsHand::BeginPlay()
 
 }
 
-void CardsHand::AcceptCard(SharedPtr<Card> card)
+void CardsHand::AcceptCard(SharedPtr<Card> card, bool m_bTurnOver /*= true*/)
 {
 	if (card && CanAcceptCard())
 	{
@@ -49,8 +49,11 @@ void CardsHand::AcceptCard(SharedPtr<Card> card)
 		inHandRotation = inHandTransform.Rotation.z;
 
 		m_LastCard = card;
-		card->TurnOver(1, 1);
-		card->Move(1.f, inDeckPosition, inHandPosition, glm::degrees(inDeckRotation),180 + glm::degrees(inHandRotation), false);
+		if (m_bTurnOver)
+		{
+			card->TurnOver(1, 1);
+		}
+		card->Move(1.f, inDeckPosition, inHandPosition, glm::degrees(inDeckRotation), 180 + glm::degrees(inHandRotation), false);
 		card->GetAnimationComponent()->OnFinishMoveAnim.Add(std::bind(&CardsHand::AddCard, this));
 		AudioSystem::PlaySound(m_CardSound, 0.2f);
 
@@ -76,4 +79,27 @@ void CardsHand::AddCard()
 bool CardsHand::CanAcceptCard()
 {
 	return m_LastCard == nullptr;
+}
+
+void CardsHand::Clear()
+{
+	for (auto& card : m_FirstHand)
+	{
+		if (auto sharedCard = card.lock())
+		{
+			sharedCard->Destroy();
+		}
+	}
+	for (auto& card : m_SecondHand)
+	{
+		if (auto sharedCard = card.lock())
+		{
+			sharedCard->Destroy();
+		}
+	}
+	m_FirstHand.clear();
+	m_SecondHand.clear();
+	if (m_LastCard)
+		m_LastCard->Destroy();
+	m_LastCard = nullptr;
 }

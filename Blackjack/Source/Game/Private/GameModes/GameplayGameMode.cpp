@@ -3,7 +3,9 @@
 #include "Scenes/MenuScene.h"
 #include "GameObjects/Deck.h"
 #include "GameObjects/Chip.h"  // For testing
-#include "GameObjects/Player.h"
+#include "GameObjects/UserPlayer.h"
+#include "GameObjects/AIPlayer.h"
+#include "GameObjects/Dealer.h"
 
 #include <World/World/World.h>
 #include <World/Entities/SpriteObject.h>
@@ -76,6 +78,16 @@ void GameplayGameMode::OnEvent(Event& event)
 			if (m_Bot2->IsAbleToTakeCard())
 				m_Bot2->TakeCard(m_Deck->PullCard());
 		}
+		if (event.Ev.key.keysym.sym == SDLK_r)
+		{
+			if (m_Dealer->IsAbleToTakeCard())
+				m_Dealer->TakeCard(m_Deck->PullCard());
+		}
+		if (event.Ev.key.keysym.sym == SDLK_t)
+		{
+			if (m_Dealer->IsAbleToTakeCard())
+				m_Dealer->PlaceCard(m_Deck->PullCard());
+		}
 
 
 	}
@@ -94,10 +106,26 @@ void GameplayGameMode::BeginPlay()
 
 }
 
+void GameplayGameMode::StartRound()
+{
+	m_Deck = GetWorld()->SpawnGameObject<Deck>();
+	m_Deck->GetTransform().Translation = { -66, 32, -100 };
+	m_Deck->PopulateDeck();
+}
+
+void GameplayGameMode::EndRound()
+{
+	m_Player->ClearHand();
+	m_Deck->Destroy();
+}
+
+void GameplayGameMode::NextRound()
+{
+	StartRound();
+}
+
 void GameplayGameMode::RestartGame()
 {
-
-
 	SharedPtr<CameraObject> camera = GetWorld()->SpawnGameObject<CameraObject>();
 
 	auto cameraComp = camera->GetCameraComponent();
@@ -106,30 +134,26 @@ void GameplayGameMode::RestartGame()
 	SharedPtr<SpriteObject> table = GetWorld()->SpawnGameObject<SpriteObject>();
 	table->GetSpriteComponent()->SetSprite(Sprite::Create(AssetManager::Get().Load<TextureAsset>("T_Table")->TextureP));
 	table->GetTransform().Translation.z = -200;
-	table->GetSpriteComponent()->GetTransform().Scale = { 177, 100, 1 };
+	table->GetSpriteComponent()->GetTransform().Scale = { 178, 100, 1 };
 
-	m_Deck = GetWorld()->SpawnGameObject<Deck>();
-	m_Deck->PopulateDeck();
-	m_Deck->GetTransform().Translation = { -66, 32, -100 };
+	m_Dealer = GetWorld()->SpawnGameObject<Dealer>();
+	m_Dealer->SetLocation({0, 25});
 
-	m_Player = GetWorld()->SpawnGameObject<Player>();
+	m_Player = GetWorld()->SpawnGameObject<UserPlayer>();
 	m_Player->SetLocation({ 0, -41 });
 
-	m_Bot1 = GetWorld()->SpawnGameObject<Player>();
+	m_Bot1 = GetWorld()->SpawnGameObject<AIPlayer>();
 	m_Bot1->SetLocation({ -70, -28 });
 	m_Bot1->GetTransform().Rotation.z = -glm::pi<float>() / 9;
-	m_Bot2 = GetWorld()->SpawnGameObject<Player>();
+	m_Bot2 = GetWorld()->SpawnGameObject<AIPlayer>();
 	m_Bot2->SetLocation({ 70, -28 });
 	m_Bot2->GetTransform().Rotation.z = glm::pi<float>() / 9;
-
-
-
-
-
+	StartRound();
 }
 
 void GameplayGameMode::LeaveGame()
 {
+	// Scene changing handles all object destroying automatically
 	AudioSystem::StopMusic();
 	AudioSystem::StopAllSounds();
 	World::OpenScene<MenuScene>();

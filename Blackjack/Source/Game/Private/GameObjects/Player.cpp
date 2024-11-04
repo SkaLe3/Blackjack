@@ -13,12 +13,6 @@ void Player::BeginPlay()
 	bet->GetTransform().Translation.z = 10;
 	m_Bet = bet;
 
-	auto cards = GetWorld()->SpawnGameObject<CardsHand>();
-	cards->AttachToObject(GetSelf());
-	cards->GetTransform().Translation.y = 24;
-	cards->GetTransform().Translation.z = 0;
-	m_Cards = cards;
-
 	SET_BOX_DEBUG_VISIBILITY(true);
 	SET_BOX_DEBUG_COLOR((glm::vec4{1, 0, 1, 1}));  // Magenta
 	GetBoxComponent()->SetHalfSize({2, 2});
@@ -41,19 +35,4 @@ void Player::TakeLastChip()
 	}
 }
 
-bool Player::IsAbleToTakeCard()
-{
-	if (auto cards = m_Cards.lock())
-	{
-		return cards->CanAcceptCard();
-	}
-	return false;
-}
 
-void Player::TakeCard(SharedPtr<Card> card)
-{
-	if (auto cards = m_Cards.lock())
-	{
-		cards->AcceptCard(card);
-	}
-}
