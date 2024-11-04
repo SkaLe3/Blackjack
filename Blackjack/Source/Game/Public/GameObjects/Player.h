@@ -4,6 +4,8 @@
 #include "GameObjects/ChipStack.h" // Required for EChipType
 #include "DataStructures/PlayerState.h"
 
+#include <Sound/Sound.h>
+
 class CardsHand;
 class Card;
 /*
@@ -15,6 +17,7 @@ class Player : public Person
 {
 	DECLARE_SUPER(Person)
 public:
+	Player();
 	//~ Begin Object Interface
 	virtual void BeginPlay() override;
 	//~ End Object Interface
@@ -28,6 +31,8 @@ public:
 protected:
 	WeakPtr<ChipStack> m_Bet;
 	WeakPtr<PlayerState> m_State;
+
+	SharedPtr<Core::SoundBase> m_ConfirmSound;
 
 
 };

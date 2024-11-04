@@ -2,8 +2,18 @@
 
 #include "GameObjects/ChipStack.h"
 #include "GameObjects/CardsHand.h"
-
 #include "GameModes/GameplayGameMode.h"
+
+
+#include <Sound/AudioSystem.h>
+#include <Core/AssetManager.h>
+
+using namespace Core;
+
+Player::Player()
+{
+	m_ConfirmSound = AssetManager::Get().Load<SoundAsset>("S_Confirm")->SoundP;
+}
 
 void Player::BeginPlay()
 {
@@ -41,6 +51,7 @@ void Player::ConfirmBet()
 {
 	 SharedPtr<GameplayGameMode> GM = static_pointer_cast<GameplayGameMode>(GetWorld()->GetGameMode());
 	 GM->BetPlacedEvent();
+	 AudioSystem::PlaySound(m_ConfirmSound);
 }
 
 void Player::SetState(SharedPtr<PlayerState> state)
