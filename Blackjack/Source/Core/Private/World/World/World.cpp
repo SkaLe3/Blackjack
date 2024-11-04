@@ -112,6 +112,11 @@ namespace Core
 		m_ActiveCamera->GetCamera()->SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 	}
 
+	SharedPtr<GameMode> World::GetGameMode()
+	{
+		 return m_GameMode;
+	}
+
 	void World::DestroyObject(WeakPtr<Object> object)
 	{
 		m_Registry->SetPendingDestroy(object);

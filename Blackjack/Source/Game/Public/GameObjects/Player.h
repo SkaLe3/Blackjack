@@ -2,7 +2,7 @@
 #include "GameObjects/Person.h"
 
 #include "GameObjects/ChipStack.h" // Required for EChipType
-
+#include "DataStructures/PlayerState.h"
 
 class CardsHand;
 class Card;
@@ -21,8 +21,13 @@ public:
 
 	void PlaceChip(EChipType chip);
 	void TakeLastChip();
+	void ConfirmBet();
+
+	void SetState(SharedPtr<PlayerState> state);
 
 protected:
 	WeakPtr<ChipStack> m_Bet;
+	WeakPtr<PlayerState> m_State;
+
 
 };

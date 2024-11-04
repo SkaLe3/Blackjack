@@ -3,6 +3,8 @@
 #include "GameObjects/ChipStack.h"
 #include "GameObjects/CardsHand.h"
 
+#include "GameModes/GameplayGameMode.h"
+
 void Player::BeginPlay()
 {
 	Super::BeginPlay();
@@ -35,4 +37,14 @@ void Player::TakeLastChip()
 	}
 }
 
+void Player::ConfirmBet()
+{
+	 SharedPtr<GameplayGameMode> GM = static_pointer_cast<GameplayGameMode>(GetWorld()->GetGameMode());
+	 GM->BetPlacedEvent();
+}
+
+void Player::SetState(SharedPtr<PlayerState> state)
+{
+	m_State = state;
+}
 

@@ -38,6 +38,8 @@ namespace Core
 		template<typename T>
 		SharedPtr<T> SpawnGameObject();
 
+		SharedPtr<GameMode> GetGameMode();
+
 		void DestroyObject(WeakPtr<Object> object);
 		void DestroyAll();
 		void UpdateObjects(float deltaTime);

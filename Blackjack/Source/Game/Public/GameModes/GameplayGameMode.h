@@ -1,6 +1,14 @@
 #pragma once
 #include <World/Entities/GameMode.h>
+
+#include "DataStructures/BlackjackStateMachine.h"
+#include "DataStructures/PlayerState.h"
+
 #include <Core/Event.h>
+
+#include <unordered_map>
+
+
 
 
 enum class ERoundStage : byte
@@ -17,20 +25,26 @@ enum class ERoundStage : byte
 
 };
 
-enum class EPlayerTurn : byte
+// TODO: Make Macro
+struct RoundStageShiftDelegate
 {
-	None = 0, // Currently no one allowed to make turn
-	User,
-	Bot1,
-	Bot2,
-	Bot3,
-	Reserved
-	// In scaling scenario should be expanded
-};
+public:
+	void Add(std::function<void(ERoundStage)> callback) { callbacks.push_back(callback); }
+	void operator()(ERoundStage newStage)
+	{
+		for (auto& func : callbacks)
+		{
+			func(newStage);
+		}
+	}
 
+private:
+	std::vector<std::function<void(ERoundStage)>> callbacks;
+};
 
 class ChipStack;
 class Dealer;
+class Player;
 class UserPlayer;
 class AIPlayer;
 class Deck;
@@ -46,19 +60,45 @@ public:
 
 	//~ Begin Object Interface
 	virtual void BeginPlay() override;
+	virtual void Tick(float deltaTime) override;
 	//~ Eng Object Interface
 
 	void StartRound();
 	void EndRound();
+	void RoundResult();
 	void NextRound();
 
 	void RestartGame();
 	void LeaveGame();
 
+
+	// GameEvents
+	void BetPlacedEvent();
+	// TODO: move some functions to private section
 private:
+	void StartBetting();
+	bool WaitForBets();
+
+public:
+	RoundStageShiftDelegate OnStageShift;
+
+private:
+	// Objects
 	SharedPtr<Deck> m_Deck;
 	SharedPtr<Dealer> m_Dealer;
-	SharedPtr<UserPlayer> m_Player;
-	SharedPtr<AIPlayer> m_Bot1;
-	SharedPtr<AIPlayer> m_Bot2;
+	std::vector<SharedPtr<Player>> m_Players;
+	std::vector<SharedPtr<PlayerState>> m_PStates;
+
+	// Constants
+	float m_MaxBet = 50;
+	float m_MinBet = 1;
+
+	// Gameplay
+	ERoundStage m_RoundStage;
+	byte m_PlayerTurn;
+	//std::vector<ERoundStage> m_Stages;
+	bool m_ShiftStage = false;
+
+	RoundStateMachine m_GameState;
+
 };
