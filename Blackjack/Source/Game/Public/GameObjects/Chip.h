@@ -1,6 +1,17 @@
 #pragma once
-
 #include <World/Entities/SpriteObject.h>
+
+#include <unordered_map>
+
+enum class EChipType : byte
+{
+	White = 1, 
+	Red = 5, 
+	Blue = 10, 
+	Gray = 20, 
+	Green = 25, 
+	Orange =50
+};
 
 class Chip : public Core::SpriteObject
 {
@@ -11,5 +22,21 @@ public:
 	//~ Begin Object Interface
 	virtual void BeginPlay() override;
 	//~ End Object Interface
+
+	float GetHeight();
+	void SetHeight(float height);
+
+	EChipType GetType();
+	void SetType(EChipType chip);
+	float GetValue();
+
+public:
+
+	static std::unordered_map<EChipType, String> ChipsMap;
+
+private:
+	float m_Height = 1.11;
+
+	EChipType m_ChipType;
 	
 };

@@ -18,4 +18,10 @@ namespace Core
 		//		But still all sprites will use the same Texture instance
 	}
 
+	void SpriteObject::Destroy()
+	{
+	   Super::Destroy();
+	   GetSpriteComponent()->Destroy();
+	}
+
 }

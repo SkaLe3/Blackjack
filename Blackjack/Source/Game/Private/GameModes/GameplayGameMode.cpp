@@ -3,26 +3,54 @@
 #include "Scenes/MenuScene.h"
 #include "GameObjects/Deck.h"
 #include "GameObjects/Chip.h"
+#include "GameObjects/ChipStack.h"
 
-#include <Core/AssetManager.h>
 #include <World/World/World.h>
 #include <World/Entities/SpriteObject.h>
 #include <World/Entities/CameraObject.h>
+#include <Sound/AudioSystem.h>
+#include <Core/AssetManager.h>
 
 #include "Renderer/Sprite.h"
 
 #include <glm/ext/scalar_constants.hpp>
+#include <random>
 
 using namespace Core;
 
-void GameplayGameMode::BeginPlay()
+void GameplayGameMode::OnEvent(Event& event)
 {
+	if (event.Ev.type == SDL_KEYDOWN)
+	{
+		if (event.Ev.key.keysym.sym == SDLK_EQUALS)
+		{
+			static std::random_device rd;
+			static std::mt19937 gen(rd());
+			static std::uniform_int_distribution<>	distr(0, 5);
+			static std::vector<EChipType> chipvec = {EChipType::White,
+			EChipType::Red, EChipType::Blue, EChipType::Gray,
+			EChipType::Green, EChipType::Orange};
+			int number = distr(gen);
+			m_ChipStack->AddChip(chipvec[number]);
+		}
+		if (event.Ev.key.keysym.sym == SDLK_MINUS)
+		{
+			m_ChipStack->RemoveChip();
+		}
+	}
+}
+
+void GameplayGameMode::BeginPlay()
+{		
+	Super::BeginPlay();
 	RestartGame();
 }
 
 void GameplayGameMode::RestartGame()
 {
-
+	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
+	AudioSystem::PlayMusic(music);
+	AudioSystem::SetMusicVolume(0.2);
 
 	SharedPtr<CameraObject> camera = GetWorld()->SpawnGameObject<CameraObject>();
 
@@ -38,17 +66,9 @@ void GameplayGameMode::RestartGame()
 	deck->PopulateDeck();
 	deck->GetTransform().Translation = { -60, 26, -100 };
 
-	auto chip = GetWorld()->SpawnGameObject<Chip>();
-	auto chip2 = GetWorld()->SpawnGameObject<Chip>();
-	chip2->SetLocation({ 0, 1 });
-	auto chip3 = GetWorld()->SpawnGameObject<Chip>();
-	chip3->SetLocation({ 0, 2 });
-	auto chip4 = GetWorld()->SpawnGameObject<Chip>();
-	chip4->SetLocation({ 0, 3 });
-	auto chip5 = GetWorld()->SpawnGameObject<Chip>();
-	chip5->SetLocation({ 0, 4 });
-	auto chip6 = GetWorld()->SpawnGameObject<Chip>();
-	chip6->SetLocation({ 0, 5 });
+	m_ChipStack = GetWorld()->SpawnGameObject<ChipStack>();
+	m_ChipStack->SetLocation({0, -30});
+
 
 
 
@@ -56,5 +76,9 @@ void GameplayGameMode::RestartGame()
 
 void GameplayGameMode::LeaveGame()
 {
+	AudioSystem::StopMusic();
+	AudioSystem::StopAllSounds();
 	World::OpenScene<MenuScene>();
 }
+
+

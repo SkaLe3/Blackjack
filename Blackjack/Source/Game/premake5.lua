@@ -29,6 +29,10 @@ project "Blackjack"
     {
         "Core"
     }
+
+    postbuildcommands {
+        "{COPYDIR} \"%{wks.location}/Blackjack/Content\" \"%{cfg.targetdir}/Content\""
+    }
     
     filter "system:windows"
         systemversion "latest"

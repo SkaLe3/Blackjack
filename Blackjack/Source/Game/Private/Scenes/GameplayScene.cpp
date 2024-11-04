@@ -14,6 +14,8 @@ void GameplayScene::OnEvent(Core::Event& event)
 		if (event.Ev.key.keysym.sym == SDLK_SPACE)
 		{
 			std::static_pointer_cast<GameplayGameMode>(m_GameMode)->LeaveGame();
+
 		}
 	}
+	std::static_pointer_cast<GameplayGameMode>(m_GameMode)->OnEvent(event);
 }

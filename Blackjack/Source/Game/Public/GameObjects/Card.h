@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-enum class CardFace : byte
+enum class ECardFace : byte
 {
 	Front = 0,
 	Back = 1
@@ -24,17 +24,17 @@ public:
 	void TurnOver();
 	void AssignFrontFace(const String& faceName);
 	void AssignBackFace(const String& backName);
-	void SetInitialState(CardFace initialFace);
+	void SetInitialState(ECardFace initialFace);
 private:
 	void SelectFace();
 
 private:
-	CardFace m_CardFace;
+	ECardFace m_CardFace;
 
 	String m_FaceName;
 	String m_BackName;
 
-	std::unordered_map<CardFace, String> m_FacesMapping;
+	std::unordered_map<ECardFace, String> m_FacesMapping;
 
 
 };

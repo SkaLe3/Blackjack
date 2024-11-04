@@ -11,6 +11,10 @@ namespace Core
 	public:
 		SpriteObject();
 
+		//~ Begin Object Interface
+		virtual void Destroy() override;
+		//~ End Object Interface
+
 		SharedPtr<SpriteComponent> GetSpriteComponent() { return m_SpriteComponent.lock(); }
 
 	private:

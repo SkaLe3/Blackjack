@@ -32,7 +32,7 @@ void Deck::PopulateDeck()
 			spriteComp->SetAtlas(atlas);
 			newCard->AssignFrontFace(String(ranks[j]) + '_' + suits[i])	;
 			newCard->AssignBackFace("back");
-			newCard->SetInitialState(CardFace::Back);
+			newCard->SetInitialState(ECardFace::Back);
 
 		}
 	}
