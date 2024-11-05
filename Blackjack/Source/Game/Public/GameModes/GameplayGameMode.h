@@ -17,7 +17,6 @@ enum class ERoundStage : byte
 	Registration,
 	Betting,
 	DealingCards,
-	CheckForBlackJack,
 	PlayerTurn,
 	DealerReveal,
 	GivingWins,
@@ -89,9 +88,9 @@ private:
 	int32 m_PlayerTurn;
 	//std::vector<ERoundStage> m_Stages;
 	bool m_ShiftStage = false;
+	bool m_bShouldStartRound = false;
 
 	SharedPtr<RoundStateMachine> m_GameState;
-
-	bool m_bShouldStartGame = true;
+	
 
 };

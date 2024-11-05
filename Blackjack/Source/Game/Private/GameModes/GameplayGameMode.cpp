@@ -81,11 +81,10 @@ void GameplayGameMode::BeginPlay()
 
 void GameplayGameMode::Tick(float deltaTime)
 {
-	if (m_bShouldStartGame)
+	if (m_bShouldStartRound)
 	{
 		StartRound();
 	}
-
 	if (m_ShiftStage)
 	{
 		m_RoundStage = (ERoundStage)((byte)m_RoundStage + 1); // TODO: Make operator++()
@@ -124,6 +123,10 @@ void GameplayGameMode::Tick(float deltaTime)
 	{
 		m_GameState->OnDealingcardsStageStarted.Invoke();
 	}
+	else if ((ERoundStage)m_RoundStage == ERoundStage::PlayerTurn)
+	{
+
+	}
 }
 
 void GameplayGameMode::StartRound()
@@ -135,11 +138,12 @@ void GameplayGameMode::StartRound()
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
 	m_Deck->PopulateDeck();
 	m_Deck->Shuffle();
+	// TODO: Make animation for deck;
 
 	m_RoundStage = ERoundStage::Registration;
 	ResetTurn();
 
-	m_bShouldStartGame = false;
+	m_bShouldStartRound = false;
 
 
 
@@ -153,7 +157,7 @@ void GameplayGameMode::EndRound()
 	}
 
 	m_Deck->Destroy();
-	m_bShouldStartGame = true;	// TODO: move to another function, after player confirmation for starting next round
+	// TODO: Start the round again, but move it to be called after player confirmation to play new round
 }
 
 void GameplayGameMode::RoundResult()
@@ -198,6 +202,8 @@ void GameplayGameMode::RestartGame()
 	bot1->SetTag("Bot1");
 	player->SetTag("User");
 	bot2->SetTag("Bot2");
+
+	TimerManager::Get().StartTimer(3000, [this]() { m_bShouldStartRound = true; });
 }
 
 void GameplayGameMode::LeaveGame()

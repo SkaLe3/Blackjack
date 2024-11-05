@@ -29,6 +29,11 @@ void Card::Destroy()
 }
 
 
+int32 Card::GetValue()
+{
+	 return (int32)(byte)m_Rank;
+}
+
 void Card::TurnOver(float duration, byte axis /*= 0*/)
 {
 	GetAnimationComponent()->StartFlipAnimation(duration, axis);
@@ -55,6 +60,11 @@ void Card::AssignFrontFace(const String& faceName)
 void Card::AssignBackFace(const String& backName)
 {
 	m_FacesMapping[ECardFace::Back] = backName;
+}
+
+void Card::AssignRank(ECardRank rank)
+{
+	m_Rank = rank;
 }
 
 void Card::SetInitialState(ECardFace initialFace)

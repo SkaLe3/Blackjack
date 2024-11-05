@@ -3,6 +3,8 @@
 
 DECLARE_DELEGATE_NO_PARAMS(BettingStageStarted)
 DECLARE_DELEGATE_NO_PARAMS(DealingCardsStageStarted)
+DECLARE_DELEGATE_NO_PARAMS(PlayerTurnStageStarted)
+
 
 DECLARE_DELEGATE_NO_PARAMS(BetPlaced)
 
@@ -15,15 +17,17 @@ struct RoundStateMachine
 	// Broadcast to players
 	BettingStageStarted	OnBettingStageStarted;
 	DealingCardsStageStarted OnDealingcardsStageStarted;
+	PlayerTurnStageStarted OnPlayerTurnStageStarted;
 
 	//Broadcast to gamemode
 	BetPlaced OnBetPlaced;
 
 
 	// Constants
-	uint32 MaxBet = 50;
-	uint32 MinBet = 2;
-	float CardsDealingInterval = 600; // In millis, TODO: make in seconds
+	const uint32 MaxBet = 50;
+	const uint32 MinBet = 2;
+	const float CardsDealingInterval = 600; // In millis, TODO: make in seconds
+	const float TimeToStartRound = 3;
 
 // 	bool BettingStarted = false;
 // 	bool DealingCardsAllStarted = false;

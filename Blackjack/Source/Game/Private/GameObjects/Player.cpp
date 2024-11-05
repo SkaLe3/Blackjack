@@ -106,7 +106,10 @@ void Player::AllowToPlay()
 {
 	// Consider moving this to GameMode
 	GameState->OnBettingStageStarted.Add([this]() { m_State->AllowedToBet = true; });
-	GameState->OnDealingcardsStageStarted.Add([this](){m_State->AllowedToBet = false;});
+	GameState->OnDealingcardsStageStarted.Add([this]() { m_State->AllowedToBet = false; });
+	GameState->OnPlayerTurnStageStarted.Add([this]() { m_State->AllowedToTurn = true; });
+
+	//Next subscription should be added only if player continues to play
 
 	BJ_LOG_INFO("%s allowed to play", GetTag().c_str());
 }
@@ -114,6 +117,7 @@ void Player::AllowToPlay()
 void Player::AllowTurn()
 {
 	m_State->ActiveTurn = true;
+	BJ_LOG_INFO("%s Turn:", GetTag().c_str());
 }
 
 void Player::ForbidTurn()

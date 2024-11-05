@@ -1,7 +1,7 @@
 #pragma once
 #include "World/Entities/GameObject.h"
 
-#include <stack>
+#include <vector>
 
 class Card;
 
@@ -17,8 +17,10 @@ public:
 	void PopulateDeck();
 	SharedPtr<Card> PullCard();
 
-	void Shuffle();
+	void Shuffle(bool bWithAnimation = true);
+private:
+	void Animate();
 
 private:
-	std::stack<SharedPtr<Card>> m_Cards;
+	std::vector<SharedPtr<Card>> m_Cards;
 };

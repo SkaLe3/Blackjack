@@ -28,7 +28,7 @@ void Deck::PopulateDeck()
 		for (int j = 0; j < 13; j++)
 		{
 			SharedPtr<Card> newCard = GetWorld()->SpawnGameObject<Card>();
-			m_Cards.push(newCard);
+			m_Cards.push_back(newCard);
 			newCard->AttachToObject(GetSelf());
 			float index = i * 13 + j;
 			newCard->GetTransform().Translation = { index * 0.1, index * 0.1, index };
@@ -47,33 +47,29 @@ SharedPtr<Card> Deck::PullCard()
 {
 	if (!m_Cards.empty())
 	{
-		SharedPtr<Card> topCard = m_Cards.top();
-		m_Cards.pop();
+		SharedPtr<Card> topCard = m_Cards.back();
+		m_Cards.pop_back();
 		return topCard;
 	}
 	return nullptr;
 }
 
-void Deck::Shuffle()
+void Deck::Shuffle(bool bWithAnimation)
 {
-	// Consider using a vector for the deck to improve performance.
-	// Although this approach is inefficient, it only runs once per round and is acceptable in this context.
-
-	 std::vector<SharedPtr<Card>> cards;
-	 while (!m_Cards.empty())
-	 {
-		 cards.push_back(m_Cards.top());
-		 m_Cards.pop();
-	 }
-
 	 std::random_device rd;
 	 std::mt19937 g(rd());
-	 std::shuffle(cards.begin(), cards.end(), g);
+	 std::shuffle(m_Cards.begin(), m_Cards.end(), g);
 
-	 for (size_t index = 0; index < cards.size(); index++)
+	 for (size_t index = 0; index < m_Cards.size(); index++)
 	 {
-		 m_Cards.push(cards[index]);
-		 cards[index]->GetTransform().Translation = {index * 0.1, index * 0.1, index * 0.1f};
+		 m_Cards[index]->GetTransform().Translation = {index * 0.1, index * 0.1, index * 0.1f};
 	 }
+	 Animate();
+}
+
+
+void Deck::Animate()
+{
+
 }
 

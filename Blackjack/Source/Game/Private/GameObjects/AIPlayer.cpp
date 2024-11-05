@@ -26,17 +26,22 @@ void AIPlayer::AllowToPlay()
 void AIPlayer::AllowTurn()
 {
 	Super::AllowTurn();
+	if (m_State->AllowedToBet)
+		TimerManager::Get().StartTimer(1000, [this]() { PlaceBet(); });
 
-	TimerManager::Get().StartTimer(1000, [this](){ PlaceBet(); }, false, true);
+	if (m_State->AllowedToTurn)
+		TimerManager::Get().StartTimer(1000, [this]() { MakeTurn(); });
 }
 
 void AIPlayer::PlaceBet()
 {
-	if (m_State->AllowedToBet && IsMyTurn())
-	{
-		PlaceChip(EChipType::Blue);
-		ConfirmBet();
-	}
+	PlaceChip(EChipType::Blue);
+	ConfirmBet();
+
 }
 
+void AIPlayer::MakeTurn()
+{
+	BJ_LOG_INFO("Make turn %s", GetTag().c_str());
+}
 

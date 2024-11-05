@@ -18,6 +18,7 @@ public:
 	//~ End Player Interface
 
 	void PlaceBet();
+	void MakeTurn();
 
 
 private:
