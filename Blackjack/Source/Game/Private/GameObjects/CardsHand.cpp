@@ -39,7 +39,6 @@ void CardsHand::AcceptCard(SharedPtr<Card> card, bool m_bTurnOver /*= true*/)
 		card->AttachToObject(GetSelf());
 		card->GetTransform() = Transform();
 		card->GetTransform().Translation.x += m_FirstHand.size() * cardOffset - firstCardOffset;
-		card->GetTransform().Translation.z = 100;
 		Transform inHandTransform = card->GetWorldTransform();
 		card->DetachFromObject();
 
@@ -47,6 +46,8 @@ void CardsHand::AcceptCard(SharedPtr<Card> card, bool m_bTurnOver /*= true*/)
 		inHandPosition = inHandTransform.Translation;
 		inDeckRotation = inDeckTransform.Rotation.z;
 		inHandRotation = inHandTransform.Rotation.z;
+		card->GetTransform().Translation = inDeckPosition;
+		card->GetTransform().Translation.z = 100;
 
 		m_LastCard = card;
 		if (m_bTurnOver)

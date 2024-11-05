@@ -60,7 +60,6 @@ void CardAnimationComponent::StartTransformAnimation(float duration, const glm::
 		m_TransformDuration = duration;
 		m_bAnimatingTransform = true;
 		m_TransformElapsed = 0;
-		m_CardTranslation = m_Card->GetTransform().Translation;
 	}
 }
 

@@ -35,6 +35,7 @@ void GameplayGameMode::OnEvent(Event& event)
 
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
+#ifdef BJ_DEBUG
 		if (event.Ev.key.keysym.sym == SDLK_q)
 		{
 			if (m_Players[0]->IsAbleToTakeCard())
@@ -60,7 +61,7 @@ void GameplayGameMode::OnEvent(Event& event)
 			if (m_Dealer->IsAbleToTakeCard())
 				m_Dealer->PlaceCard(m_Deck->PullCard());
 		}
-
+#endif
 
 	}
 }
@@ -217,17 +218,21 @@ void GameplayGameMode::OnDealCards()
 {
 	float interval = m_GameState->CardsDealingInterval;
 	int32 i = 0;
-	for (auto& player : m_Players)
+	/*
+	 * Ensure that the interval between dealing cards to the same player exceeds the duration of the card dealing animation.
+	 * In future iterations, implement a more comprehensive check for this condition.
+	 * Currently, if there is only one player and the dealer in the game, the interval should be greater than 0.5 times the duration of the animation.
+	 */
+	for (auto& player : m_ActivePlayers)
 	{
 		// TODO: Make macro for binding, like for events
 		TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(player); });
 	}
 	TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(m_Dealer); });
-	for (auto& player : m_Players)
+	i += 3;
+	for (auto& player : m_ActivePlayers)
 	{
-		// TODO: Make macro for binding, like for events
 		TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(player); });
-		i++;
 	}
 	TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(m_Dealer, false); });
 

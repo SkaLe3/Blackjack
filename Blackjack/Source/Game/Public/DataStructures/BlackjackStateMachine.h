@@ -23,7 +23,7 @@ struct RoundStateMachine
 	// Constants
 	uint32 MaxBet = 50;
 	uint32 MinBet = 2;
-	float CardsDealingInterval = 1000; // In millis, TODO: make in seconds
+	float CardsDealingInterval = 600; // In millis, TODO: make in seconds
 
 // 	bool BettingStarted = false;
 // 	bool DealingCardsAllStarted = false;
