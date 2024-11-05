@@ -20,7 +20,6 @@ void AIPlayer::Tick(float deltaTime)
 void AIPlayer::AllowToPlay()
 {
 	Super::AllowToPlay();
-	RoundStateMachine& gameState = static_pointer_cast<GameplayGameMode>(GetWorld()->GetGameMode())->GetGameState();
 	// TODO: Add callbacks
 }
 

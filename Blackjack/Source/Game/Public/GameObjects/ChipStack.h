@@ -17,17 +17,22 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
-	void AddChip(EChipType chip);
+	bool AddChip(EChipType chip);
 	void RemoveChip();
 	uint32 GetChipsCount();
+	uint32 GetBetValue();
 
 	void CorrectRotation();
-	
+
 
 private:
-   	std::stack<SharedPtr<Chip>> m_Chips;
+	// Used vector instead of stack to be able to iterate through it
+   	std::vector<SharedPtr<Chip>> m_Chips;
 	SharedPtr<Core::TextureAtlas> m_ChipsTexture;
 
 	SharedPtr<Core::SoundBase> m_ChipSetSound;
 	SharedPtr<Core::SoundBase> m_ChipRemoveSound;
+	SharedPtr<Core::SoundBase> m_ErrorSound;
+
+	const int32 m_MaxChipsInBet = 20;
 };

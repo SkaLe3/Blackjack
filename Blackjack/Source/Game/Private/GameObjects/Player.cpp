@@ -13,6 +13,7 @@ using namespace Core;
 Player::Player()
 {
 	m_ConfirmSound = AssetManager::Get().Load<SoundAsset>("S_Confirm")->SoundP;
+	m_ErrorSound = AssetManager::Get().Load<SoundAsset>("S_Error")->SoundP;
 	m_State = MakeShared<PlayerState>();
 }
 
@@ -30,15 +31,27 @@ void Player::BeginPlay()
 	SET_BOX_DEBUG_COLOR((glm::vec4{ 1, 0, 1, 1 }));  // Magenta
 	GetBoxComponent()->SetHalfSize({ 2, 2 });
 
-
+	OnChipAction.Add([](uint32 value) { BJ_LOG_INFO("BetValue: %d", value); }); // TODO : Replace with UI function
 }
 
 void Player::PlaceChip(EChipType chip)
 {
 	if (auto bet = m_Bet.lock())
 	{
-		bet->CorrectRotation();
-		bet->AddChip(chip);
+		if ((byte)chip + bet->GetBetValue() > m_Balance)
+		{
+			BJ_LOG_INFO("Chip not placed! Not enought balance to add $%d", (int32)(byte)chip);
+			AudioSystem::PlaySound(m_ErrorSound);
+			return;
+		}
+		bet->CorrectRotation();	// For corner players
+		bool placed = bet->AddChip(chip);
+		if (!placed)
+		{
+			AudioSystem::PlaySound(m_ErrorSound);
+			return;
+		}
+		OnChipAction.Broadcast(bet->GetBetValue()); // TODO: Bind UI function to update text label
 	}
 }
 
@@ -52,9 +65,31 @@ void Player::TakeLastChip()
 
 void Player::ConfirmBet()
 {
-	SharedPtr<GameplayGameMode> GM = static_pointer_cast<GameplayGameMode>(GetWorld()->GetGameMode());
-	GM->BetPlacedEvent();
-	AudioSystem::PlaySound(m_ConfirmSound);
+	if (auto bet = m_Bet.lock())
+	{
+		uint32 value = bet->GetBetValue();
+		if (value < GameState->MinBet || value > GameState->MaxBet)
+		{
+			// To avoid redutant branching in Release build
+#ifdef BJ_DEBUG
+			if (value < GameState->MinBet)
+			{
+				BJ_LOG_INFO("Cannot confirm bet! Bet is below the minimum. Bet: $%d | MinBet: $%d", value, GameState->MinBet);
+			}
+			else
+			{
+				BJ_LOG_INFO("Cannot confirm bet! Bet is above the maximum. Bet: $%d | MinBet: $%d", value, GameState->MaxBet);
+			}
+#endif 
+			AudioSystem::PlaySound(m_ErrorSound);
+			return;
+		}
+		GameState->OnBetPlaced.Broadcast();
+		AudioSystem::PlaySound(m_ConfirmSound);
+		BJ_LOG_INFO("Bet placed! Player: %s", GetTag().c_str());
+
+	}
+
 }
 
 void Player::SetState(SharedPtr<PlayerState> state)
@@ -62,16 +97,14 @@ void Player::SetState(SharedPtr<PlayerState> state)
 	m_State = state;
 }
 
-bool Player::HasBalance()
+uint32 Player::GetBalance()
 {
-	// TODO: Change to check balance
-	return true;
+	return m_Balance;
 }
 
 void Player::AllowToPlay()
 {
-	RoundStateMachine& gameState = static_pointer_cast<GameplayGameMode>(GetWorld()->GetGameMode())->GetGameState();
-	gameState.OnBettingStageStarted.Add([=]() { m_State->AllowedToBet = true; });
+	GameState->OnBettingStageStarted.Add([=]() { m_State->AllowedToBet = true; });
 
 	BJ_LOG_INFO("%s allowed to play", GetTag().c_str());
 }

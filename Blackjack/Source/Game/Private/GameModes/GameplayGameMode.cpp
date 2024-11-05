@@ -81,7 +81,6 @@ void GameplayGameMode::Tick(float deltaTime)
 {
 	if (m_bShouldStartGame)
 	{
-		m_bShouldStartGame = false;
 		StartRound();
 	}
 
@@ -94,20 +93,24 @@ void GameplayGameMode::Tick(float deltaTime)
 	{
 		for (auto& player : m_Players)
 		{
-			bool registered = player->HasBalance();
+			bool registered = player->GetBalance() >= m_GameState->MinBet;
 			if (registered)
 			{
-				player->AllowToPlay();
+				player->GameState = m_GameState;
+				player->AllowToPlay(); // Sets all event callbacks
 				m_ActivePlayers.push_back(player);
 			}
 		}
-		m_GameState.OnBettingStageStarted.Add([=](){ShiftTurn();}) ;
+		SubscribeForEvents();
+		// Proceed to betting
 		ShiftStage();
-		// This happens when all players already subscribed for all events they need
+
+		// On this moment all players already subscribed for all events they need
 	}
 	else if ((ERoundStage)m_RoundStage == ERoundStage::Betting)
 	{
-		m_GameState.OnBettingStageStarted.Invoke();
+		// Allows all players to place bets (if its their turn)
+		m_GameState->OnBettingStageStarted.Invoke();
 		if (WaitForBets())
 			ShiftStage();
 	}
@@ -115,14 +118,18 @@ void GameplayGameMode::Tick(float deltaTime)
 
 void GameplayGameMode::StartRound()
 {
+	// Remove all bindings
+	m_GameState = MakeShared<RoundStateMachine>();
+
 	m_Deck = GetWorld()->SpawnGameObject<Deck>();
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
 	m_Deck->PopulateDeck();
 	m_Deck->Shuffle();
 
 	m_RoundStage = ERoundStage::Registration;
-	m_PlayerTurn = -1;
-	//m_GameState.OnBettingStageStarted.Broadcast();
+	ResetTurn();
+
+	m_bShouldStartGame = false;
 
 
 
@@ -136,6 +143,7 @@ void GameplayGameMode::EndRound()
 	}
 
 	m_Deck->Destroy();
+	m_bShouldStartGame = true;	// TODO: move to another function, after player confirmation to start next round
 }
 
 void GameplayGameMode::RoundResult()
@@ -190,15 +198,22 @@ void GameplayGameMode::LeaveGame()
 	World::OpenScene<MenuScene>();
 }
 
-RoundStateMachine& GameplayGameMode::GetGameState()
+// RoundStateMachine& GameplayGameMode::GetGameState()
+// {
+// 	return m_GameState;
+// }
+
+void GameplayGameMode::OnBetPlaced()
 {
-	return m_GameState;
+	m_GameState->PlacedBetsCount++;
+	ShiftTurn();
 }
 
-void GameplayGameMode::BetPlacedEvent()
+void GameplayGameMode::SubscribeForEvents()
 {
-	m_GameState.PlacedBetsCount++;
-	ShiftTurn();
+	// Gives turn to first player
+	m_GameState->OnBettingStageStarted.Add([this]() { ShiftTurn(); });
+	m_GameState->OnBetPlaced.Add([this]() { OnBetPlaced(); });
 }
 
 void GameplayGameMode::ShiftStage()
@@ -225,6 +240,11 @@ void GameplayGameMode::ShiftTurn()
 
 }
 
+void GameplayGameMode::ResetTurn()
+{
+	m_PlayerTurn = -1;
+}
+
 void GameplayGameMode::StartBetting()
 {
 
@@ -232,6 +252,6 @@ void GameplayGameMode::StartBetting()
 
 bool GameplayGameMode::WaitForBets()
 {
-	return m_GameState.PlacedBetsCount == m_GameState.NumberOfPlayers;
+	return m_GameState->PlacedBetsCount == m_GameState->NumberOfPlayers;
 }
 

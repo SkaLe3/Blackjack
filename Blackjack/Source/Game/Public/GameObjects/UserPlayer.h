@@ -3,6 +3,7 @@
 
 #include <Core/Event.h> 
 
+
 class UserPlayer : public Player
 {
 	DECLARE_SUPER(Player)
@@ -12,4 +13,7 @@ public:
 	//~ End Object Interface
 
 	void OnEvent(Core::Event& event);
+
+
+
 };

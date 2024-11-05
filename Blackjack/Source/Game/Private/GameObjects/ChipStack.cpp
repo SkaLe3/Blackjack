@@ -14,6 +14,7 @@ ChipStack::ChipStack() : GameObject()
 	m_ChipsTexture = MakeShared<ChipTextureAtlas>();
 	m_ChipSetSound = AssetManager::Get().Load<SoundAsset>("S_PokerChip")->SoundP;
 	m_ChipRemoveSound = AssetManager::Get().Load<SoundAsset>("S_PokerChips")->SoundP;
+	m_ErrorSound = AssetManager::Get().Load<SoundAsset>("S_Error")->SoundP;
 }
 
 void ChipStack::BeginPlay()
@@ -24,8 +25,13 @@ void ChipStack::BeginPlay()
 	GetBoxComponent()->SetHalfSize({ 2, 2 });
 }
 
-void ChipStack::AddChip(EChipType chip)
+bool ChipStack::AddChip(EChipType chip)
 {
+	if (m_MaxChipsInBet <= m_Chips.size())
+	{
+		BJ_LOG_INFO("Chip not placed! Max bet amount reached");
+		return false;
+	}
 	SharedPtr<Chip> topChip = GetWorld()->SpawnGameObject<Chip>();
 	topChip->AttachToObject(GetSelf());
 	topChip->GetTransform().Translation.y = GetChipsCount() * topChip->GetHeight();
@@ -33,16 +39,17 @@ void ChipStack::AddChip(EChipType chip)
 	auto spriteComp = topChip->GetSpriteComponent();
 	spriteComp->SetAtlas(m_ChipsTexture);
 	topChip->SetType(chip);
-	m_Chips.push(topChip);
+	m_Chips.push_back(topChip);
 	AudioSystem::PlaySound(m_ChipSetSound);
+	return true;
 }
 
 void ChipStack::RemoveChip()
 {
 	if (!m_Chips.empty())
 	{
-		m_Chips.top()->Destroy();
-		m_Chips.pop();
+		m_Chips.back()->Destroy();
+		m_Chips.pop_back();
 
 		AudioSystem::PlaySound(m_ChipRemoveSound);
 	}
@@ -53,6 +60,17 @@ void ChipStack::RemoveChip()
 uint32 ChipStack::GetChipsCount()
 {
 	return m_Chips.size();
+}
+
+uint32 ChipStack::GetBetValue()
+{
+	uint32 sum = 0;
+	for (auto& chip : m_Chips)
+	{
+		byte chipValue = (byte)(chip->GetType());
+		sum += chipValue;
+	}
+	return sum;
 }
 
 void ChipStack::CorrectRotation()
