@@ -1,4 +1,8 @@
 #pragma once
+#include <Core/CoreDefines.h>
+
+DECLARE_DELEGATE_NO_PARAMS(BettingStageStarted)
+
 
 struct RoundStateMachine
 {
@@ -18,4 +22,6 @@ struct RoundStateMachine
 	bool DealerReveal = false;
 	bool GivingWins = false;
 	bool Restart = false;
+
+	BettingStageStarted	OnBettingStageStarted;
 };

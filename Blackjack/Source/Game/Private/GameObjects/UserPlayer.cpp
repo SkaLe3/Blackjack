@@ -4,11 +4,18 @@
 
 using namespace Core;
 
+void UserPlayer::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+
 void UserPlayer::OnEvent(Event& event)
 {
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
-		if (m_State.lock()->AllowedToBet)
+		if (m_State->AllowedToBet && IsMyTurn())
 		{
 
 			if (event.Ev.key.keysym.sym == SDLK_EQUALS)

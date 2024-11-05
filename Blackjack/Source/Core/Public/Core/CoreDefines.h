@@ -2,14 +2,17 @@
 #include "IO/Log.h"
 
 #ifdef BJ_DEBUG
-    #define BJ_DEBUGBREAK() __debugbreak()
-    #define BJ_ENABLE_ASSERTS
+#define BJ_DEBUGBREAK() __debugbreak()
+#define BJ_ENABLE_ASSERTS
 #else
-    #define BJ_DEBUGBREAK()
+#define BJ_DEBUGBREAK()
 #endif
 
 
 #define BJ_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) {return this->fn(std::forward<decltype(args)>(args)...);}
+
+#include <vector>
+#include <functional>
 
 #define DECLARE_DELEGATE_NO_PARAMS(name)                                                          \
 struct name                                                                                       \
@@ -22,11 +25,20 @@ public:                                                                         
 		{                                                                                         \
 			func();                                                                               \
 		}                                                                                         \
-	}                                                                                             \
-                                                                                                  \
+	}																							  \
+	void Invoke()																				  \
+	{																							  \
+		Broadcast();																			  \
+		Clear();																				  \
+	}																							  \
+	void Clear()																				  \
+	{																							  \
+		callbacks.clear();																		  \
+	}																							  \
+																								  \
 private:                                                                                          \
 	std::vector<std::function<void()>> callbacks;                                                 \
-};         
+};
 
 #define DECLARE_DELEGATE_ONE_PARAM(name, P1TYPE)												  \
 struct name                                                                                       \
@@ -103,7 +115,7 @@ using SharedPtr = ::std::shared_ptr<T>;
 template<typename T, typename ... Args>
 constexpr SharedPtr<T> MakeShared(Args&& ... args)
 {
-    return std::make_shared<T>(std::forward<Args>(args)...);
+	return std::make_shared<T>(std::forward<Args>(args)...);
 }
 
 template<typename T>

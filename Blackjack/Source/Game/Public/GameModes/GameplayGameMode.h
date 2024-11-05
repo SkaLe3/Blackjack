@@ -13,15 +13,16 @@
 
 enum class ERoundStage : byte
 {
-   Betting = 0,
-   DealingCardsAll,
-   DealingCardsPlayers,
-   DealingCardDealer,
-   CheckForBlackJack,
-   PlayerTurn,
-   DealerReveal,
-   GivingWins,
-   Restart
+	Registration = 0,
+	Betting,
+	DealingCardsAll,
+	DealingCardsPlayers,
+	DealingCardDealer,
+	CheckForBlackJack,
+	PlayerTurn,
+	DealerReveal,
+	GivingWins,
+	Restart
 
 };
 
@@ -56,11 +57,14 @@ public:
 	void RestartGame();
 	void LeaveGame();
 
-
+	RoundStateMachine& GetGameState();
 	// GameEvents
 	void BetPlacedEvent();
 	// TODO: move some functions to private section
 private:
+	void ShiftStage();
+	void OnNewStage();
+	void ShiftTurn();
 	void StartBetting();
 	bool WaitForBets();
 
@@ -72,7 +76,7 @@ private:
 	SharedPtr<Deck> m_Deck;
 	SharedPtr<Dealer> m_Dealer;
 	std::vector<SharedPtr<Player>> m_Players;
-	std::vector<SharedPtr<PlayerState>> m_PStates;
+	std::vector<SharedPtr<Player>> m_ActivePlayers;
 
 	// Constants
 	float m_MaxBet = 50;
@@ -80,10 +84,12 @@ private:
 
 	// Gameplay
 	ERoundStage m_RoundStage;
-	byte m_PlayerTurn;
+	int32 m_PlayerTurn;
 	//std::vector<ERoundStage> m_Stages;
 	bool m_ShiftStage = false;
 
 	RoundStateMachine m_GameState;
+
+	bool m_bShouldStartGame = true;
 
 };

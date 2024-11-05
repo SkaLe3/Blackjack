@@ -17,6 +17,7 @@
 
 #include <glm/ext/scalar_constants.hpp>
 #include <random>
+#include <SDL2/SDL.h>
 
 using namespace Core;
 
@@ -78,18 +79,37 @@ void GameplayGameMode::BeginPlay()
 
 void GameplayGameMode::Tick(float deltaTime)
 {
+	if (m_bShouldStartGame)
+	{
+		m_bShouldStartGame = false;
+		StartRound();
+	}
+
 	if (m_ShiftStage)
 	{
 		m_RoundStage = (ERoundStage)((byte)m_RoundStage + 1); // TODO: Make operator++()
-		m_ShiftStage = false;
+		OnNewStage();
 	}
-	if ((ERoundStage)m_RoundStage == ERoundStage::Betting)
+	if ((ERoundStage)m_RoundStage == ERoundStage::Registration)
 	{
-		if (!m_GameState.BettingStarted)
+		for (auto& player : m_Players)
 		{
-			m_GameState.BettingStarted = true;
+			bool registered = player->HasBalance();
+			if (registered)
+			{
+				player->AllowToPlay();
+				m_ActivePlayers.push_back(player);
+			}
 		}
-		m_ShiftStage = WaitForBets();
+		m_GameState.OnBettingStageStarted.Add([=](){ShiftTurn();}) ;
+		ShiftStage();
+		// This happens when all players already subscribed for all events they need
+	}
+	else if ((ERoundStage)m_RoundStage == ERoundStage::Betting)
+	{
+		m_GameState.OnBettingStageStarted.Invoke();
+		if (WaitForBets())
+			ShiftStage();
 	}
 }
 
@@ -100,9 +120,10 @@ void GameplayGameMode::StartRound()
 	m_Deck->PopulateDeck();
 	m_Deck->Shuffle();
 
-	m_RoundStage = ERoundStage::Betting;
+	m_RoundStage = ERoundStage::Registration;
+	m_PlayerTurn = -1;
+	//m_GameState.OnBettingStageStarted.Broadcast();
 
-	m_PStates[0]->AllowedToBet = true;
 
 
 }
@@ -156,15 +177,9 @@ void GameplayGameMode::RestartGame()
 	m_Players.push_back(bot1);
 	m_Players.push_back(player);
 	m_Players.push_back(bot2);
-
-	m_PStates.emplace_back(MakeShared<PlayerState>());
-	m_PStates.emplace_back(MakeShared<PlayerState>());
-	m_PStates.emplace_back(MakeShared<PlayerState>());
-	m_Players[0]->SetState(m_PStates[0]);
-	m_Players[1]->SetState(m_PStates[1]);
-	m_Players[2]->SetState(m_PStates[2]);
-
-	StartRound();
+	bot1->SetTag("Bot1");
+	player->SetTag("User");
+	bot2->SetTag("Bot2");
 }
 
 void GameplayGameMode::LeaveGame()
@@ -175,13 +190,39 @@ void GameplayGameMode::LeaveGame()
 	World::OpenScene<MenuScene>();
 }
 
+RoundStateMachine& GameplayGameMode::GetGameState()
+{
+	return m_GameState;
+}
+
 void GameplayGameMode::BetPlacedEvent()
 {
 	m_GameState.PlacedBetsCount++;
-	m_PStates[m_PlayerTurn]->AllowedToBet = false;
-	if (m_PlayerTurn < m_GameState.NumberOfPlayers -1)
-		m_PStates[m_PlayerTurn+1]->AllowedToBet = true;
-	m_PlayerTurn++;
+	ShiftTurn();
+}
+
+void GameplayGameMode::ShiftStage()
+{
+	m_ShiftStage = true;
+}
+
+void GameplayGameMode::OnNewStage()
+{
+	m_ShiftStage = false;
+}
+
+void GameplayGameMode::ShiftTurn()
+{
+	if (m_PlayerTurn >= 0 && m_PlayerTurn < m_ActivePlayers.size())
+	{
+		m_ActivePlayers[m_PlayerTurn]->ForbidTurn();
+	}
+	if (m_PlayerTurn + 1 < (int32)m_ActivePlayers.size())
+	{
+		m_ActivePlayers[m_PlayerTurn + 1]->AllowTurn();
+		m_PlayerTurn++;
+	}
+
 }
 
 void GameplayGameMode::StartBetting()
