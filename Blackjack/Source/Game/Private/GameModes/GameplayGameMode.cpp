@@ -284,7 +284,7 @@ void GameplayGameMode::OnRemoveFinished()
 								 return ptr->HasFinishedGame();
 							 }),
 			  m_ActivePlayers.end());
-	if (m_ActivePlayers == 0)
+	if (m_ActivePlayers.size() == 0)
 		m_RoundStage = ERoundStage::Restart;
 }
 

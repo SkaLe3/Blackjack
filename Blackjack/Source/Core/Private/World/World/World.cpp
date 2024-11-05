@@ -60,7 +60,7 @@ namespace Core
 			if (!object->GetSprite()->IsVisible()) continue;
 			renderer->DrawSprite(object->GetTransformMatrix(), object->GetTransform().Scale, object->GetSprite());
 		}
-#ifdef BJ_DEBUG
+#if BJ_DEBUG_HELPERS
 		auto ticks = m_Registry->GetTickComponents();
 		for (SharedPtr<GameComponent>& object : ticks)
 		{
