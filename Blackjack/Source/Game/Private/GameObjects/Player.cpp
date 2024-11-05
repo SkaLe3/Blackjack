@@ -173,8 +173,8 @@ void Player::AllowToPlay()
 	GameState->OnBettingStageStarted.Add([this]() { m_State->AllowedToBet = true; });
 	GameState->OnDealingcardsStageStarted.Add([this]() { m_State->AllowedToBet = false; });
 	GameState->OnPlayerTurnStageStarted.Add([this]() { m_State->AllowedToTurn = true; });
+	GameState->OnDealerRevealStageStarted.Add([this]() { m_State->AllowedToTurn = false; });
 
-	//Next subscription should be added only if player continues to play
 
 	BJ_LOG_INFO("%s allowed to play", GetTag().c_str());
 }
@@ -189,11 +189,10 @@ void Player::AllowTurn()
 		if (auto hand = m_Cards.lock())
 		{
 			if (hand->CalculateHandValue() >15)
-			{
-				TimerManager::Get().StartTimer(10000.f, [this](){ CallBlackjack();}); // Wait a bit before ending turn
+			{	
+				ForbidTurn();
+				TimerManager::Get().StartTimer(2000.f, [this](){ CallBlackjack();}); // Wait a bit before ending turn
 				m_State->FinishedGame = true;
-				m_State->RoundResult = EPlayerResult::BlackjackWin;
-				SharedPtr<Player> player = std::static_pointer_cast<Player>(GetSelf().lock());		
 			}
 		}
 	}
@@ -206,4 +205,9 @@ void Player::ForbidTurn()
 bool Player::IsMyTurn()
 {
 	return m_State->ActiveTurn;
+}
+
+bool Player::HasFinishedGame()
+{
+	return m_State->FinishedGame;
 }

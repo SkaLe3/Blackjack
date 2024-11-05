@@ -5,6 +5,7 @@
 DECLARE_DELEGATE_NO_PARAMS(BettingStageStartedDelegate)
 DECLARE_DELEGATE_NO_PARAMS(DealingCardsStageStartedDelegate)
 DECLARE_DELEGATE_NO_PARAMS(PlayerTurnStageStartedDelegate)
+DECLARE_DELEGATE_NO_PARAMS(DealerRevealStartedDelegate)
 
 
 DECLARE_DELEGATE_NO_PARAMS(BetPlacedDelegate)
@@ -25,6 +26,7 @@ struct BJGameState
 	BettingStageStartedDelegate	OnBettingStageStarted;
 	DealingCardsStageStartedDelegate OnDealingcardsStageStarted;
 	PlayerTurnStageStartedDelegate OnPlayerTurnStageStarted;
+	DealerRevealStartedDelegate OnDealerRevealStageStarted;
 
 	//Broadcast to gamemode
 	BetPlacedDelegate OnBetPlaced;

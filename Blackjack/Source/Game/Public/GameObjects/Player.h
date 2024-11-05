@@ -51,6 +51,7 @@ public:
 	void ForbidTurn();
 	bool IsMyTurn();
 	virtual void GameResult(EPlayerResult result) {}
+	bool HasFinishedGame();
 protected:
 
 public:

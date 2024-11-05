@@ -60,6 +60,7 @@ public:
 	void OnDeckReady();
 	void OnBetPlaced();
 	void OnDealCards();
+	void OnRemoveFinished();
 	void OnPlayerHit(SharedPtr<Player> player);
 	void OnPlayerStand(SharedPtr<Player> player);
 	void OnPlayerDoubleDown(SharedPtr<Player> player);
@@ -73,8 +74,9 @@ private:
 	void ShiftStage();
 	void OnNewStage();
 	void ShiftTurn();
+	void OnNewTurn();
+	void MakeTurn();
 	void ResetTurn();
-	void StartBetting();
 	bool WaitForBets();
 	bool WaitForTurns();
 
@@ -89,6 +91,7 @@ private:
 	SharedPtr<Dealer> m_Dealer;
 	std::vector<SharedPtr<Player>> m_Players;
 	std::vector<SharedPtr<Player>> m_ActivePlayers;
+	std::vector<SharedPtr<Player>> m_FinishedPlayers;
 
 
 
@@ -99,7 +102,7 @@ private:
 	bool m_ShiftStage = false;
 	bool m_bShouldStartRound = false;
 	bool m_bDeckReady = false;
-	bool m_NextTurn = false;
+	bool m_MakeTurn = false;
 
 	SharedPtr<BJGameState> m_GameState;
 	

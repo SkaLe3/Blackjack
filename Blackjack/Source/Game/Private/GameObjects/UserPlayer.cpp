@@ -45,7 +45,7 @@ void UserPlayer::OnEvent(Event& event)
 {
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
-		if (m_State->AllowedToBet && IsMyTurn())
+		if (m_State->AllowedToBet && IsMyTurn() && !HasFinishedGame())
 		{
 
 			if (event.Ev.key.keysym.sym == SDLK_1)
@@ -81,7 +81,7 @@ void UserPlayer::OnEvent(Event& event)
 				ConfirmBet();
 			}
 		}
-		if (m_State->AllowedToTurn && IsMyTurn())
+		if (m_State->AllowedToTurn && IsMyTurn() && !HasFinishedGame())
 		{
 			if (event.Ev.key.keysym.sym == SDLK_h)
 			{
