@@ -3,21 +3,7 @@
 
 #include "GameObjects/Card.h"
 
-struct CardFinishMoveAnimationDelegate
-{
-public:
-	void Add(std::function<void()> callback) { callbacks.push_back(callback); }
-	void operator()()
-	{
-		for (auto& func : callbacks)
-		{
-			func();
-		}
-	}
-
-private:
-	std::vector<std::function<void()>> callbacks;
-};
+DECLARE_DELEGATE_NO_PARAMS(CardFinishMoveAnimationDelegate)
 
 class CardAnimationComponent : public Core::GameComponent
 {

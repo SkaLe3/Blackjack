@@ -25,22 +25,7 @@ enum class ERoundStage : byte
 
 };
 
-// TODO: Make Macro
-struct RoundStageShiftDelegate
-{
-public:
-	void Add(std::function<void(ERoundStage)> callback) { callbacks.push_back(callback); }
-	void operator()(ERoundStage newStage)
-	{
-		for (auto& func : callbacks)
-		{
-			func(newStage);
-		}
-	}
-
-private:
-	std::vector<std::function<void(ERoundStage)>> callbacks;
-};
+DECLARE_DELEGATE_ONE_PARAM(RoundStageShiftDelegate, ERoundStage);
 
 class ChipStack;
 class Dealer;

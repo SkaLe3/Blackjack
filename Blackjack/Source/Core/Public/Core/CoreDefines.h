@@ -11,6 +11,44 @@
 
 #define BJ_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) {return this->fn(std::forward<decltype(args)>(args)...);}
 
+#define DECLARE_DELEGATE_NO_PARAMS(name)                                                          \
+struct name                                                                                       \
+{                                                                                                 \
+public:                                                                                           \
+	void Add(std::function<void()> callback) { callbacks.push_back(callback); }                   \
+	void Broadcast()                                                                              \
+	{                                                                                             \
+		for (auto& func : callbacks)                                                              \
+		{                                                                                         \
+			func();                                                                               \
+		}                                                                                         \
+	}                                                                                             \
+                                                                                                  \
+private:                                                                                          \
+	std::vector<std::function<void()>> callbacks;                                                 \
+};         
+
+#define DECLARE_DELEGATE_ONE_PARAM(name, P1TYPE)												  \
+struct name                                                                                       \
+{                                                                                                 \
+public:                                                                                           \
+	void Add(std::function<void(P1TYPE)> callback) { callbacks.push_back(callback); }             \
+	void Broadcast(P1TYPE p1)                                                                     \
+	{                                                                                             \
+		for (auto& func : callbacks)                                                              \
+		{                                                                                         \
+			func(p1);                                                                             \
+		}                                                                                         \
+	}                                                                                             \
+                                                                                                  \
+private:                                                                                          \
+	std::vector<std::function<void(P1TYPE)>> callbacks;                                           \
+};    
+
+
+
+
+
 // Helper function to print formatted messages
 template<typename... Args>
 void PrintFormatted(const char* format, Args... args)
