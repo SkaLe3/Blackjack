@@ -17,6 +17,7 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
+	int32 GetHandValue();
 	bool IsAbleToTakeCard();
 	void TakeCard(SharedPtr<Card> card);
 	/** Alternative to TakeCard() function, to place card front face down*/

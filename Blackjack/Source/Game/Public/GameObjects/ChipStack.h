@@ -18,6 +18,7 @@ public:
 	//~ End Object Interface
 
 	bool AddChip(EChipType chip);
+	bool Double();
 	void RemoveChip();
 	uint32 GetChipsCount();
 	uint32 GetBetValue();

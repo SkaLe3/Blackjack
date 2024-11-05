@@ -57,6 +57,21 @@ void ChipStack::RemoveChip()
 
 }
 
+bool ChipStack::Double()
+{
+	if (m_MaxChipsInBet < m_Chips.size() * 2)
+	{
+		return false;
+	}
+	std::vector<SharedPtr<Chip>> chips = m_Chips;
+	for (auto& chip : chips)
+	{
+		AddChip(chip->GetType());
+	}
+	AudioSystem::PlaySound(m_ChipRemoveSound); // Combine Add and Remove sounds
+	return true;
+}
+
 uint32 ChipStack::GetChipsCount()
 {
 	return m_Chips.size();

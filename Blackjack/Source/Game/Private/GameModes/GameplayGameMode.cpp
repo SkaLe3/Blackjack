@@ -132,7 +132,12 @@ void GameplayGameMode::Tick(float deltaTime)
 	}
 	else if ((ERoundStage)m_RoundStage == ERoundStage::PlayerTurn)
 	{
-
+		m_GameState->OnPlayerTurnStageStarted.Invoke();
+		if (WaitForTurns())
+		{
+			ShiftStage();
+			ResetTurn();
+		}
 	}
 }
 
@@ -145,7 +150,7 @@ void GameplayGameMode::StartRound()
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
 	m_Deck->PopulateDeck();
 	m_Deck->Shuffle();
-	m_Deck->Animate({0, 70}, -180.f, 0.f, 4.f, 1.f);
+	m_Deck->Animate({ 0, 70 }, -180.f, 0.f, 4.f, 1.f);
 	m_Deck->GetAnimationComponent()->OnFinishShuffleAnim.Add(std::bind(&GameplayGameMode::OnDeckReady, this));
 
 	m_RoundStage = ERoundStage::Registration;
@@ -257,6 +262,50 @@ void GameplayGameMode::OnDealCards()
 	}
 	TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(m_Dealer, false); });
 
+	// Go to next stage
+	TimerManager::Get().StartTimer(interval * i + 3000, [=]() { ShiftStage(); });
+}
+
+void GameplayGameMode::OnPlayerHit(SharedPtr<Player> player)
+{
+	BJ_LOG_INFO("%s Hit", player->GetTag().c_str());
+	if (player->IsAbleToTakeCard())
+	{
+		player->TakeCard(m_Deck->PullCard());
+	}
+	EndTurnAction();
+}
+
+void GameplayGameMode::OnPlayerStand(SharedPtr<Player> player)
+{
+	BJ_LOG_INFO("%s Stand", player->GetTag().c_str());
+	EndTurnAction();
+}
+
+void GameplayGameMode::OnPlayerDoubleDown(SharedPtr<Player> player)
+{
+	BJ_LOG_INFO("%s DoubleDown", player->GetTag().c_str());
+	EndTurnAction();
+}
+
+void GameplayGameMode::OnPlayerCallBlackjack(SharedPtr<Player> player)
+{
+	BJ_LOG_INFO("%s Blackjack", player->GetTag().c_str());
+	EndTurnAction();
+	OnPlayerFinishedGame(player, EPlayerResult::BlackjackWin);
+}
+
+void GameplayGameMode::OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerResult result)	
+{
+	 m_ActivePlayers.erase(std::remove(m_ActivePlayers.begin(), m_ActivePlayers.end(), player), m_ActivePlayers.end());
+	 player->GameResult(result);
+	 // Handle balance
+}
+
+void GameplayGameMode::EndTurnAction()
+{
+	m_GameState->MadeTurnsCount++;
+	ShiftTurn();
 }
 
 void GameplayGameMode::SubscribeForEvents()
@@ -264,7 +313,13 @@ void GameplayGameMode::SubscribeForEvents()
 	// Gives turn to first player
 	m_GameState->OnBettingStageStarted.Add([this]() { ShiftTurn(); });
 	m_GameState->OnDealingcardsStageStarted.Add([this]() { OnDealCards(); });
+	m_GameState->OnPlayerTurnStageStarted.Add([this]() { ShiftTurn(); });
 	m_GameState->OnBetPlaced.Add([this]() { OnBetPlaced(); });
+	m_GameState->OnPlayerHit.Add([this](SharedPtr<Player> player) { OnPlayerHit(player); });
+	m_GameState->OnPlayerStand.Add([this](SharedPtr<Player> player) { OnPlayerStand(player); });
+	m_GameState->OnPlayerDoubleDown.Add([this](SharedPtr<Player> player) { OnPlayerDoubleDown(player); });
+	m_GameState->OnPlayerCallBlackjack.Add([this](SharedPtr<Player> player) { OnPlayerCallBlackjack(player); });
+
 }
 
 void GameplayGameMode::ShiftStage()
@@ -303,9 +358,14 @@ void GameplayGameMode::StartBetting()
 
 bool GameplayGameMode::WaitForBets()
 {
-	return m_GameState->PlacedBetsCount == m_GameState->NumberOfPlayers;
+	return m_GameState->PlacedBetsCount == m_ActivePlayers.size();
 }
 
+
+bool GameplayGameMode::WaitForTurns()
+{
+	return m_GameState->MadeTurnsCount == m_ActivePlayers.size();
+}
 
 void GameplayGameMode::DealCard(SharedPtr<Person> person, bool bFronfaceUp /*= true*/)
 {

@@ -34,6 +34,11 @@ int32 Card::GetValue()
 	 return (int32)(byte)m_Rank;
 }
 
+ECardRank Card::GetRank()
+{
+	return m_Rank;
+}
+
 void Card::TurnOver(float duration, byte axis /*= 0*/)
 {
 	GetAnimationComponent()->StartFlipAnimation(duration, axis);

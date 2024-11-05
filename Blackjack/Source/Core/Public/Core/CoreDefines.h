@@ -40,7 +40,7 @@ private:                                                                        
 	std::vector<std::function<void()>> callbacks;                                                 \
 };
 
-#define DECLARE_DELEGATE_ONE_PARAM(name, P1TYPE)												  \
+#define DECLARE_DELEGATE_ONE_PARAM(name, P1TYPE)										          \
 struct name                                                                                       \
 {                                                                                                 \
 public:                                                                                           \
@@ -51,12 +51,48 @@ public:                                                                         
 		{                                                                                         \
 			func(p1);                                                                             \
 		}                                                                                         \
-	}                                                                                             \
-                                                                                                  \
+																						          \
+	} 																							  \
+	void Invoke(P1TYPE p1)																		  \
+	{																						      \
+		Broadcast(p1);																		      \
+		Clear();																			      \
+	}																						      \
+		void Clear()																			  \
+	{																						      \
+		callbacks.clear();																	      \
+	}																							  \
+																								  \
 private:                                                                                          \
 	std::vector<std::function<void(P1TYPE)>> callbacks;                                           \
-};    
+};
 
+#define DECLARE_DELEGATE_TWO_PARAM(name, P1TYPE, P2TYPE)										  \
+struct name                                                                                       \
+{                                                                                                 \
+public:                                                                                           \
+	void Add(std::function<void(P1TYPE, P2TYPE)> callback) { callbacks.push_back(callback); }     \
+	void Broadcast(P1TYPE p1, P2TYPE p2)                                                          \
+	{                                                                                             \
+		for (auto& func : callbacks)                                                              \
+		{                                                                                         \
+			func(p1, p2);                                                                         \
+		}                                                                                         \
+																						          \
+	} 																							  \
+	void Invoke(P1TYPE p1, P2TYPE p2)															  \
+	{																						      \
+		Broadcast(p1, p2);																		  \
+		Clear();																			      \
+	}																						      \
+		void Clear()																			  \
+	{																						      \
+		callbacks.clear();																	      \
+	}																							  \
+																								  \
+private:                                                                                          \
+	std::vector<std::function<void(P1TYPE, P2TYPE)>> callbacks;                                   \
+};
 
 
 

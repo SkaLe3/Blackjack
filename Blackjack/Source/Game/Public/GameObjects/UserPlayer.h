@@ -12,8 +12,17 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
+	//~ Begin Player Interface
+	virtual void GameResult(EPlayerResult result) override;
+	//~ End Player Interface
+
 	void OnEvent(Core::Event& event);
 
+
+private:
+	SharedPtr<Core::SoundBase> m_WinSound;
+	SharedPtr<Core::SoundBase> m_YipeeSound;
+	SharedPtr<Core::SoundBase> m_FailJingle;
 
 
 };

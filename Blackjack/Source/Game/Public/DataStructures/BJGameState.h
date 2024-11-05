@@ -1,27 +1,37 @@
 #pragma once
 #include <Core/CoreDefines.h>
+#include "DataStructures/PlayerState.h"
 
-DECLARE_DELEGATE_NO_PARAMS(BettingStageStarted)
-DECLARE_DELEGATE_NO_PARAMS(DealingCardsStageStarted)
-DECLARE_DELEGATE_NO_PARAMS(PlayerTurnStageStarted)
+DECLARE_DELEGATE_NO_PARAMS(BettingStageStartedDelegate)
+DECLARE_DELEGATE_NO_PARAMS(DealingCardsStageStartedDelegate)
+DECLARE_DELEGATE_NO_PARAMS(PlayerTurnStageStartedDelegate)
 
 
-DECLARE_DELEGATE_NO_PARAMS(BetPlaced)
+DECLARE_DELEGATE_NO_PARAMS(BetPlacedDelegate)
+DECLARE_DELEGATE_ONE_PARAM(PlayerHitDelegate, SharedPtr<class Player>)
+DECLARE_DELEGATE_ONE_PARAM(PlayerStandDelegate, SharedPtr<class Player>)
+DECLARE_DELEGATE_ONE_PARAM(PlayerDoubleDownDelegate, SharedPtr<class Player>)
+DECLARE_DELEGATE_ONE_PARAM(PlayerCallBlackjackDelegate, SharedPtr<class Player>)
+
 
 
 struct BJGameState
 {
 	byte NumberOfPlayers = 0;				// Number of players in game
 	byte PlacedBetsCount = 0;				// Number of players who already placed bets
+	byte MadeTurnsCount = 0;
 
 	// Broadcast to players
-	BettingStageStarted	OnBettingStageStarted;
-	DealingCardsStageStarted OnDealingcardsStageStarted;
-	PlayerTurnStageStarted OnPlayerTurnStageStarted;
+	BettingStageStartedDelegate	OnBettingStageStarted;
+	DealingCardsStageStartedDelegate OnDealingcardsStageStarted;
+	PlayerTurnStageStartedDelegate OnPlayerTurnStageStarted;
 
 	//Broadcast to gamemode
-	BetPlaced OnBetPlaced;
-
+	BetPlacedDelegate OnBetPlaced;
+	PlayerHitDelegate OnPlayerHit;
+	PlayerStandDelegate	OnPlayerStand;
+	PlayerDoubleDownDelegate OnPlayerDoubleDown;
+	PlayerCallBlackjackDelegate	 OnPlayerCallBlackjack;
 
 	// Constants
 	const uint32 MaxBet = 50;
@@ -29,14 +39,4 @@ struct BJGameState
 	const uint32 InitialBalance = 200;
 	const float CardsDealingInterval = 600; // In millis, TODO: make in seconds
 	const float TimeToStartRound = 3;
-
-// 	bool BettingStarted = false;
-// 	bool DealingCardsAllStarted = false;
-// 	bool DealingCardsPlayers = false;
-// 	bool DealingCardDealer = false;
-// 	bool CheckForBlackJack = false;
-// 	bool PlayerTurn = false;
-// 	bool DealerReveal = false;
-// 	bool GivingWins = false;
-// 	bool Restart = false;
 };

@@ -28,6 +28,21 @@ void Deck::PopulateDeck()
 
 	const char* suits[] = { "spades", "diamonds", "clubs", "hearts" };
 	const char* ranks[] = { "2","3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+	const ECardRank e_ranks[] = {
+	ECardRank::Two,
+	ECardRank::Three,
+	ECardRank::Four,
+	ECardRank::Five,
+	ECardRank::Six,
+	ECardRank::Seven,
+	ECardRank::Eight,
+	ECardRank::Nine,
+	ECardRank::Ten,
+	ECardRank::Jack,
+	ECardRank::Queen,
+	ECardRank::King,
+	ECardRank::Ace
+	};
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -43,6 +58,7 @@ void Deck::PopulateDeck()
 			newCard->AssignFrontFace(String(ranks[j]) + '_' + suits[i]);
 			newCard->AssignBackFace("back");
 			newCard->SetInitialState(ECardFace::Back);
+			newCard->AssignRank(e_ranks[j]);
 
 		}
 	}

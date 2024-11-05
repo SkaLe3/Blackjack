@@ -60,6 +60,13 @@ public:
 	void OnDeckReady();
 	void OnBetPlaced();
 	void OnDealCards();
+	void OnPlayerHit(SharedPtr<Player> player);
+	void OnPlayerStand(SharedPtr<Player> player);
+	void OnPlayerDoubleDown(SharedPtr<Player> player);
+	void OnPlayerCallBlackjack(SharedPtr<Player> player);
+	void OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerResult result);
+	void EndTurnAction();
+
 	// TODO: move some functions to private section
 private:
 	void SubscribeForEvents();
@@ -69,6 +76,7 @@ private:
 	void ResetTurn();
 	void StartBetting();
 	bool WaitForBets();
+	bool WaitForTurns();
 
 	void DealCard(SharedPtr<Person> person, bool bFronfaceUp = true);
 
@@ -91,6 +99,7 @@ private:
 	bool m_ShiftStage = false;
 	bool m_bShouldStartRound = false;
 	bool m_bDeckReady = false;
+	bool m_NextTurn = false;
 
 	SharedPtr<BJGameState> m_GameState;
 	

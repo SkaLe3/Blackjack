@@ -42,3 +42,12 @@ void Person::BeginPlay()
    cards->GetTransform().Translation.z = 0;
    m_Cards = cards;
 }
+
+int32 Person::GetHandValue()
+{
+	if (const auto& hand = m_Cards.lock())
+	{
+		return hand->CalculateHandValue();
+	}
+	return 0;
+}

@@ -2,13 +2,44 @@
 
 #include "GameObjects/Chip.h"
 
+
+#include <Sound/AudioSystem.h>
+#include <Core/AssetManager.h>
+
 using namespace Core;
 
 void UserPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	m_WinSound = AssetManager::Get().Load<SoundAsset>("S_Success")->SoundP;
+	m_YipeeSound = AssetManager::Get().Load<SoundAsset>("S_Yipee")->SoundP;
+	m_FailJingle = AssetManager::Get().Load<SoundAsset>("S_FailJingle")->SoundP;
 }
 
+
+void UserPlayer::GameResult(EPlayerResult result)
+{
+	Super::GameResult(result);
+
+	switch (result)
+	{
+	case EPlayerResult::BlackjackWin:
+	case EPlayerResult::DefaultWin:
+		AudioSystem::PlaySound(m_WinSound);
+		AudioSystem::PlaySound(m_YipeeSound);
+		break;
+	case EPlayerResult::Lose:
+		AudioSystem::PlaySound(m_LoseSound);
+		AudioSystem::PlaySound(m_FailJingle);
+		break;
+	case EPlayerResult::Push:
+		AudioSystem::PlayMusic(m_ErrorSound);
+		break;
+
+	}
+
+}
 
 void UserPlayer::OnEvent(Event& event)
 {
@@ -48,6 +79,21 @@ void UserPlayer::OnEvent(Event& event)
 			if (event.Ev.key.keysym.sym == SDLK_EQUALS)
 			{
 				ConfirmBet();
+			}
+		}
+		if (m_State->AllowedToTurn && IsMyTurn())
+		{
+			if (event.Ev.key.keysym.sym == SDLK_h)
+			{
+				Hit();
+			}
+			if (event.Ev.key.keysym.sym == SDLK_s)
+			{
+				Stand();
+			}
+			if (event.Ev.key.keysym.sym == SDLK_d)
+			{
+				DoubleDown();
 			}
 		}
 	}

@@ -7,6 +7,7 @@
 
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
+#include <Core/TimerManager.h>
 
 using namespace Core;
 
@@ -14,6 +15,8 @@ Player::Player()
 {
 	m_ConfirmSound = AssetManager::Get().Load<SoundAsset>("S_Confirm")->SoundP;
 	m_ErrorSound = AssetManager::Get().Load<SoundAsset>("S_Error")->SoundP;
+	m_LoseSound = AssetManager::Get().Load<SoundAsset>("S_Fail")->SoundP;
+
 	m_State = MakeShared<PlayerState>();
 }
 
@@ -36,7 +39,12 @@ void Player::BeginPlay()
 
 void Player::SetBalance(uint32 balace)
 {
-	 m_Balance = balace;
+	m_Balance = balace;
+}
+
+void Player::AddBalance(uint32 amount)
+{
+	m_Balance += amount;
 }
 
 void Player::PlaceChip(EChipType chip)
@@ -97,6 +105,57 @@ void Player::ConfirmBet()
 
 }
 
+void Player::CallBlackjack()
+{
+	GameState->OnPlayerCallBlackjack.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+	AudioSystem::PlaySound(m_ConfirmSound);
+}
+
+void Player::Hit()
+{
+	GameState->OnPlayerHit.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+	AudioSystem::PlaySound(m_ConfirmSound);
+}
+
+void Player::Stand()
+{
+	GameState->OnPlayerStand.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+	AudioSystem::PlaySound(m_ConfirmSound);
+}
+
+void Player::DoubleDown()
+{
+	if (auto bet = m_Bet.lock())
+	{
+		if (bet->GetBetValue() * 2 > GameState->MaxBet)
+		{
+			BJ_LOG_INFO("DoubleDown refused! Doubled bet is over max bet limit");
+			AudioSystem::PlaySound(m_ErrorSound);
+			return;
+		}
+		if (bet->GetBetValue() * 2 > m_Balance)
+		{
+			BJ_LOG_INFO("DoubleDown refused! Not enough balance");
+			AudioSystem::PlaySound(m_ErrorSound);
+			return;
+		}
+		bool doubled = bet->Double();
+		if (!doubled)
+		{
+			BJ_LOG_INFO("DoubleDown refused! exceed maximum chip count in bet");
+			AudioSystem::PlaySound(m_ErrorSound);
+			return;
+		}
+		GameState->OnPlayerDoubleDown.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+		AudioSystem::PlaySound(m_ConfirmSound);
+	}
+}
+
+void Player::Split()
+{
+
+}
+
 void Player::SetState(SharedPtr<PlayerState> state)
 {
 	m_State = state;
@@ -109,6 +168,7 @@ uint32 Player::GetBalance()
 
 void Player::AllowToPlay()
 {
+	m_State = MakeShared<PlayerState>(); // Reset
 	// Consider moving this to GameMode
 	GameState->OnBettingStageStarted.Add([this]() { m_State->AllowedToBet = true; });
 	GameState->OnDealingcardsStageStarted.Add([this]() { m_State->AllowedToBet = false; });
@@ -123,6 +183,20 @@ void Player::AllowTurn()
 {
 	m_State->ActiveTurn = true;
 	BJ_LOG_INFO("%s Turn:", GetTag().c_str());
+
+	if (m_State->AllowedToTurn)
+	{
+		if (auto hand = m_Cards.lock())
+		{
+			if (hand->CalculateHandValue() >15)
+			{
+				TimerManager::Get().StartTimer(10000.f, [this](){ CallBlackjack();}); // Wait a bit before ending turn
+				m_State->FinishedGame = true;
+				m_State->RoundResult = EPlayerResult::BlackjackWin;
+				SharedPtr<Player> player = std::static_pointer_cast<Player>(GetSelf().lock());		
+			}
+		}
+	}
 }
 
 void Player::ForbidTurn()

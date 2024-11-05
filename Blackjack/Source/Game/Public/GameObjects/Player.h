@@ -26,18 +26,31 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
+	/** Balance */
 	void SetBalance(uint32 balace);
+	void AddBalance(uint32 amount);
 	uint32 GetBalance();
 
+	/** Bet */
 	virtual void PlaceChip(EChipType chip);
 	void TakeLastChip();
 	void ConfirmBet();
 
+	/** Turn */
+	void CallBlackjack();
+	void Hit();
+	void Stand();
+	void DoubleDown();
+	void Split();	 // Later
+	// No insurance
+
+	/** Gameplay */
 	void SetState(SharedPtr<PlayerState> state);
 	virtual void AllowToPlay();
 	virtual void AllowTurn();
 	void ForbidTurn();
 	bool IsMyTurn();
+	virtual void GameResult(EPlayerResult result) {}
 protected:
 
 public:
@@ -51,9 +64,11 @@ protected:
 	SharedPtr<PlayerState> m_State;
 	uint32 m_Balance = 0;
 
-
 	SharedPtr<Core::SoundBase> m_ConfirmSound;
 	SharedPtr<Core::SoundBase> m_ErrorSound;
+	SharedPtr<Core::SoundBase> m_LoseSound;
+
+
 
 
 };

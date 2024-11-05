@@ -3,12 +3,15 @@
 
 #include "GameObjects/Deck.h"
 
+#include <Sound/Sound.h>
+
 DECLARE_DELEGATE_NO_PARAMS(DeckFinishShuffleAnimationDelegate)
 
 class DeckAnimationComponent : public Core::GameComponent
 {
 	DECLARE_SUPER(Core::GameComponent)
 public:
+	DeckAnimationComponent();
 	//~ Begin Object Interface
 	virtual void Tick(float deltaTime) override;
 	//~ End Object Interface
@@ -33,5 +36,6 @@ private:
 	int32 m_LastAnimatedIndex = 0;
 
 	std::vector<glm::vec2> m_Positions;
+	SharedPtr<Core::SoundBase> m_CardSound;
 
 };

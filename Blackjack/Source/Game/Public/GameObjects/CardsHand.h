@@ -19,14 +19,16 @@ public:
 	void AcceptCard(SharedPtr<Card> card, bool bTurnOver = true);
 	void AddCard();
 	bool CanAcceptCard();
+	int32 CalculateHandValue();
 
 	void Clear();
 private:
 	std::vector<WeakPtr<Card>> m_FirstHand;
-	std::vector<WeakPtr<Card>> m_SecondHand;
+	std::vector<WeakPtr<Card>> m_SecondHand; // For split. Curently unused
 	SharedPtr<Card> m_LastCard;
 
-	SharedPtr<Core::SoundBase> m_CardSound;
+	SharedPtr<Core::SoundBase> m_CardTakeSound;
+	SharedPtr<Core::SoundBase> m_CardReceiveSound;
 
 	const float cardOffset = 6.f;
 	const float firstCardOffset = cardOffset * 1.5f;

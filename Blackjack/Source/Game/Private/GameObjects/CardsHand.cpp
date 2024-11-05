@@ -4,12 +4,14 @@
 
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
+#include <Core/TimerManager.h>
 
 using namespace Core;
 
 CardsHand::CardsHand()
 {
-	m_CardSound = AssetManager::Get().Load<SoundAsset>("S_TakeCard")->SoundP;
+	m_CardTakeSound = AssetManager::Get().Load<SoundAsset>("S_TakeCard")->SoundP;
+	m_CardReceiveSound = AssetManager::Get().Load<SoundAsset>("S_DeckCard")->SoundP;
 }
 
 void CardsHand::BeginPlay()
@@ -54,9 +56,11 @@ void CardsHand::AcceptCard(SharedPtr<Card> card, bool m_bTurnOver /*= true*/)
 		{
 			card->TurnOver(1, 1);
 		}
-		card->Move(1.f, inDeckPosition, inHandPosition, glm::degrees(inDeckRotation), 180 + glm::degrees(inHandRotation), false);
+		const float moveDuration = 1.0f;
+		card->Move(moveDuration, inDeckPosition, inHandPosition, glm::degrees(inDeckRotation), 180 + glm::degrees(inHandRotation), false);
 		card->GetAnimationComponent()->OnFinishMoveAnim.Add(std::bind(&CardsHand::AddCard, this));
-		AudioSystem::PlaySound(m_CardSound, 0.2f);
+		AudioSystem::PlaySound(m_CardTakeSound, 0.2f);
+		TimerManager::Get().StartTimer(moveDuration * 1000.f * 0.45f, [this](){ AudioSystem::PlaySound(m_CardReceiveSound, 0.2f); });
 
 
 	}
@@ -74,12 +78,40 @@ void CardsHand::AddCard()
 	m_LastCard->GetTransform().Translation = { xPos, 0, zPos };
 	m_LastCard->GetTransform().Rotation.z = glm::radians(180.0f);
 	m_LastCard = nullptr;
-
 }
 
 bool CardsHand::CanAcceptCard()
 {
 	return m_LastCard == nullptr;
+}
+
+int32 CardsHand::CalculateHandValue()
+{
+	int32 totalValue = 0;
+	int aceCount = 0; // To track the number of Aces in the hand
+
+	for (const auto& weakCard : m_FirstHand)
+	{
+		auto card = weakCard.lock();
+		if (card)
+		{
+			int32 cardValue = card->GetValue();
+			totalValue += cardValue;
+
+			// Count the number of Aces separately
+			if (card->GetRank() == ECardRank::Ace)
+			{
+				++aceCount;
+			}
+		}
+	}
+	// Adjust Aces from 11 to 1 if totalValue exceeds 21
+	while (totalValue > 21 && aceCount > 0)
+	{
+		totalValue -= 10;
+		--aceCount;
+	}
+	return totalValue;
 }
 
 void CardsHand::Clear()

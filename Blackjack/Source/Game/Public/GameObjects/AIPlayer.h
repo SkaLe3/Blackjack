@@ -17,6 +17,8 @@ public:
 	//~ Begin Player Interface
 	virtual void AllowToPlay() override;
 	virtual void AllowTurn() override;
+
+	virtual void GameResult(EPlayerResult result) override;
 	//~ End Player Interface
 
 	void PlaceBet();
@@ -32,4 +34,7 @@ private:
 	std::random_device rd;
 	std::mt19937 gen{rd()};
 	std::list<EChipType> m_SelectedChips;
+
+	SharedPtr<Core::SoundBase> m_WinSound;
+
 };
