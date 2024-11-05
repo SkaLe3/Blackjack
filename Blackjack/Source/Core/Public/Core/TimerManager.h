@@ -34,6 +34,8 @@ namespace Core
 			}
 		}
 
+		// TODO: switch interval and callback 
+		// TODO: Use time in seconds
 		// Starts a timer with the specified interval, callback, loop flag, and start delay flag
 		TimerHandle StartTimer(int interval, TimerCallback callback, bool loop = false, bool delayFirstCall = true)
 		{

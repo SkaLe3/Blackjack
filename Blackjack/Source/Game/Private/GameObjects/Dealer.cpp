@@ -14,10 +14,4 @@ void Dealer::BeginPlay()
 	cards->GetTransform().Translation.y = 0;
 }
 
-void Dealer::PlaceCard(SharedPtr<Card> card)
-{
-	if (auto cards = m_Cards.lock())
-	{
-		cards->AcceptCard(card, false);
-	}
-}
+

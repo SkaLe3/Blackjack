@@ -12,6 +12,7 @@
 #include <World/Entities/CameraObject.h>
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
+#include <Core/TimerManager.h>
 
 #include "Renderer/Sprite.h"
 
@@ -99,6 +100,7 @@ void GameplayGameMode::Tick(float deltaTime)
 				player->GameState = m_GameState;
 				player->AllowToPlay(); // Sets all event callbacks
 				m_ActivePlayers.push_back(player);
+				m_GameState->NumberOfPlayers++;
 			}
 		}
 		SubscribeForEvents();
@@ -112,7 +114,14 @@ void GameplayGameMode::Tick(float deltaTime)
 		// Allows all players to place bets (if its their turn)
 		m_GameState->OnBettingStageStarted.Invoke();
 		if (WaitForBets())
+		{
 			ShiftStage();
+			ResetTurn();
+		}
+	}
+	else if ((ERoundStage)m_RoundStage == ERoundStage::DealingCards)
+	{
+		m_GameState->OnDealingcardsStageStarted.Invoke();
 	}
 }
 
@@ -143,7 +152,7 @@ void GameplayGameMode::EndRound()
 	}
 
 	m_Deck->Destroy();
-	m_bShouldStartGame = true;	// TODO: move to another function, after player confirmation to start next round
+	m_bShouldStartGame = true;	// TODO: move to another function, after player confirmation for starting next round
 }
 
 void GameplayGameMode::RoundResult()
@@ -198,21 +207,37 @@ void GameplayGameMode::LeaveGame()
 	World::OpenScene<MenuScene>();
 }
 
-// RoundStateMachine& GameplayGameMode::GetGameState()
-// {
-// 	return m_GameState;
-// }
-
 void GameplayGameMode::OnBetPlaced()
 {
 	m_GameState->PlacedBetsCount++;
 	ShiftTurn();
 }
 
+void GameplayGameMode::OnDealCards()
+{
+	float interval = m_GameState->CardsDealingInterval;
+	int32 i = 0;
+	for (auto& player : m_Players)
+	{
+		// TODO: Make macro for binding, like for events
+		TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(player); });
+	}
+	TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(m_Dealer); });
+	for (auto& player : m_Players)
+	{
+		// TODO: Make macro for binding, like for events
+		TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(player); });
+		i++;
+	}
+	TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(m_Dealer, false); });
+
+}
+
 void GameplayGameMode::SubscribeForEvents()
 {
 	// Gives turn to first player
 	m_GameState->OnBettingStageStarted.Add([this]() { ShiftTurn(); });
+	m_GameState->OnDealingcardsStageStarted.Add([this]() { OnDealCards(); });
 	m_GameState->OnBetPlaced.Add([this]() { OnBetPlaced(); });
 }
 
@@ -253,5 +278,21 @@ void GameplayGameMode::StartBetting()
 bool GameplayGameMode::WaitForBets()
 {
 	return m_GameState->PlacedBetsCount == m_GameState->NumberOfPlayers;
+}
+
+
+void GameplayGameMode::DealCard(SharedPtr<Person> person, bool bFronfaceUp /*= true*/)
+{
+	if (person->IsAbleToTakeCard())
+	{
+		if (bFronfaceUp)
+		{
+			person->TakeCard(m_Deck->PullCard());
+		}
+		else
+		{
+			person->PlaceCard(m_Deck->PullCard());
+		}
+	}
 }
 

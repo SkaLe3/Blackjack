@@ -9,6 +9,4 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
-	/** Alternative to TakeCard() function, to place card front face down*/
-	void PlaceCard(SharedPtr<Card> card);
 };

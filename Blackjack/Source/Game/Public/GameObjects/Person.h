@@ -19,6 +19,8 @@ public:
 
 	bool IsAbleToTakeCard();
 	void TakeCard(SharedPtr<Card> card);
+	/** Alternative to TakeCard() function, to place card front face down*/
+	void PlaceCard(SharedPtr<Card> card);
 
 	void ClearHand();
 

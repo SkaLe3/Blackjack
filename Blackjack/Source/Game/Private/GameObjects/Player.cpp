@@ -104,7 +104,9 @@ uint32 Player::GetBalance()
 
 void Player::AllowToPlay()
 {
-	GameState->OnBettingStageStarted.Add([=]() { m_State->AllowedToBet = true; });
+	// Consider moving this to GameMode
+	GameState->OnBettingStageStarted.Add([this]() { m_State->AllowedToBet = true; });
+	GameState->OnDealingcardsStageStarted.Add([this](){m_State->AllowedToBet = false;});
 
 	BJ_LOG_INFO("%s allowed to play", GetTag().c_str());
 }

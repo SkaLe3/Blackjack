@@ -16,9 +16,7 @@ enum class ERoundStage : byte
 	None = 0,
 	Registration,
 	Betting,
-	DealingCardsAll,
-	DealingCardsPlayers,
-	DealingCardDealer,
+	DealingCards,
 	CheckForBlackJack,
 	PlayerTurn,
 	DealerReveal,
@@ -30,6 +28,7 @@ enum class ERoundStage : byte
 DECLARE_DELEGATE_ONE_PARAM(RoundStageShiftDelegate, ERoundStage);
 
 class ChipStack;
+class Person;
 class Dealer;
 class Player;
 class UserPlayer;
@@ -58,18 +57,20 @@ public:
 	void RestartGame();
 	void LeaveGame();
 
-	//RoundStateMachine& GetGameState();
 	// GameEvents
 	void OnBetPlaced();
-	void OnNewStage();
+	void OnDealCards();
 	// TODO: move some functions to private section
 private:
 	void SubscribeForEvents();
 	void ShiftStage();
+	void OnNewStage();
 	void ShiftTurn();
 	void ResetTurn();
 	void StartBetting();
 	bool WaitForBets();
+
+	void DealCard(SharedPtr<Person> person, bool bFronfaceUp = true);
 
 public:
 	RoundStageShiftDelegate OnStageShift;

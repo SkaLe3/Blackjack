@@ -19,6 +19,14 @@ void Person::TakeCard(SharedPtr<Card> card)
 	}
 }
 
+void Person::PlaceCard(SharedPtr<Card> card)
+{
+	if (auto cards = m_Cards.lock())
+	{
+		cards->AcceptCard(card, false);
+	}
+}
+
 void Person::ClearHand()
 {
 	 m_Cards.lock()->Clear();
