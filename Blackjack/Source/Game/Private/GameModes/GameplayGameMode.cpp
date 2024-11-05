@@ -6,6 +6,7 @@
 #include "GameObjects/UserPlayer.h"
 #include "GameObjects/AIPlayer.h"
 #include "GameObjects/Dealer.h"
+#include "Components/DeckAnimationComponent.h"
 
 #include <World/World/World.h>
 #include <World/Entities/SpriteObject.h>
@@ -84,6 +85,11 @@ void GameplayGameMode::Tick(float deltaTime)
 	if (m_bShouldStartRound)
 	{
 		StartRound();
+		return;
+	}
+	if (!m_bDeckReady)
+	{
+		return;
 	}
 	if (m_ShiftStage)
 	{
@@ -138,15 +144,13 @@ void GameplayGameMode::StartRound()
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
 	m_Deck->PopulateDeck();
 	m_Deck->Shuffle();
-	// TODO: Make animation for deck;
+	m_Deck->Animate({0, 70}, -180.f, 0.f, 4.f, 1.f);
+	m_Deck->GetAnimationComponent()->OnFinishShuffleAnim.Add(std::bind(&GameplayGameMode::OnDeckReady, this));
 
 	m_RoundStage = ERoundStage::Registration;
 	ResetTurn();
 
 	m_bShouldStartRound = false;
-
-
-
 }
 
 void GameplayGameMode::EndRound()
@@ -212,6 +216,11 @@ void GameplayGameMode::LeaveGame()
 	AudioSystem::StopMusic();
 	AudioSystem::StopAllSounds();
 	World::OpenScene<MenuScene>();
+}
+
+void GameplayGameMode::OnDeckReady()
+{
+	m_bDeckReady = true;
 }
 
 void GameplayGameMode::OnBetPlaced()

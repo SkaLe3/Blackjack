@@ -1,6 +1,7 @@
 #include "GameObjects/Deck.h" 
 #include "GameObjects/Card.h"
 #include "Assets/CardTextureAtlas.h"
+#include "Components/DeckAnimationComponent.h"
 
 #include <vector>
 #include <algorithm>
@@ -8,10 +9,15 @@
 
 using namespace Core;
 
+Deck::Deck()
+{
+	m_AnimComp = CreateComponent<DeckAnimationComponent>();
+}
+
 void Deck::BeginPlay()
 {
 	Super::BeginPlay();
-
+	GetAnimationComponent()->SetOwner(GetSelf());
 	SetTag("deck");
 
 }
@@ -54,22 +60,43 @@ SharedPtr<Card> Deck::PullCard()
 	return nullptr;
 }
 
-void Deck::Shuffle(bool bWithAnimation)
+void Deck::Shuffle()
 {
-	 std::random_device rd;
-	 std::mt19937 g(rd());
-	 std::shuffle(m_Cards.begin(), m_Cards.end(), g);
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(m_Cards.begin(), m_Cards.end(), g);
 
-	 for (size_t index = 0; index < m_Cards.size(); index++)
-	 {
-		 m_Cards[index]->GetTransform().Translation = {index * 0.1, index * 0.1, index * 0.1f};
-	 }
-	 Animate();
+	UpdateCardsLocations();
+}
+
+uint32 Deck::GetCardCount()
+{
+	return m_Cards.size();
+}
+
+SharedPtr<Card> Deck::CardAt(uint32 index)
+{
+	if (index < m_Cards.size())
+		return m_Cards[index];
+	return nullptr;
+}
+
+SharedPtr<DeckAnimationComponent> Deck::GetAnimationComponent()
+{
+	return m_AnimComp.lock();
 }
 
 
-void Deck::Animate()
+void Deck::Animate(const glm::vec2& startPos, float sourceRot, float targetRot, float durationShuffle, float durationCard)
 {
+	GetAnimationComponent()->StartShuffleAnimation(startPos, sourceRot, targetRot, durationShuffle, durationCard);
+}
 
+void Deck::UpdateCardsLocations()
+{
+	for (size_t index = 0; index < m_Cards.size(); index++)
+	{
+		m_Cards[index]->GetTransform().Translation = { index * 0.1, index * 0.1, index * 0.1f };
+	}
 }
 

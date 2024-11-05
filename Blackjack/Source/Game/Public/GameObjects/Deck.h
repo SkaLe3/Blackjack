@@ -4,11 +4,13 @@
 #include <vector>
 
 class Card;
+class DeckAnimationComponent;
 
 class Deck : public Core::GameObject
 {
 	DECLARE_SUPER(Core::GameObject)
 public:
+	Deck();
 
 	//~ Begin Object Interface
 	virtual void BeginPlay() override;
@@ -16,11 +18,20 @@ public:
 
 	void PopulateDeck();
 	SharedPtr<Card> PullCard();
+	void Shuffle();
+	uint32 GetCardCount();
+	SharedPtr<Card> CardAt(uint32 index);
 
-	void Shuffle(bool bWithAnimation = true);
-private:
-	void Animate();
+	SharedPtr<DeckAnimationComponent> GetAnimationComponent();
+	void Animate(const glm::vec2& startPos, float sourceRot, float targetRot, float durationShuffle, float durationCard);
 
 private:
+	void UpdateCardsLocations();
+
+private:
+	WeakPtr<DeckAnimationComponent> m_AnimComp;
+
 	std::vector<SharedPtr<Card>> m_Cards;
+
+	friend DeckAnimationComponent;
 };

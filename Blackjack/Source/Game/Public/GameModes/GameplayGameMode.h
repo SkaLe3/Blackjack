@@ -57,6 +57,7 @@ public:
 	void LeaveGame();
 
 	// GameEvents
+	void OnDeckReady();
 	void OnBetPlaced();
 	void OnDealCards();
 	// TODO: move some functions to private section
@@ -89,6 +90,7 @@ private:
 	//std::vector<ERoundStage> m_Stages;
 	bool m_ShiftStage = false;
 	bool m_bShouldStartRound = false;
+	bool m_bDeckReady = false;
 
 	SharedPtr<RoundStateMachine> m_GameState;
 	

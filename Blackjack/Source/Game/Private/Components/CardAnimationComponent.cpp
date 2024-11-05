@@ -1,24 +1,6 @@
 #include "Components/CardAnimationComponent.h"
 
-
-glm::vec2 Lerp(const glm::vec2& start, const glm::vec2& target, float t)
-{
-	return (1.0f - t) * start + t * target;
-}
-float Lerp(float start, float target, float t)
-{
-	return (1.0f - t) * start + t * target;
-}
-
-float EaseInOutQuad(float t)
-{
-	return t < 0.5f ? 2 * t * t : -1 + (4 - 2 * t) * t;
-}
-
-float EaseInOutCubic(float t)
-{
-	return t < 0.5f ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-}
+#include <Core/Utils.h>
 
 
 using namespace Core;
@@ -29,6 +11,7 @@ void CardAnimationComponent::Tick(float deltaTime)
 	Super::Tick(deltaTime);
 	if (m_bAnimatingFlip) UpdateFlip(deltaTime);
 	if (m_bAnimatingTransform) UpdateTransform(deltaTime);
+	if (!m_bAnimatingFlip && !m_bAnimatingTransform) m_Card = nullptr;
 
 }
 
@@ -66,15 +49,15 @@ void CardAnimationComponent::StartTransformAnimation(float duration, const glm::
 void CardAnimationComponent::UpdateFlip(float deltaTime)
 {
 	m_FlipElapsed += deltaTime;
-	float haldDuration = m_FlipDuration * 0.5f;
+	float halfDuration = m_FlipDuration * 0.5f;
 
 	if (m_FlipElapsed < m_FlipDuration)
 	{
-		float progress = m_FlipElapsed / haldDuration;
+		float progress = m_FlipElapsed / halfDuration;
 		float scale = glm::abs(glm::cos(progress * glm::half_pi<float>()));
 		m_Card->GetSpriteComponent()->GetTransform().Scale[m_flipAxis] = scale * m_CardScale[m_flipAxis];
 
-		if (m_FlipElapsed >= haldDuration && !m_bFlipFlag)
+		if (m_FlipElapsed >= halfDuration && !m_bFlipFlag)
 		{
 			m_bFlipFlag = true;
 			m_Card->Flip();
