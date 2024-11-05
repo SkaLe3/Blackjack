@@ -39,7 +39,7 @@ namespace Core
 		// Starts a timer with the specified interval, callback, loop flag, and start delay flag
 		TimerHandle StartTimer(int interval, TimerCallback callback, bool loop = false, bool delayFirstCall = true)
 		{
-			std::lock_guard<std::mutex> lock(mutex);
+			std::lock_guard<std::recursive_mutex> lock(mutex);
 
 			TimerHandle handle = nextHandle++;
 			TimerData timerData = { interval, std::move(callback), loop, delayFirstCall, std::chrono::steady_clock::now() };
@@ -51,14 +51,14 @@ namespace Core
 		// Stops and removes a timer with the specified handle
 		bool ClearTimer(TimerHandle handle)
 		{
-			std::lock_guard<std::mutex> lock(mutex);
+			std::lock_guard<std::recursive_mutex> lock(mutex);
 			return timers.erase(handle) > 0;
 		}
 
 		// Clears all active timers
 		void ClearAllTimers()
 		{
-			std::lock_guard<std::mutex> lock(mutex);
+			std::lock_guard<std::recursive_mutex> lock(mutex);
 			timers.clear();
 		}
 
@@ -73,7 +73,7 @@ namespace Core
 		};
 
 		std::unordered_map<TimerHandle, TimerData> timers;
-		std::mutex mutex;
+		std::recursive_mutex mutex;
 		std::atomic<bool> isRunning;
 		std::thread managerThread;
 		std::atomic<int> nextHandle;
@@ -86,7 +86,7 @@ namespace Core
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 				auto now = std::chrono::steady_clock::now();
-				std::lock_guard<std::mutex> lock(mutex);
+				std::lock_guard<std::recursive_mutex> lock(mutex);
 
 				for (auto it = timers.begin(); it != timers.end();)
 				{

@@ -9,7 +9,7 @@ DECLARE_DELEGATE_NO_PARAMS(PlayerTurnStageStarted)
 DECLARE_DELEGATE_NO_PARAMS(BetPlaced)
 
 
-struct RoundStateMachine
+struct BJGameState
 {
 	byte NumberOfPlayers = 0;				// Number of players in game
 	byte PlacedBetsCount = 0;				// Number of players who already placed bets
@@ -26,6 +26,7 @@ struct RoundStateMachine
 	// Constants
 	const uint32 MaxBet = 50;
 	const uint32 MinBet = 2;
+	const uint32 InitialBalance = 200;
 	const float CardsDealingInterval = 600; // In millis, TODO: make in seconds
 	const float TimeToStartRound = 3;
 

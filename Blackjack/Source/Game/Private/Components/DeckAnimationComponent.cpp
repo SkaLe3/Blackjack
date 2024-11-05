@@ -49,7 +49,7 @@ void DeckAnimationComponent::UpdateShuffle(float deltaTime)
 			if (SharedPtr<Card> card = m_Deck->CardAt(i))
 			{
 				card->Move(m_DurationCard, m_StartPos, m_Positions[i], m_SourceRotation, m_TargetRotation);
-				BJ_LOG_INFO("card: %d", i);
+				//BJ_LOG_INFO("card: %d", i);
 			}
 		}
 		
@@ -62,7 +62,7 @@ void DeckAnimationComponent::UpdateShuffle(float deltaTime)
 			if (SharedPtr<Card> card = m_Deck->CardAt(i))
 			{
 				card->Move(m_DurationCard, m_StartPos, m_Positions[i], m_SourceRotation, m_TargetRotation);
-				BJ_LOG_INFO("card: %d", i);
+				//BJ_LOG_INFO("card: %d", i);
 			}
 		}
 		m_Deck->UpdateCardsLocations();

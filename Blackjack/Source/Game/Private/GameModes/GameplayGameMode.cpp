@@ -107,6 +107,7 @@ void GameplayGameMode::Tick(float deltaTime)
 				player->AllowToPlay(); // Sets all event callbacks
 				m_ActivePlayers.push_back(player);
 				m_GameState->NumberOfPlayers++;
+				BJ_LOG_INFO("%s Balance: %d", player->GetTag().c_str(), player->GetBalance());
 			}
 		}
 		SubscribeForEvents();
@@ -138,7 +139,7 @@ void GameplayGameMode::Tick(float deltaTime)
 void GameplayGameMode::StartRound()
 {
 	// Remove all bindings
-	m_GameState = MakeShared<RoundStateMachine>();
+	m_GameState = MakeShared<BJGameState>();
 
 	m_Deck = GetWorld()->SpawnGameObject<Deck>();
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
@@ -187,6 +188,8 @@ void GameplayGameMode::RestartGame()
 	table->GetTransform().Translation.z = -200;
 	table->GetSpriteComponent()->GetTransform().Scale = { 178, 100, 1 };
 
+	m_GameState = MakeShared<BJGameState>();
+
 	m_Dealer = GetWorld()->SpawnGameObject<Dealer>();
 	m_Dealer->SetLocation({ 0, 25 });
 
@@ -206,6 +209,9 @@ void GameplayGameMode::RestartGame()
 	bot1->SetTag("Bot1");
 	player->SetTag("User");
 	bot2->SetTag("Bot2");
+	bot1->SetBalance(m_GameState->InitialBalance);
+	player->SetBalance(m_GameState->InitialBalance);
+	bot2->SetBalance(m_GameState->InitialBalance);
 
 	TimerManager::Get().StartTimer(3000, [this]() { m_bShouldStartRound = true; });
 }

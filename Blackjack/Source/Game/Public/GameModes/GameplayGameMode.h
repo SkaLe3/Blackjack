@@ -1,7 +1,7 @@
 #pragma once
 #include <World/Entities/GameMode.h>
 
-#include "DataStructures/BlackjackStateMachine.h"
+#include "DataStructures/BJGameState.h"
 #include "DataStructures/PlayerState.h"
 
 #include <Core/Event.h>
@@ -92,7 +92,7 @@ private:
 	bool m_bShouldStartRound = false;
 	bool m_bDeckReady = false;
 
-	SharedPtr<RoundStateMachine> m_GameState;
+	SharedPtr<BJGameState> m_GameState;
 	
 
 };

@@ -14,6 +14,16 @@ std::unordered_map<EChipType, String> Chip::ChipsMap = {
 	{EChipType::Orange, "orange"},
 };
 
+const std::vector<std::pair<EChipType, const int>> Chip::ChipsValues = {
+	{ EChipType::Orange, 50 },
+	{ EChipType::Green, 25 },
+	{ EChipType::Gray, 20 },
+	{ EChipType::Blue, 10 },
+	{ EChipType::Red, 5 },
+	{ EChipType::White, 1 },
+};
+
+
 Chip::Chip()
 {
 	auto sprite = GetSpriteComponent();

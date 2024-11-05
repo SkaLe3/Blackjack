@@ -34,6 +34,11 @@ void Player::BeginPlay()
 	OnChipAction.Add([](uint32 value) { BJ_LOG_INFO("BetValue: %d", value); }); // TODO : Replace with UI function
 }
 
+void Player::SetBalance(uint32 balace)
+{
+	 m_Balance = balace;
+}
+
 void Player::PlaceChip(EChipType chip)
 {
 	if (auto bet = m_Bet.lock())

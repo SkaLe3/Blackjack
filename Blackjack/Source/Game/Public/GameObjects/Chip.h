@@ -2,15 +2,16 @@
 #include <World/Entities/SpriteObject.h>
 
 #include <unordered_map>
+#include <vector>
 
 enum class EChipType : byte
 {
-	White = 1, 
-	Red = 5, 
-	Blue = 10, 
-	Gray = 20, 
-	Green = 25, 
-	Orange =50
+	White = 1,
+	Red = 5,
+	Blue = 10,
+	Gray = 20,
+	Green = 25,
+	Orange = 50
 };
 
 class Chip : public Core::SpriteObject
@@ -33,10 +34,12 @@ public:
 public:
 
 	static std::unordered_map<EChipType, String> ChipsMap;
+	static const std::vector<std::pair<EChipType, const int>> ChipsValues;
 
 private:
 	float m_Height = 1.11;
 
 	EChipType m_ChipType;
-	
+
+
 };

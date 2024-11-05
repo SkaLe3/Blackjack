@@ -11,7 +11,7 @@ DECLARE_DELEGATE_ONE_PARAM(ChipActionDelegate, uint32)
 
 class CardsHand;
 class Card;
-class RoundStateMachine;
+class BJGameState;
 /*
 * @class Player
 *
@@ -26,16 +26,17 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
+	void SetBalance(uint32 balace);
+	uint32 GetBalance();
+
 	virtual void PlaceChip(EChipType chip);
 	void TakeLastChip();
 	void ConfirmBet();
 
 	void SetState(SharedPtr<PlayerState> state);
-	uint32 GetBalance();
 	virtual void AllowToPlay();
 	virtual void AllowTurn();
 	void ForbidTurn();
-
 	bool IsMyTurn();
 protected:
 
@@ -43,12 +44,12 @@ public:
 	GetTurnDelegate OnGotTurn;
 	ChipActionDelegate OnChipAction;
 
-	SharedPtr<RoundStateMachine> GameState;
+	SharedPtr<BJGameState> GameState;
 
 protected:
 	WeakPtr<ChipStack> m_Bet;
 	SharedPtr<PlayerState> m_State;
-	uint32 m_Balance = 60;
+	uint32 m_Balance = 0;
 
 
 	SharedPtr<Core::SoundBase> m_ConfirmSound;
