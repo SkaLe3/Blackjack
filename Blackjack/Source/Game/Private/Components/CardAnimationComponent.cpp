@@ -109,6 +109,6 @@ void CardAnimationComponent::UpdateTransform(float deltaTime)
 		m_Card->GetTransform().Rotation.z = m_TargetRotation;
 		m_bAnimatingTransform = false;
 		m_TransformElapsed = 0;
-		OnFinishMoveAnim.Broadcast();
+		OnFinishMoveAnim.Invoke();
 	}
 }
