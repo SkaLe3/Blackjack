@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObjects/Player.h"
+#include "Core/TimerManager.h"
 
 
 class AIPlayer : public Player
@@ -19,5 +20,6 @@ public:
 	void PlaceBet();
 
 
-
+private:
+	Core::TimerHandle m_TimerHandle_PlaceBet = 0;
 };

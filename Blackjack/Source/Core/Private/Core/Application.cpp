@@ -52,6 +52,7 @@ namespace Core
 		m_AssetManager = MakeUnique<AssetManager>();
 		m_AssetManager->SetContentPath(".\\Content");
 		m_AssetManager->InitialLoading();
+		m_TimerManager = MakeUnique<TimerManager>();
 	}
 
 	Application::~Application()

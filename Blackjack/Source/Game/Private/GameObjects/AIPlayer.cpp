@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 
+using namespace Core;
 
 void AIPlayer::BeginPlay()
 {
@@ -20,13 +21,14 @@ void AIPlayer::AllowToPlay()
 {
 	Super::AllowToPlay();
 	RoundStateMachine& gameState = static_pointer_cast<GameplayGameMode>(GetWorld()->GetGameMode())->GetGameState();
-	//gameState.OnBettingStageStarted.Add(std::bind(&AIPlayer::PlaceBet, this));
+	// TODO: Add callbacks
 }
 
 void AIPlayer::AllowTurn()
 {
 	Super::AllowTurn();
 
+	TimerManager::Get().StartTimer(1000, [this](){ PlaceBet(); }, false, true);
 }
 
 void AIPlayer::PlaceBet()

@@ -5,6 +5,7 @@
 #include "Layers/LayerStack.h"
 #include "Core/Event.h"
 #include "Core/AssetManager.h"
+#include "Core/TimerManager.h"
 #include "World/World/World.h"
 #include "Renderer/Texture.h" // Temporary
 
@@ -78,8 +79,11 @@ namespace Core
 
 		SharedPtr<Window> m_Window;
 		UniquePtr<AssetManager> m_AssetManager;
+		UniquePtr<TimerManager> m_TimerManager;
+
 
 		friend AssetManager;
+		friend TimerManager;
 	};
 
 	Application* CreateApplication(int argc, char** argv);
