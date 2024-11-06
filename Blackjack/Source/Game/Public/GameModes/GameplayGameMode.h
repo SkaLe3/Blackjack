@@ -6,6 +6,7 @@
 
 #include <Core/Event.h>
 #include <Renderer/Texture.h>
+#include <Sound/Sound.h>
 
 #include <unordered_map>
 
@@ -103,6 +104,8 @@ private:
 
 	void DealCard(SharedPtr<Person> person, bool bFronfaceUp = true);
 
+	void GivePrize(SharedPtr<Player> player, int32 prize);
+	void TakeAwayBet(SharedPtr<Player> player, int32 offset);
 	// Other
 	void ChangeCardsSkin();
 
@@ -116,6 +119,7 @@ private:
 	std::vector<SharedPtr<Player>> m_Players;
 	std::vector<SharedPtr<Player>> m_ActivePlayers;
 	std::vector<SharedPtr<Card>> m_CardsRef;
+	std::vector<SharedPtr<ChipStack>> m_WinnerPrizes;
 	SharedPtr<Core::Texture> m_SelectedSkin;
 
 	// Gameplay
@@ -129,4 +133,6 @@ private:
 	bool m_ContinueTurn = false;
 
 	SharedPtr<BJGameState> m_GameState;
+
+	SharedPtr<Core::SoundBase> m_ChipsSound;
 };

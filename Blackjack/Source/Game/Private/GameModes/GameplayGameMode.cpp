@@ -8,6 +8,7 @@
 #include "GameObjects/AIPlayer.h"
 #include "GameObjects/Dealer.h"
 #include "Components/DeckAnimationComponent.h"
+#include "Components/ChipStackMovementComponent.h"
 
 #include <World/World/World.h>
 #include <World/Entities/SpriteObject.h>
@@ -56,13 +57,14 @@ void GameplayGameMode::OnEvent(Event& event)
 void GameplayGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	m_ChipsSound = AssetManager::Get().Load<SoundAsset>("S_HandChips")->SoundP;
 	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
 	SharedPtr<SoundBase> ambient = AssetManager::Get().Load<SoundAsset>("S_PokerAmbient")->SoundP;
-	AudioSystem::SetMusicVolume(0.2);
+	AudioSystem::SetMusicVolume(0.15f);
 	music->SetOneShot(false);
 	ambient->SetOneShot(false);
 	AudioSystem::PlayMusic(music);
-	AudioSystem::PlaySound(ambient, 0.2f);
+	AudioSystem::PlaySound(ambient, 1.f);
 	RestartGame();
 }
 
@@ -100,6 +102,11 @@ void GameplayGameMode::StartRound()
 	m_RoundStage = ERoundStage::Registration;
 	ResetTurn();
 
+	for (auto player : m_Players)
+	{
+		player->ResetBetPosition();
+	}
+
 	m_bShouldStartRound = false;
 }
 
@@ -110,6 +117,11 @@ void GameplayGameMode::EndRound()
 		player->ClearHand();
 		player->ClearBet();
 	}
+	for (auto& prize : m_WinnerPrizes)
+	{
+		prize->Clear();
+	}
+	m_WinnerPrizes.clear();
 	m_Dealer->ClearHand();
 	m_Deck->Destroy();
 	m_ActivePlayers.clear();
@@ -398,26 +410,30 @@ void GameplayGameMode::OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerRes
 	BJ_LOG_INFO("PLAYERS FINISHED: %d", (int32)m_GameState->NumberOfFhinishedPlayers);
 	player->GameResult(result);
 	float bet = player->GetBetValue();
+	int32 prize = 0;
 	switch (result)
 	{
 	case EPlayerResult::BlackjackWin:
 	{
-		int32 prize = (int32)(bet * 1.5f);
-		player->AddBalance(prize);
+		prize = (int32)(bet * 1.5f);
+		// Move chips stack to player
+		TimerManager::Get().StartTimer(3000.f, TIMER_FUNC(GivePrize, player, prize));
 		BJ_LOG_INFO("%s Won %d", player->GetTag().c_str(), prize);
 		break;
 	}
 	case EPlayerResult::DefaultWin:
 	{
-		int32 prize = (int32)bet;
-		player->AddBalance(prize);
+		prize = (int32)bet;
+		// Move chips stack to player
+		TimerManager::Get().StartTimer(3000.f, TIMER_FUNC(GivePrize, player, prize));
 		BJ_LOG_INFO("%s Won %d", player->GetTag().c_str(), prize);
 		break;
 	}
 	case EPlayerResult::Lose:
 	{
-		int32 prize = -(int32)bet;
-		player->AddBalance(prize);
+		prize = -(int32)bet;
+		// Move bet from player
+		TimerManager::Get().StartTimer(3000.f, TIMER_FUNC(TakeAwayBet, player, m_GameState->NumberOfFhinishedPlayers-1));
 		BJ_LOG_INFO("%s Lost %d", player->GetTag().c_str(), prize);
 		break;
 	}
@@ -427,6 +443,8 @@ void GameplayGameMode::OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerRes
 		break;
 	}
 	}
+	player->AddBalance(prize);
+
 }
 
 void GameplayGameMode::OnDealerRevealed()
@@ -589,6 +607,40 @@ void GameplayGameMode::DealCard(SharedPtr<Person> person, bool bFronfaceUp /*= t
 			person->PlaceCard(m_Deck->PullCard());
 		}
 	}
+}
+
+void GameplayGameMode::GivePrize(SharedPtr<Player> player, int32 prize)
+{
+	auto chipStack = GetWorld()->SpawnGameObject<ChipStack>();
+	auto chips = chipStack->SelectChips(prize);
+	for (auto chip : chips)
+	{
+		chipStack->AddChip(chip);
+	}
+	m_WinnerPrizes.push_back(chipStack);
+	chipStack->GetTransform().Translation = { 0, 70, 100 }; // Z location is above everything
+	glm::vec2 target = player->GetLocation();
+	target.y += 3;
+
+	float rotation = player->GetTransform().Rotation.z;
+	float distance = 12.0f;
+	target.x = target.x - distance * glm::cos(rotation);
+	target.y = target.y - distance * glm::sin(rotation);
+	target.y += 3;
+	chipStack->Move(1.3f, chipStack->GetLocation(), target);
+
+	TimerManager::Get().StartTimer(500.f, TIMER_ACTION(AudioSystem::PlaySound(m_ChipsSound, 0.6f)));
+
+}
+
+void GameplayGameMode::TakeAwayBet(SharedPtr<Player> player, int32 offset)
+{
+	auto chipstack = player->GiveBetToDealer();
+	chipstack->GetTransform().Translation.z = 40 + offset;
+	glm::vec2 target = {-42, 32};
+	target.x += offset * 10;
+	target.y +=	glm::abs(offset - 1) * 6;
+	chipstack->Move(2.0f, chipstack->GetLocation(), target);
 }
 
 void GameplayGameMode::ChangeCardsSkin()

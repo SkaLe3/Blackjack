@@ -2,6 +2,7 @@
 
 #include "GameObjects/Chip.h"
 #include "Assets/ChipTextureAtlas.h"
+#include "Components/ChipStackMovementComponent.h"
 
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
@@ -15,6 +16,7 @@ ChipStack::ChipStack() : GameObject()
 	m_ChipSetSound = AssetManager::Get().Load<SoundAsset>("S_PokerChip")->SoundP;
 	m_ChipRemoveSound = AssetManager::Get().Load<SoundAsset>("S_PokerChips")->SoundP;
 	m_ErrorSound = AssetManager::Get().Load<SoundAsset>("S_Error")->SoundP;
+	m_MovementComp = CreateComponent<ChipStackMovementComponent>();
 }
 
 void ChipStack::BeginPlay()
@@ -23,6 +25,14 @@ void ChipStack::BeginPlay()
 	SET_BOX_DEBUG_VISIBILITY(true);
 	SET_BOX_DEBUG_COLOR((glm::vec4{ 1, 0, 0, 1 })); // Red
 	GetBoxComponent()->SetHalfSize({ 2, 2 });
+
+	GetMovementComponent()->SetOwner(GetSelf());
+}
+
+void ChipStack::Destroy()
+{
+   Super::Destroy();
+   GetMovementComponent()->Destroy();
 }
 
 bool ChipStack::AddChip(EChipType chip)
@@ -88,6 +98,37 @@ int32 ChipStack::GetBetValue()
 	return sum;
 }
 
+std::list<EChipType> ChipStack::SelectChips(int32 value)
+{
+	std::list<EChipType> selectedChips;
+
+	std::uniform_int_distribution<> distr(0, 1); // Decide to skip or not
+
+	for (const auto& [chipType, chipValue] : Chip::ChipsValues)
+	{
+		while (value >= chipValue)
+		{
+			if (distr(gen) == 0 || chipValue == 1)
+			{
+				selectedChips.push_back(chipType);
+				value -= chipValue;
+			}
+		}
+		if (value == 0) break;
+	}
+	if (value != 0)
+	{
+		// This should never happen
+		selectedChips.pop_back();
+	}
+	return selectedChips;
+}
+
+void ChipStack::Move(float duration, const glm::vec2& start, const glm::vec2& target)
+{
+   GetMovementComponent()->StartMovement(duration, start, target);
+}
+
 void ChipStack::CorrectRotation()
 {
 	SharedPtr<GameObject> parent = GetOwner();
@@ -106,4 +147,9 @@ void ChipStack::Clear()
 		chip->Destroy();
 	}
 	m_Chips.clear();
+}
+
+SharedPtr<ChipStackMovementComponent> ChipStack::GetMovementComponent()
+{
+	return m_MovementComp.lock();
 }

@@ -67,7 +67,7 @@ void AIPlayer::PlaceBet()
 	int32 maxBet = glm::min(GameState->MaxBet, m_Balance);
 	std::uniform_int_distribution<> distrBet(minBet, maxBet);
 	int32 bet = distrBet(gen);
-	m_SelectedChips = SelectChips(bet);
+	m_SelectedChips = m_Bet.lock()->SelectChips(bet);
 	BJ_LOG_INFO("%s: Generated bet: %d", GetTag().c_str(), bet);
 
 	PlaceChipFromSelected();
@@ -205,31 +205,6 @@ AIPlayer::EAIDecision AIPlayer::MakeDecision()
 	return decision;
 }
 
-std::list<EChipType> AIPlayer::SelectChips(int32 value)
-{
-	std::list<EChipType> selectedChips;
-
-	std::uniform_int_distribution<> distr(0, 1); // Decide to skip or not
-
-	for (const auto& [chipType, chipValue] : Chip::ChipsValues)
-	{
-		while (value >= chipValue)
-		{
-			if (distr(gen) == 0 || chipValue == 1)
-			{
-				selectedChips.push_back(chipType);
-				value -= chipValue;
-			}
-		}
-		if (value == 0) break;
-	}
-	if (value != 0)
-	{
-		// This should never happen
-		selectedChips.pop_back();
-	}
-	return selectedChips;
-}
 
 void AIPlayer::PlaceChipFromSelected()
 {

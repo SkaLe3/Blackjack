@@ -34,16 +34,15 @@ public:
 	EAIDecision MakeDecision();
 
 private:
-	std::list<EChipType> SelectChips(int32 value);	
+		
 	void PlaceChipFromSelected();
 
 private:
 	Core::TimerHandle m_TimerHandle_PlaceBet = 0;
+	std::list<EChipType> m_SelectedChips;
+	SharedPtr<Core::SoundBase> m_WinSound;
 
 	std::random_device rd;
-	std::mt19937 gen{rd()};
-	std::list<EChipType> m_SelectedChips;
-
-	SharedPtr<Core::SoundBase> m_WinSound;
+	std::mt19937 gen{ rd() };
 
 };

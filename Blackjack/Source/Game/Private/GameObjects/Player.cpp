@@ -122,6 +122,17 @@ void Player::ClearBet()
 	}
 }
 
+void Player::ResetBetPosition()
+{
+	m_Bet.lock()->GetTransform().Translation.y = 3;
+	m_Bet.lock()->GetTransform().Translation.z = 10;
+}
+
+SharedPtr<ChipStack> Player::GiveBetToDealer()
+{
+	 return m_Bet.lock();
+}
+
 void Player::CallBlackjack()
 {
 	GameState->OnPlayerCallBlackjack.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));

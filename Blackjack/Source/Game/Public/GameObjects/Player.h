@@ -36,6 +36,8 @@ public:
 	void ConfirmBet();
 	int32 GetBetValue();
 	void ClearBet();
+	void ResetBetPosition();
+	SharedPtr<ChipStack> GiveBetToDealer();
 
 	/** Turn */
 	void CallBlackjack();

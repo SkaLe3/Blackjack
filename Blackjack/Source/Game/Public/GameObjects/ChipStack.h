@@ -4,8 +4,10 @@
 
 #include <Sound/Sound.h>
 
-#include <stack>
+#include <random>
+#include <list>
 
+class ChipStackMovementComponent;
 
 class ChipStack : public Core::GameObject
 {
@@ -15,6 +17,7 @@ public:
 
 	//~ Begin Object Interface
 	virtual void BeginPlay() override;
+	virtual void Destroy() override;
 	//~ End Object Interface
 
 	bool AddChip(EChipType chip);
@@ -22,13 +25,15 @@ public:
 	void RemoveChip();
 	uint32 GetChipsCount();
 	int32 GetBetValue();
+	std::list<EChipType> SelectChips(int32 value);
 
+	void Move(float duration, const glm::vec2& start, const glm::vec2& target);
 	void CorrectRotation();
-
 	void Clear();
 
+	SharedPtr<ChipStackMovementComponent> GetMovementComponent();
 private:
-	// Used vector instead of stack to be able to iterate through it
+	WeakPtr<ChipStackMovementComponent> m_MovementComp;
    	std::vector<SharedPtr<Chip>> m_Chips;
 	SharedPtr<Core::TextureAtlas> m_ChipsTexture;
 
@@ -37,4 +42,7 @@ private:
 	SharedPtr<Core::SoundBase> m_ErrorSound;
 
 	const int32 m_MaxChipsInBet = 20;
+
+	std::random_device rd;
+	std::mt19937 gen{ rd() };
 };
