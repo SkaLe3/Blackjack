@@ -56,6 +56,8 @@ public:
 	void ResetState();
 	virtual void AllowToPlay();
 	virtual void AllowTurn();
+	void TurnInitialCheck();
+	void CheckResult();
 	void ForbidTurn();
 	bool IsMyTurn();
 	virtual void GameResult(EPlayerResult result) {}

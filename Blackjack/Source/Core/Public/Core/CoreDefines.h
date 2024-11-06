@@ -14,6 +14,9 @@
 
 
 #define BJ_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) {return this->fn(std::forward<decltype(args)>(args)...);}
+#define TIMER_FUNC(func, ...) [=]() { func(__VA_ARGS__); }
+#define TIMER_ACTION(action) [=]() { action; }
+
 
 #include <vector>
 #include <functional>

@@ -211,9 +211,8 @@ void Player::Push()
 
 void Player::Split()
 {
-
+   // Will be in the future
 }
-
 
 void Player::ResetState()
 {
@@ -235,7 +234,6 @@ void Player::AllowToPlay()
 	GameState->OnDealerRevealStageStarted.Add([this]() { m_State->AllowedToTurn = false; });
 	GameState->OnRoundResultStageStarted.Add([this]() { m_State->AllowedToCheckResult = true; });
 
-
 	BJ_LOG_INFO("%s allowed to play", GetTag().c_str());
 }
 
@@ -244,54 +242,57 @@ void Player::AllowTurn()
 	m_State->ActiveTurn = true;
 	BJ_LOG_INFO("%s Turn:", GetTag().c_str());
 
-	if (m_State->AllowedToTurn)
-	{
-		if (auto hand = m_Cards.lock())
-		{
-			int32 handValue = hand->CalculateHandValue();
-			if (handValue == 21 && hand->GetCardCount() == 2)
-			{
-				ForbidTurn();
-				TimerManager::Get().StartTimer(2000.f, [this]() { CallBlackjack(); }); // Wait a bit before ending turn
-				m_State->FinishedGame = true;
-			}
-			else if (handValue > 21)
-			{
-				ForbidTurn();
-				TimerManager::Get().StartTimer(2000.f, [this]() { Bust(); });
-				m_State->FinishedGame = true;
-			}
-		}
-	}
-	if (m_State->AllowedToCheckResult)
-	{
-		ForbidTurn();
-		m_State->FinishedGame = true;
-		if (auto hand = m_Cards.lock())
-		{
-			int32 handValue = hand->CalculateHandValue();
-			if (GameState->CurrentDealerHandValue > 21)
-			{		
-				TimerManager::Get().StartTimer(2000.f, [this]() { DealerBust(); });
-			}
-			else if (GameState->CurrentDealerHandValue > handValue)
-			{
-				TimerManager::Get().StartTimer(2000.f, [this]() { UnderDealer(); });
-			}
-			else if (GameState->CurrentDealerHandValue < handValue)
-			{
-				TimerManager::Get().StartTimer(2000.f, [this]() { OverDealer(); });
-			}
-			else
-			{
-				TimerManager::Get().StartTimer(2000.f, [this]() { Push(); });
-			}
-
-		}
-	}
-	// TODO: divide on 2 functions
+	if (m_State->AllowedToTurn) { TurnInitialCheck(); }
+	if (m_State->AllowedToCheckResult) { CheckResult(); }
 }
 
+
+void Player::TurnInitialCheck()
+{
+	if (auto hand = m_Cards.lock())
+	{
+		int32 handValue = hand->CalculateHandValue();
+		if (handValue == 21 && hand->GetCardCount() == 2)
+		{
+			ForbidTurn();
+			TimerManager::Get().StartTimer(2000.f, [this]() { CallBlackjack(); }); // Wait a bit before ending turn
+			m_State->FinishedGame = true;
+		}
+		else if (handValue > 21)
+		{
+			ForbidTurn();
+			TimerManager::Get().StartTimer(2000.f, [this]() { Bust(); });
+			m_State->FinishedGame = true;
+		}
+	}
+}
+
+void Player::CheckResult()
+{
+	ForbidTurn();
+	m_State->FinishedGame = true;
+	if (auto hand = m_Cards.lock())
+	{
+		int32 handValue = hand->CalculateHandValue();
+		if (GameState->CurrentDealerHandValue > 21)
+		{
+			TimerManager::Get().StartTimer(2000.f, [this]() { DealerBust(); });
+		}
+		else if (GameState->CurrentDealerHandValue > handValue)
+		{
+			TimerManager::Get().StartTimer(2000.f, [this]() { UnderDealer(); });
+		}
+		else if (GameState->CurrentDealerHandValue < handValue)
+		{
+			TimerManager::Get().StartTimer(2000.f, [this]() { OverDealer(); });
+		}
+		else
+		{
+			TimerManager::Get().StartTimer(2000.f, [this]() { Push(); });
+		}
+
+	}
+}
 
 void Player::ForbidTurn()
 {

@@ -26,9 +26,14 @@
 
 using namespace Core;
 
+ERoundStage& operator++(ERoundStage& stage)
+{
+	stage = static_cast<ERoundStage>(static_cast<byte>(stage) + 1);
+	return stage;
+}
+
 void GameplayGameMode::OnEvent(Event& event)
 {
-
 	std::static_pointer_cast<UserPlayer>(m_Players[1])->OnEvent(event);
 
 	if (event.Ev.type == SDL_KEYDOWN)
@@ -45,34 +50,6 @@ void GameplayGameMode::OnEvent(Event& event)
 			ChangeCardsSkin();
 			BJ_LOG_INFO("Changed skin to Black");
 		}
-#ifdef BJ_DEBUG
-		if (event.Ev.key.keysym.sym == SDLK_q)
-		{
-			if (m_Players[0]->IsAbleToTakeCard())
-				m_Players[0]->TakeCard(m_Deck->PullCard());
-		}
-		if (event.Ev.key.keysym.sym == SDLK_w)
-		{
-			if (m_Players[1]->IsAbleToTakeCard())
-				m_Players[1]->TakeCard(m_Deck->PullCard());
-		}
-		if (event.Ev.key.keysym.sym == SDLK_e)
-		{
-			if (m_Players[2]->IsAbleToTakeCard())
-				m_Players[2]->TakeCard(m_Deck->PullCard());
-		}
-		if (event.Ev.key.keysym.sym == SDLK_r)
-		{
-			if (m_Dealer->IsAbleToTakeCard())
-				m_Dealer->TakeCard(m_Deck->PullCard());
-		}
-		if (event.Ev.key.keysym.sym == SDLK_t)
-		{
-			if (m_Dealer->IsAbleToTakeCard())
-				m_Dealer->PlaceCard(m_Deck->PullCard());
-		}
-#endif
-
 	}
 }
 
@@ -80,131 +57,38 @@ void GameplayGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
-	music->SetOneShot(false);
-	AudioSystem::PlayMusic(music);
-	AudioSystem::SetMusicVolume(0.2);
 	SharedPtr<SoundBase> ambient = AssetManager::Get().Load<SoundAsset>("S_PokerAmbient")->SoundP;
+	AudioSystem::SetMusicVolume(0.2);
+	music->SetOneShot(false);
 	ambient->SetOneShot(false);
+	AudioSystem::PlayMusic(music);
 	AudioSystem::PlaySound(ambient, 0.2f);
 	RestartGame();
-
 }
 
 void GameplayGameMode::Tick(float deltaTime)
 {
-	if (m_bShouldStartRound)
-	{
-		StartRound();
-		return;
-	}
-	if (!m_bDeckReady)
-	{
-		return;
-	}
-	if (m_PlayerMakeTurn)
-	{
-		OnNewTurn();
-		MakeTurn();
-	}
-	if (m_DealerMakeTurn)
-	{
-		m_DealerMakeTurn = false;
-		m_Dealer->MakeTurn();
-	}
-	if (m_ContinueTurn)
-	{
-		m_ActivePlayers[m_PlayerTurn]->AllowTurn();
-		m_ContinueTurn = false;
-	}
-	if (m_ShiftStage)
-	{
-		m_RoundStage = (ERoundStage)((byte)m_RoundStage + 1); // TODO: Make operator++()
-		OnNewStage();
-	}
-	if ((ERoundStage)m_RoundStage == ERoundStage::Registration)
-	{
-		for (auto& player : m_Players)
-		{
-			bool registered = player->GetBalance() >= m_GameState->MinBet;
-			if (registered)
-			{
-				player->GameState = m_GameState;
-				player->ResetState();
-				player->AllowToPlay(); // Sets all event callbacks
-				m_ActivePlayers.push_back(player);
-				m_GameState->NumberOfRegisteredPlayers++;
-				BJ_LOG_INFO("%s Balance: %d", player->GetTag().c_str(), player->GetBalance());
-			}
-			else
-			{
-				//////////////////////////////////////////////////////////////////////////////////////
-				//////////////////////////////////////
-				//////////////////////////////////////
-				//////////////////////////////////////
-				//////////////////////////////////////
+	if (m_bShouldStartRound) { StartRound(); return; }
+	if (!m_bDeckReady) { return; }
+	if (m_PlayerMakeTurn) { OnNewTurn();	MakeTurn(); }
+	if (m_DealerMakeTurn) { m_DealerMakeTurn = false;	m_Dealer->MakeTurn(); }
+	if (m_ContinueTurn) { m_ActivePlayers[m_PlayerTurn]->AllowTurn();	m_ContinueTurn = false; }
+	if (m_ShiftStage) { ++m_RoundStage; OnNewStage(); }
 
-				//////////////////////////////////////
-			}
-			m_Dealer->GameState = m_GameState;
-		}
-		SubscribeForEvents();
-		// Proceed to betting
-		ShiftStage();
-
-		// On this moment all players already subscribed for all events they need
-	}
-	else if ((ERoundStage)m_RoundStage == ERoundStage::Betting)
-	{
-		// Allows all players to place bets (if its their turn)
-		m_GameState->OnBettingStageStarted.Invoke();
-		if (WaitForBets())
-		{
-			ShiftStage();
-			ResetTurn();
-		}
-	}
-	else if ((ERoundStage)m_RoundStage == ERoundStage::DealingCards)
-	{
-		m_GameState->OnDealingcardsStageStarted.Invoke();
-	}
-	else if ((ERoundStage)m_RoundStage == ERoundStage::PlayerTurn)
-	{
-		m_GameState->OnPlayerTurnStageStarted.Invoke();
-		if (WaitForTurns())
-		{
-			ShiftStage();
-			ResetTurn();
-		}
-	}
-	else if ((ERoundStage)m_RoundStage == ERoundStage::DealerReveal)
-	{
-		m_GameState->OnDealerRevealStageStarted.Invoke();
-		if (WaitForReveal())
-		{
-			ShiftStage();
-			ResetTurn();
-		}
-	}
-	else if ((ERoundStage)m_RoundStage == ERoundStage::RoundResult)
-	{
-		m_GameState->OnRoundResultStageStarted.Invoke();
-		if (WaitForFinished())
-		{
-			ShiftStage();
-			ResetTurn();
-		}
-	}
-	else if ((ERoundStage)m_RoundStage == ERoundStage::Restart)
-	{
-		m_GameState->OnRestartRoundStageStarted.Invoke();
-	}
-
+	auto roundStageg = (ERoundStage)m_RoundStage;
+	if (roundStageg == ERoundStage::Registration) { RegistrationStage(); }
+	else if (roundStageg == ERoundStage::Betting) { BettingStage(); }
+	else if (roundStageg == ERoundStage::DealingCards) { DealingCardsStage(); }
+	else if (roundStageg == ERoundStage::PlayerTurn) { PlayerTurnStage(); }
+	else if (roundStageg == ERoundStage::DealerReveal) { DealerRevealStage(); }
+	else if (roundStageg == ERoundStage::RoundResult) { RoundResultStage(); }
+	else if (roundStageg == ERoundStage::Restart) { RestartStage(); }
 }
 
 void GameplayGameMode::StartRound()
 {
-	// Remove all bindings
-	m_GameState = MakeShared<BJGameState>();
+	m_GameState = MakeShared<BJGameState>();	// Removes all bindings
+
 	m_Deck = GetWorld()->SpawnGameObject<Deck>();
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
 	m_Deck->PopulateDeck(m_SelectedSkin);
@@ -212,6 +96,7 @@ void GameplayGameMode::StartRound()
 	m_Deck->Animate({ 0, 70 }, -180.f, 0.f, 4.f, 1.f);
 	m_Deck->GetAnimationComponent()->OnFinishShuffleAnim.Add(std::bind(&GameplayGameMode::OnDeckReady, this));
 	m_CardsRef = m_Deck->GetCardsRef();
+
 	m_RoundStage = ERoundStage::Registration;
 	ResetTurn();
 
@@ -236,7 +121,7 @@ void GameplayGameMode::EndRound()
 	m_PlayerMakeTurn = false;
 	m_DealerMakeTurn = false;
 	m_ContinueTurn = false;
-	m_RoundStage = ERoundStage::None;	 
+	m_RoundStage = ERoundStage::None;
 }
 
 
@@ -265,23 +150,23 @@ void GameplayGameMode::RestartGame()
 	m_Dealer->SetTag("Dealer");
 
 	auto player = GetWorld()->SpawnGameObject<UserPlayer>();
-	player->SetLocation({ 0, -41 });
-
 	auto bot1 = GetWorld()->SpawnGameObject<AIPlayer>();
-	bot1->SetLocation({ -70, -28 });
-	bot1->GetTransform().Rotation.z = -glm::pi<float>() / 9;
 	auto bot2 = GetWorld()->SpawnGameObject<AIPlayer>();
-	bot2->SetLocation({ 70, -28 });
-	bot2->GetTransform().Rotation.z = glm::pi<float>() / 9;
-
 	m_Players.push_back(bot1);
 	m_Players.push_back(player);
 	m_Players.push_back(bot2);
-	bot1->SetTag("Bot1");
 	player->SetTag("User");
+	bot1->SetTag("Bot1");
 	bot2->SetTag("Bot2");
-	bot1->SetBalance(m_GameState->InitialBalance);
+
+	player->SetLocation({ 0, -41 });
+	bot1->SetLocation({ -70, -28 });
+	bot1->GetTransform().Rotation.z = -glm::pi<float>() / 9;
+	bot2->SetLocation({ 70, -28 });
+	bot2->GetTransform().Rotation.z = glm::pi<float>() / 9;
+
 	player->SetBalance(m_GameState->InitialBalance);
+	bot1->SetBalance(m_GameState->InitialBalance);
 	bot2->SetBalance(m_GameState->InitialBalance);
 
 	m_SelectedSkin = AssetManager::Get().Load<TextureAsset>("T_CardsAtlasFiltered")->TextureP;
@@ -295,6 +180,90 @@ void GameplayGameMode::LeaveGame()
 	AudioSystem::StopMusic();
 	AudioSystem::StopAllSounds();
 	World::OpenScene<MenuScene>();
+}
+
+void GameplayGameMode::RegistrationStage()
+{
+	for (auto& player : m_Players)
+	{
+		bool registered = player->GetBalance() >= m_GameState->MinBet;
+		if (registered)
+		{
+			player->GameState = m_GameState;
+			player->ResetState();
+			player->AllowToPlay(); // Sets all event callbacks
+			m_ActivePlayers.push_back(player);
+			m_GameState->NumberOfRegisteredPlayers++;
+			BJ_LOG_INFO("%s Balance: %d", player->GetTag().c_str(), player->GetBalance());
+		}
+		else
+		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			//////////////////////////////////////
+			//////////////////////////////////////	Dont remember what i wanted here
+			//////////////////////////////////////
+			//////////////////////////////////////
+
+			//////////////////////////////////////
+		}
+		m_Dealer->GameState = m_GameState;
+	}
+	SubscribeForEvents();
+	// Proceed to betting
+	ShiftStage();
+
+	// On this moment all players already subscribed for all events they need
+}
+
+void GameplayGameMode::BettingStage()
+{
+	// Allows all players to place bets (if its their turn)
+	m_GameState->OnBettingStageStarted.Invoke();
+	if (WaitForBets())
+	{
+		ShiftStage();
+		ResetTurn();
+	}
+}
+
+void GameplayGameMode::DealingCardsStage()
+{
+	m_GameState->OnDealingcardsStageStarted.Invoke();
+}
+
+void GameplayGameMode::PlayerTurnStage()
+{
+	m_GameState->OnPlayerTurnStageStarted.Invoke();
+	if (WaitForTurns())
+	{
+		ShiftStage();
+		ResetTurn();
+	}
+}
+
+void GameplayGameMode::DealerRevealStage()
+{
+	m_GameState->OnDealerRevealStageStarted.Invoke();
+	if (WaitForReveal())
+	{
+		ShiftStage();
+		ResetTurn();
+	}
+}
+
+void GameplayGameMode::RoundResultStage()
+{
+	m_GameState->OnRoundResultStageStarted.Invoke();
+	if (WaitForFinished())
+	{
+		ShiftStage();
+		ResetTurn();
+	}
+}
+
+void GameplayGameMode::RestartStage()
+{
+	m_GameState->OnRestartRoundStageStarted.Invoke();
 }
 
 void GameplayGameMode::OnDeckReady()
@@ -320,18 +289,18 @@ void GameplayGameMode::OnDealCards()
 	for (auto& player : m_ActivePlayers)
 	{
 		// TODO: Make macro for binding, like for events
-		TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(player); });
+		TimerManager::Get().StartTimer(interval * i++, TIMER_FUNC(DealCard, player));
 	}
-	TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(m_Dealer); });
+	TimerManager::Get().StartTimer(interval * i++, TIMER_FUNC(DealCard, m_Dealer));
 	i += 3;
 	for (auto& player : m_ActivePlayers)
 	{
-		TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(player); });
+		TimerManager::Get().StartTimer(interval * i++, TIMER_FUNC(DealCard, player));
 	}
-	TimerManager::Get().StartTimer(interval * i++, [=]() { DealCard(m_Dealer, false); });
+	TimerManager::Get().StartTimer(interval * i++, TIMER_FUNC(DealCard, m_Dealer, false));
 
 	// Go to next stage
-	TimerManager::Get().StartTimer(interval * i + 3000, [=]() { ShiftStage(); });
+	TimerManager::Get().StartTimer(interval * i + 3000, TIMER_FUNC(ShiftStage));
 }
 
 void GameplayGameMode::OnPlayersTurn()
@@ -351,7 +320,7 @@ void GameplayGameMode::OnDealerStartsReveal()
 	if (m_ActivePlayers.size() == 0)
 		m_RoundStage = ERoundStage::Restart;
 
-	TimerManager::Get().StartTimer(3000.f, [=]() { m_Dealer->StartReveal(); });
+	TimerManager::Get().StartTimer(3000.f, TIMER_FUNC(m_Dealer->StartReveal));
 
 }
 
@@ -368,7 +337,7 @@ void GameplayGameMode::OnPlayerHit(SharedPtr<Player> player)
 	{
 		player->TakeCard(m_Deck->PullCard());
 	}
-	TimerManager::Get().StartTimer(2000.f, [this]() { m_ContinueTurn = true; });
+	TimerManager::Get().StartTimer(2000.f, TIMER_ACTION(m_ContinueTurn = true;));
 }
 
 void GameplayGameMode::OnPlayerStand(SharedPtr<Player> player)
@@ -463,7 +432,7 @@ void GameplayGameMode::OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerRes
 void GameplayGameMode::OnDealerRevealed()
 {
 	BJ_LOG_INFO("Dealer revealed");
-	TimerManager::Get().StartTimer(4000.f, [this]() { m_DealerMakeTurn = true; });
+	TimerManager::Get().StartTimer(4000.f, TIMER_ACTION(m_DealerMakeTurn = true));
 
 }
 
@@ -474,7 +443,7 @@ void GameplayGameMode::OnDealerHit()
 	{
 		m_Dealer->TakeCard(m_Deck->PullCard());
 	}
-	TimerManager::Get().StartTimer(2000.f, [this]() { m_DealerMakeTurn = true; });
+	TimerManager::Get().StartTimer(2000.f, TIMER_ACTION(m_DealerMakeTurn = true));
 }
 
 void GameplayGameMode::OnDealerStand()
@@ -492,7 +461,7 @@ void GameplayGameMode::OnDealerBust()
 void GameplayGameMode::OnDealerFinishedTurn()
 {
 	BJ_LOG_INFO("Dealer Finished Turn");
-	TimerManager::Get().StartTimer(2000.f, [this]() { m_GameState->bDealerFinishedTurn = true; });
+	TimerManager::Get().StartTimer(2000.f, TIMER_ACTION(m_GameState->bDealerFinishedTurn = true));
 }
 
 void GameplayGameMode::OnRestartRound()
@@ -500,7 +469,7 @@ void GameplayGameMode::OnRestartRound()
 	BJ_LOG_INFO("Restart Stage Started");
 	for (auto& player : m_Players)
 	{
-		TimerManager::Get().StartTimer(2000.f, [=]() { player->AskForNextRound(); });	
+		TimerManager::Get().StartTimer(2000.f, TIMER_ACTION(player->AskForNextRound()));
 	}
 }
 

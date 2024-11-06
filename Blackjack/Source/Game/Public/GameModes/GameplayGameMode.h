@@ -9,9 +9,6 @@
 
 #include <unordered_map>
 
-
-
-
 enum class ERoundStage : byte
 {
 	None = 0,
@@ -56,6 +53,15 @@ public:
 
 	void RestartGame();
 	void LeaveGame();
+
+	// Stages
+	void RegistrationStage();
+	void BettingStage();
+	void DealingCardsStage();
+	void PlayerTurnStage();
+	void DealerRevealStage();
+	void RoundResultStage();
+	void RestartStage();
 
 	// GameEvents
 	void OnDeckReady();	// When deck is created, shuffled and animated
