@@ -37,11 +37,11 @@ namespace Core
 		m_CurrentWorld->Render();
 		if (m_bSwtichWorld)
 		{
+			AssetManager::Get().ClearCache();
 			m_CurrentWorld->ClearWorld();
 			SetWorld(m_NextWorld);
 			m_CurrentWorld->BeginPlay();
 			m_bSwtichWorld = false;
-			AssetManager::Get().ClearCache();
 		}
 	}
 

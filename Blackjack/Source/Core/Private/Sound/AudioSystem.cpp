@@ -23,7 +23,7 @@ namespace Core
 		if (SharedPtr<SoundCue> sc = std::dynamic_pointer_cast<SoundCue>(sound))
 		{
 			float volume = s_SDLmaxVolume * s_MasterVolume * s_SFXVolume * sc->GetVolumeMultiplier() * volumeMultiplier;
-			int32 channel = Mix_PlayChannel(-1, sc->Get(), !sc->IsOneShot());
+			int32 channel = Mix_PlayChannel(-1, sc->Get(), sc->IsOneShot() ? 1 : -1);
 			if (channel == -1)
 			{
 				BJ_LOG_ERROR("SDL_mixer error: %s", Mix_GetError());
@@ -46,7 +46,7 @@ namespace Core
 		{
 			float volume = s_SDLmaxVolume * s_MasterVolume * s_MusicVolume * sm->GetVolumeMultiplier() * volumeMultiplier;
 			Mix_VolumeMusic(volume);
-			Mix_PlayMusic(sm->Get(), !sm->IsOneShot());
+			Mix_PlayMusic(sm->Get(), sm->IsOneShot()? 1 : -1);
 			s_CurrentMusic = sm;
 		}
 		else
