@@ -4,7 +4,7 @@
 using namespace Core;
 
 CardTextureAtlas::CardTextureAtlas()
-	: CardTextureAtlas(AssetManager::Get().Load<TextureAsset>("T_CardsAtlasFiltered")->TextureP)
+	: CardTextureAtlas(AssetManager::Get().Load<TextureAsset>("T_Skin_CardsAtlasFiltered")->TextureP) // Default skin
 {
 
 }

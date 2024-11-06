@@ -120,7 +120,10 @@ private:
 	std::vector<SharedPtr<Player>> m_ActivePlayers;
 	std::vector<SharedPtr<Card>> m_CardsRef;
 	std::vector<SharedPtr<ChipStack>> m_WinnerPrizes;
-	SharedPtr<Core::Texture> m_SelectedSkin;
+	SharedPtr<Core::Texture> m_SelectedSkinTexture = nullptr;
+	std::vector<String> m_SkinsList;
+	int32 m_SelectedSkinIndex = 0;
+
 
 	// Gameplay
 	ERoundStage m_RoundStage = ERoundStage::None;

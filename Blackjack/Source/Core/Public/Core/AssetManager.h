@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <thread>
 #include <future>
+#include <vector>
 
 namespace Core
 {
@@ -33,6 +34,7 @@ namespace Core
 		void InitialLoading();
 		/** Scans content directory for asset files and registers them */
 		void ScanAssets();
+		void Register(const std::filesystem::path& newAsset);
 
 		template<typename T>
 		SharedPtr<T> Load(const String& assetName);
@@ -41,6 +43,8 @@ namespace Core
 		void Unload(const String& assetName);
 		/** Should be called on a scene change */
 		void ClearCache();
+
+		std::vector<String> GetKeysWithPrefix(const String& prefix);
 
 	private:
 		SharedPtr<Texture> CreateTextureFromFile(const String& filePath);

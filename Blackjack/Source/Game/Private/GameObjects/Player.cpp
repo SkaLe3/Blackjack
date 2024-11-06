@@ -124,6 +124,7 @@ void Player::ClearBet()
 
 void Player::ResetBetPosition()
 {
+	m_Bet.lock()->GetTransform().Translation.x = 0;
 	m_Bet.lock()->GetTransform().Translation.y = 3;
 	m_Bet.lock()->GetTransform().Translation.z = 10;
 }

@@ -17,7 +17,7 @@ public:
 	virtual void Destroy() override;
 	//~ End Object Interface
 
-	void PopulateDeck(SharedPtr<Core::Texture> skin);
+	void PopulateDeck(SharedPtr<Core::Texture> skin = nullptr);
 	SharedPtr<Card> PullCard();
 	void Shuffle();
 	uint32 GetCardCount();

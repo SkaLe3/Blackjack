@@ -47,24 +47,29 @@ namespace Core
 		{
 			if (fs::path entryPath = entry.path(); fs::is_regular_file(entryPath))
 			{
-				if (entryPath.extension() == ".png" ||
-					entryPath.extension() == ".jpg")
-				{
-					String assetName = "T_" + entryPath.stem().string();
-					m_Registry[assetName] = entryPath;
-					BJ_LOG_INFO("[AssetManager]: Loaded %s asset path for '%s' to asset registry: %s ", "Texture", assetName.c_str(), entryPath.string().c_str());
-
-					m_AssetTypeMap[assetName] = AssetType::ATexture;
-				}
-				if (entryPath.extension() == ".wav" ||
-					entryPath.extension() == ".mp3")
-				{
-					String assetName = "S_" + entryPath.stem().string();
-					m_Registry[assetName] = entryPath;
-					BJ_LOG_INFO("[AssetManager]: Loaded %s asset path for '%s' to asset registry: %s ", "Music", assetName.c_str(), entryPath.string().c_str());
-					m_AssetTypeMap[assetName] = entryPath.extension() == ".wav" ? AssetType::ASoundCue : AssetType::ASoundMusic;
-				}
+				Register(entryPath);
 			}
+		}
+	}
+
+	void AssetManager::Register(const std::filesystem::path& newAsset)
+	{
+		if (newAsset.extension() == ".png" ||
+			newAsset.extension() == ".jpg")
+		{
+			String assetName = "T_" + newAsset.stem().string();
+			m_Registry[assetName] = newAsset;
+			BJ_LOG_INFO("[AssetManager]: Loaded %s asset path for '%s' to asset registry: %s ", "Texture", assetName.c_str(), newAsset.string().c_str());
+
+			m_AssetTypeMap[assetName] = AssetType::ATexture;
+		}
+		if (newAsset.extension() == ".wav" ||
+			newAsset.extension() == ".mp3")
+		{
+			String assetName = "S_" + newAsset.stem().string();
+			m_Registry[assetName] = newAsset;
+			BJ_LOG_INFO("[AssetManager]: Loaded %s asset path for '%s' to asset registry: %s ", "Music", assetName.c_str(), newAsset.string().c_str());
+			m_AssetTypeMap[assetName] = newAsset.extension() == ".wav" ? AssetType::ASoundCue : AssetType::ASoundMusic;
 		}
 	}
 
@@ -77,6 +82,19 @@ namespace Core
 	void AssetManager::ClearCache()
 	{
 		m_CachedRegistry.clear();
+	}
+
+	std::vector<String> AssetManager::GetKeysWithPrefix(const String& prefix)
+	{
+		std::vector<std::string> result;
+		for (const auto& [key, value] : m_Registry)
+		{
+			if (key.rfind(prefix, 0) == 0)
+			{
+				result.push_back(key);
+			}
+		}
+		return result;
 	}
 
 	SharedPtr<Texture> AssetManager::CreateTextureFromFile(const String& filePath)

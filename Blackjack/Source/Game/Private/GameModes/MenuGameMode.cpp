@@ -18,7 +18,7 @@ void MenuGameMode::BeginPlay()
 	RestartMenu();
 	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music2")->SoundP;
 	music->SetOneShot(false);
-	AudioSystem::PlayMusic(music, 0.2f);
+	AudioSystem::PlayMusic(music, 0.3f);
 }
 
 void MenuGameMode::OnEvent(Core::Event& event)
@@ -32,8 +32,18 @@ void MenuGameMode::OnEvent(Core::Event& event)
 			{
 				BJ_LOG_INFO("Found file: %s", filepath.c_str());
 				std::filesystem::path source = filepath;
-				std::filesystem::path destinationDir = std::filesystem::current_path()/ AssetManager::Get().GetContentPath() / "Textures";
-				std::filesystem::path destination = destinationDir / source.filename();
+				std::filesystem::path destinationDir = std::filesystem::current_path() / AssetManager::Get().GetContentPath() / "Textures";
+				
+				std::string filename = source.filename().string();
+				const std::string prefix = "Skin_";
+
+				if (filename.rfind(prefix, 0) != 0)
+				{	// If filename doesn't start with "Skin_"
+					filename = prefix + filename;      // Add prefix
+				}
+				std::filesystem::path destination = destinationDir / filename;
+				AssetManager::Get().Register(destination);
+
 				try
 				{
 					std::filesystem::copy_file(source, destination, std::filesystem::copy_options::overwrite_existing);

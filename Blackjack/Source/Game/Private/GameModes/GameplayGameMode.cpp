@@ -39,17 +39,21 @@ void GameplayGameMode::OnEvent(Event& event)
 
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
-		if (event.Ev.key.keysym.sym == SDLK_COMMA)
-		{
-			m_SelectedSkin = AssetManager::Get().Load<TextureAsset>("T_CardsAtlasFiltered")->TextureP;
-			ChangeCardsSkin();
-			BJ_LOG_INFO("Changed skin to White");
-		}
 		if (event.Ev.key.keysym.sym == SDLK_PERIOD)
-		{
-			m_SelectedSkin = AssetManager::Get().Load<TextureAsset>("T_CardsAtlasBlack")->TextureP;
-			ChangeCardsSkin();
-			BJ_LOG_INFO("Changed skin to Black");
+		{		
+			// cycle skins
+			if (m_SkinsList.size() >= 2)
+			{
+				m_SelectedSkinIndex = (m_SelectedSkinIndex + 1) % m_SkinsList.size();
+				m_SelectedSkinTexture = AssetManager::Get().Load<TextureAsset>(m_SkinsList[m_SelectedSkinIndex])->TextureP;
+				ChangeCardsSkin();
+				BJ_LOG_INFO("Changed Card skin");
+			}
+			else
+			{
+				BJ_LOG_INFO("No more skins to cycle");
+			}
+
 		}
 	}
 }
@@ -57,6 +61,32 @@ void GameplayGameMode::OnEvent(Event& event)
 void GameplayGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	// Begin Preload
+	AssetManager::Get().Load<SoundAsset>("T_ChipAtlas");
+	AssetManager::Get().Load<SoundAsset>("T_Table");
+	AssetManager::Get().Load<SoundAsset>("S_Confirm");
+	AssetManager::Get().Load<SoundAsset>("S_DeckCard");
+	AssetManager::Get().Load<SoundAsset>("S_Error");
+	AssetManager::Get().Load<SoundAsset>("S_Fail");
+	AssetManager::Get().Load<SoundAsset>("S_FailJingle");
+	AssetManager::Get().Load<SoundAsset>("S_HandChips");
+	AssetManager::Get().Load<SoundAsset>("S_Music1");
+	AssetManager::Get().Load<SoundAsset>("S_PokerAmbient");
+	AssetManager::Get().Load<SoundAsset>("S_PokerChip");
+	AssetManager::Get().Load<SoundAsset>("S_PokerChips");
+	AssetManager::Get().Load<SoundAsset>("S_Success");
+	AssetManager::Get().Load<SoundAsset>("S_Tada");
+	AssetManager::Get().Load<SoundAsset>("S_TakeCard");
+	AssetManager::Get().Load<SoundAsset>("S_Yipee");
+	m_SkinsList = AssetManager::Get().GetKeysWithPrefix("T_Skin_");
+	for (auto& skin : m_SkinsList)
+	{
+		// Preload all skins to avoid lag on first change
+		AssetManager::Get().Load<TextureAsset>(skin);
+	}
+	// End Preload
+
+
 	m_ChipsSound = AssetManager::Get().Load<SoundAsset>("S_HandChips")->SoundP;
 	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
 	SharedPtr<SoundBase> ambient = AssetManager::Get().Load<SoundAsset>("S_PokerAmbient")->SoundP;
@@ -93,7 +123,10 @@ void GameplayGameMode::StartRound()
 
 	m_Deck = GetWorld()->SpawnGameObject<Deck>();
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
-	m_Deck->PopulateDeck(m_SelectedSkin);
+	if (m_SelectedSkinTexture)
+		m_Deck->PopulateDeck(m_SelectedSkinTexture);
+	else
+		m_Deck->PopulateDeck();
 	m_Deck->Shuffle();
 	m_Deck->Animate({ 0, 70 }, -180.f, 0.f, 4.f, 1.f);
 	m_Deck->GetAnimationComponent()->OnFinishShuffleAnim.Add(std::bind(&GameplayGameMode::OnDeckReady, this));
@@ -181,7 +214,12 @@ void GameplayGameMode::RestartGame()
 	bot1->SetBalance(m_GameState->InitialBalance);
 	bot2->SetBalance(m_GameState->InitialBalance);
 
-	m_SelectedSkin = AssetManager::Get().Load<TextureAsset>("T_CardsAtlasFiltered")->TextureP;
+	if (!m_SkinsList.empty())
+	{
+		m_SelectedSkinTexture = AssetManager::Get().Load<TextureAsset>(m_SkinsList[0])->TextureP;
+		m_SelectedSkinIndex = 0;
+	}
+	
 
 	TimerManager::Get().StartTimer(3000, [this]() { m_bShouldStartRound = true; });
 }
@@ -641,13 +679,14 @@ void GameplayGameMode::TakeAwayBet(SharedPtr<Player> player, int32 offset)
 	target.x += offset * 10;
 	target.y +=	glm::abs(offset - 1) * 6;
 	chipstack->Move(2.0f, chipstack->GetLocation(), target);
+	TimerManager::Get().StartTimer(1.5f, TIMER_ACTION(AudioSystem::PlaySound(m_ChipsSound, 0.6f)));
 }
 
 void GameplayGameMode::ChangeCardsSkin()
 {
 	for (const auto& card : m_CardsRef)
 	{
-		card->GetSpriteComponent()->GetAtlas()->ChangeTexture(m_SelectedSkin);
+		card->GetSpriteComponent()->GetAtlas()->ChangeTexture(m_SelectedSkinTexture);
 		card->GetSpriteComponent()->UpdateAtlas();
 	}
 }

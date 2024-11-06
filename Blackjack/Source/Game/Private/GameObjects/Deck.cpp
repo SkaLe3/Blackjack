@@ -34,7 +34,8 @@ void Deck::Destroy()
 
 void Deck::PopulateDeck(SharedPtr<Texture> skin)
 {
-	SharedPtr<TextureAtlas> atlas = MakeShared<CardTextureAtlas>(skin);
+	SharedPtr<TextureAtlas> atlas;
+	atlas = skin == nullptr ? MakeShared<CardTextureAtlas>() : MakeShared<CardTextureAtlas>(skin);
 
 	const char* suits[] = { "spades", "diamonds", "clubs", "hearts" };
 	const char* ranks[] = { "2","3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
