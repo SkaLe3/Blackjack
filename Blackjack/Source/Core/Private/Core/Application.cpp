@@ -84,6 +84,10 @@ namespace Core
 			float time = Time::GetTime();
 			m_DeltaTime = time - m_LastFrameTime;
 			m_LastFrameTime = time;
+			if (m_DeltaTime > 0.05)
+			{
+				m_DeltaTime = 0.05; // Do not allow big delta time
+			}
 
 
 
