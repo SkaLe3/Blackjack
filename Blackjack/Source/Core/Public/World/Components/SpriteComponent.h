@@ -16,6 +16,7 @@ namespace Core
 		bool HasAtlas();
 		SharedPtr<Sprite> GetSprite();
 		SharedPtr<TextureAtlas> GetAtlas();
+		void UpdateAtlas();
 
 		void SetSprite(SharedPtr<Sprite> inSprite);
 		void SetAtlas(SharedPtr<TextureAtlas> inAtlas);

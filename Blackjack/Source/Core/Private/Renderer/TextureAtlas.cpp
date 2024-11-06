@@ -26,4 +26,9 @@ namespace Core
 		return m_Texture; 
 	}
 
+	void TextureAtlas::ChangeTexture(SharedPtr<Texture> texture)
+	{
+		m_Texture = texture;
+	}
+
 }

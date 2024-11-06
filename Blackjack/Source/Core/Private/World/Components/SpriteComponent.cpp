@@ -27,6 +27,11 @@ namespace Core
 		return m_Atlas;
 	}
 
+	void SpriteComponent::UpdateAtlas()
+	{
+		 m_Sprite->ChangeTexture(m_Atlas->GetTexture());
+	}
+
 	void SpriteComponent::SetSprite(SharedPtr<Sprite> inSprite)
 	{
 		if (!m_Atlas)

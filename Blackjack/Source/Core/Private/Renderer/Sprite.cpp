@@ -24,4 +24,9 @@ namespace Core
 		m_SourceSize = { region.z, region.w };
 	}
 
+	void Sprite::ChangeTexture(SharedPtr<Texture> texture)
+	{
+		m_Texture = texture;
+	}
+
 }

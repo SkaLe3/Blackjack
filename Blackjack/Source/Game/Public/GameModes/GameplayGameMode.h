@@ -5,6 +5,7 @@
 #include "DataStructures/PlayerState.h"
 
 #include <Core/Event.h>
+#include <Renderer/Texture.h>
 
 #include <unordered_map>
 
@@ -33,6 +34,7 @@ class Player;
 class UserPlayer;
 class AIPlayer;
 class Deck;
+class Card;
 
 class GameplayGameMode : public Core::GameMode
 {
@@ -82,6 +84,9 @@ private:
 
 	void DealCard(SharedPtr<Person> person, bool bFronfaceUp = true);
 
+	// Other
+	void ChangeCardsSkin();
+
 public:
 	RoundStageShiftDelegate OnStageShift;
 
@@ -92,6 +97,8 @@ private:
 	std::vector<SharedPtr<Player>> m_Players;
 	std::vector<SharedPtr<Player>> m_ActivePlayers;
 	std::vector<SharedPtr<Player>> m_FinishedPlayers;
+	std::vector<SharedPtr<Card>> m_CardsRef;
+	SharedPtr<Core::Texture> m_SelectedSkin;
 
 
 

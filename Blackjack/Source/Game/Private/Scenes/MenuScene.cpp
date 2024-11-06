@@ -19,4 +19,5 @@ void MenuScene::OnEvent(Event& event)
 			std::static_pointer_cast<MenuGameMode>(m_GameMode)->StartGame();
 		}
 	}
+	std::static_pointer_cast<MenuGameMode>(m_GameMode)->OnEvent(event);
 }

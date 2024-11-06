@@ -3,6 +3,7 @@
 #include "Scenes/MenuScene.h"
 #include "GameObjects/Deck.h"
 #include "GameObjects/Chip.h"  // For testing
+#include "GameObjects/Card.h"
 #include "GameObjects/UserPlayer.h"
 #include "GameObjects/AIPlayer.h"
 #include "GameObjects/Dealer.h"
@@ -16,7 +17,8 @@
 #include <Core/TimerManager.h>
 #include <Core/Utils.h>
 
-#include "Renderer/Sprite.h"
+#include <Renderer/TextureAtlas.h>
+#include <Renderer/Sprite.h>
 
 #include <glm/ext/scalar_constants.hpp>
 #include <random>
@@ -26,25 +28,22 @@ using namespace Core;
 
 void GameplayGameMode::OnEvent(Event& event)
 {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	static std::uniform_int_distribution<>	distr(0, 5);
-	static std::vector<EChipType> chipvec = { EChipType::White,
-	EChipType::Red, EChipType::Blue, EChipType::Gray,
-	EChipType::Green, EChipType::Orange };
 
 	std::static_pointer_cast<UserPlayer>(m_Players[1])->OnEvent(event);
 
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
-		if (event.Ev.key.keysym.sym == SDLK_o)
+		if (event.Ev.key.keysym.sym == SDLK_COMMA)
 		{
-			String filepath = FileDialogs::OpenFile("PNG Files\0*.PNG\0All Files\0*.*\0") ;
-			if (!filepath.empty())
-			{
-				BJ_LOG_INFO("opened file: %s", filepath.c_str());
-			}
-
+			m_SelectedSkin = AssetManager::Get().Load<TextureAsset>("T_CardsAtlasFiltered")->TextureP;
+			ChangeCardsSkin();
+			BJ_LOG_INFO("Changed skin to White");
+		}
+		if (event.Ev.key.keysym.sym == SDLK_PERIOD)
+		{
+			m_SelectedSkin = AssetManager::Get().Load<TextureAsset>("T_CardsAtlasBlack")->TextureP;
+			ChangeCardsSkin();
+			BJ_LOG_INFO("Changed skin to Black");
 		}
 #ifdef BJ_DEBUG
 		if (event.Ev.key.keysym.sym == SDLK_q)
@@ -168,11 +167,11 @@ void GameplayGameMode::StartRound()
 
 	m_Deck = GetWorld()->SpawnGameObject<Deck>();
 	m_Deck->GetTransform().Translation = { -66, 32, -100 };
-	m_Deck->PopulateDeck();
+	m_Deck->PopulateDeck(m_SelectedSkin);
 	m_Deck->Shuffle();
 	m_Deck->Animate({ 0, 70 }, -180.f, 0.f, 4.f, 1.f);
 	m_Deck->GetAnimationComponent()->OnFinishShuffleAnim.Add(std::bind(&GameplayGameMode::OnDeckReady, this));
-
+	m_CardsRef = m_Deck->GetCardsRef();
 	m_RoundStage = ERoundStage::Registration;
 	ResetTurn();
 
@@ -238,6 +237,8 @@ void GameplayGameMode::RestartGame()
 	player->SetBalance(m_GameState->InitialBalance);
 	bot2->SetBalance(m_GameState->InitialBalance);
 
+	m_SelectedSkin = AssetManager::Get().Load<TextureAsset>("T_CardsAtlasFiltered")->TextureP;
+
 	TimerManager::Get().StartTimer(3000, [this]() { m_bShouldStartRound = true; });
 }
 
@@ -289,11 +290,11 @@ void GameplayGameMode::OnDealCards()
 void GameplayGameMode::OnRemoveFinished()
 {
 	m_ActivePlayers.erase(std::remove_if(m_ActivePlayers.begin(), m_ActivePlayers.end(),
-							 [](const SharedPtr<Player>& ptr)
-							 {
-								 return ptr->HasFinishedGame();
-							 }),
-			  m_ActivePlayers.end());
+										 [](const SharedPtr<Player>& ptr)
+										 {
+											 return ptr->HasFinishedGame();
+										 }),
+						  m_ActivePlayers.end());
 	if (m_ActivePlayers.size() == 0)
 		m_RoundStage = ERoundStage::Restart;
 }
@@ -323,7 +324,7 @@ void GameplayGameMode::OnPlayerDoubleDown(SharedPtr<Player> player)
 void GameplayGameMode::OnPlayerCallBlackjack(SharedPtr<Player> player)
 {
 	BJ_LOG_INFO("%s Blackjack", player->GetTag().c_str());
-	EndTurnAction();	
+	EndTurnAction();
 	OnPlayerFinishedGame(player, EPlayerResult::BlackjackWin);
 }
 
@@ -416,6 +417,15 @@ void GameplayGameMode::DealCard(SharedPtr<Person> person, bool bFronfaceUp /*= t
 		{
 			person->PlaceCard(m_Deck->PullCard());
 		}
+	}
+}
+
+void GameplayGameMode::ChangeCardsSkin()
+{
+	for (const auto& card : m_CardsRef)
+	{
+		card->GetSpriteComponent()->GetAtlas()->ChangeTexture(m_SelectedSkin);
+		card->GetSpriteComponent()->UpdateAtlas();
 	}
 }
 

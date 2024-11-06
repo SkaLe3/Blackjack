@@ -20,6 +20,8 @@ namespace Core
 		bool IsVisible() const { return m_bVisible; }
 		void SetFlip(byte flip) { m_Flip = flip; }
 		byte GetFlip() const { return m_Flip; }
+
+		void ChangeTexture(SharedPtr<Texture> texture);
 	protected:
 		SharedPtr<Texture> m_Texture;
 		glm::vec2 m_SourceSize;

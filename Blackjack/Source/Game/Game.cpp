@@ -20,7 +20,7 @@ namespace Core
 	Application* CreateApplication(int argc, char** argv)
 	{
 		GameplayConfig config;
-		std::function<SharedPtr<World>()> startingScene = []() { return static_pointer_cast<World>(MakeShared<GameplayScene>()); };
+		std::function<SharedPtr<World>()> startingScene = []() { return static_pointer_cast<World>(MakeShared<MenuScene>()); };
 		config.StartingScene = startingScene;
 		Core::ApplicationSpecification specs
 		{

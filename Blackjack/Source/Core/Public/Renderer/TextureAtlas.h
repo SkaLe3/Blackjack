@@ -15,6 +15,7 @@ namespace Core
 		glm::vec4 GetRegion(const String& name) const;
 
 		SharedPtr<Texture> GetTexture() const;
+		void ChangeTexture(SharedPtr<Texture> texture);
 
 	private:
 		SharedPtr<Texture> m_Texture;

@@ -16,11 +16,12 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
-	void PopulateDeck();
+	void PopulateDeck(SharedPtr<Core::Texture> skin);
 	SharedPtr<Card> PullCard();
 	void Shuffle();
 	uint32 GetCardCount();
 	SharedPtr<Card> CardAt(uint32 index);
+	std::vector<SharedPtr<Card>> GetCardsRef();
 
 	SharedPtr<DeckAnimationComponent> GetAnimationComponent();
 	void Animate(const glm::vec2& startPos, float sourceRot, float targetRot, float durationShuffle, float durationCard);

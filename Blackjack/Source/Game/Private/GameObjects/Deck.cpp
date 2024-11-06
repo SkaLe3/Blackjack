@@ -22,9 +22,9 @@ void Deck::BeginPlay()
 
 }
 
-void Deck::PopulateDeck()
+void Deck::PopulateDeck(SharedPtr<Texture> skin)
 {
-	SharedPtr<TextureAtlas> atlas = MakeShared<CardTextureAtlas>();
+	SharedPtr<TextureAtlas> atlas = MakeShared<CardTextureAtlas>(skin);
 
 	const char* suits[] = { "spades", "diamonds", "clubs", "hearts" };
 	const char* ranks[] = { "2","3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
@@ -95,6 +95,11 @@ SharedPtr<Card> Deck::CardAt(uint32 index)
 	if (index < m_Cards.size())
 		return m_Cards[index];
 	return nullptr;
+}
+
+std::vector<SharedPtr<Card>> Deck::GetCardsRef()
+{
+	return m_Cards;
 }
 
 SharedPtr<DeckAnimationComponent> Deck::GetAnimationComponent()
