@@ -20,7 +20,7 @@ enum class ERoundStage : byte
 	DealingCards,
 	PlayerTurn,
 	DealerReveal,
-	GivingWins,
+	RoundResult,
 	Restart
 
 };
@@ -52,22 +52,33 @@ public:
 
 	void StartRound();
 	void EndRound();
-	void RoundResult();
 	void NextRound();
 
 	void RestartGame();
 	void LeaveGame();
 
 	// GameEvents
-	void OnDeckReady();
-	void OnBetPlaced();
-	void OnDealCards();
-	void OnRemoveFinished();
-	void OnPlayerHit(SharedPtr<Player> player);
-	void OnPlayerStand(SharedPtr<Player> player);
-	void OnPlayerDoubleDown(SharedPtr<Player> player);
-	void OnPlayerCallBlackjack(SharedPtr<Player> player);
-	void OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerResult result);
+	void OnDeckReady();	// When deck is created, shuffled and animated
+	void OnBetPlaced(); // When players made a bet
+	void OnDealCards();	// When Dealing cards started
+	void OnPlayersTurn(); // When Players turn stage  started
+	void OnDealerStartsReveal();	// When all players finished their turns, need to remove everyone who has blackjack or busted. Dealer reveals card
+	void OnCheckResults();
+	void OnPlayerHit(SharedPtr<Player> player);	// When player calls Hit
+	void OnPlayerStand(SharedPtr<Player> player); // When player calls Stand
+	void OnPlayerDoubleDown(SharedPtr<Player> player);	// When player calls DoubleDown
+	void OnPlayerCallBlackjack(SharedPtr<Player> player); // When player has blackjack
+	void OnPlayerBust(SharedPtr<Player> player);		  // When player called Hit and got busted
+	void OnPlayerResultWin(SharedPtr<Player> player);
+	void OnPlayerResultLose(SharedPtr<Player> player);
+	void OnPlayerResultPush(SharedPtr<Player> player);
+	void OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerResult result);	// When player finished game, play sounds and give wins
+	void OnDealerRevealed();
+	void OnDealerHit();
+	void OnDealerStand();
+	void OnDealerBust();
+	void OnDealerFinishedTurn();
+	void OnRestartRound();
 	void EndTurnAction();
 
 	// TODO: move some functions to private section
@@ -81,6 +92,8 @@ private:
 	void ResetTurn();
 	bool WaitForBets();
 	bool WaitForTurns();
+	bool WaitForReveal();
+	bool WaitForFinished();
 
 	void DealCard(SharedPtr<Person> person, bool bFronfaceUp = true);
 
@@ -96,22 +109,18 @@ private:
 	SharedPtr<Dealer> m_Dealer;
 	std::vector<SharedPtr<Player>> m_Players;
 	std::vector<SharedPtr<Player>> m_ActivePlayers;
-	std::vector<SharedPtr<Player>> m_FinishedPlayers;
 	std::vector<SharedPtr<Card>> m_CardsRef;
 	SharedPtr<Core::Texture> m_SelectedSkin;
-
-
 
 	// Gameplay
 	ERoundStage m_RoundStage = ERoundStage::None;
 	int32 m_PlayerTurn;
-	//std::vector<ERoundStage> m_Stages;
 	bool m_ShiftStage = false;
 	bool m_bShouldStartRound = false;
 	bool m_bDeckReady = false;
-	bool m_MakeTurn = false;
+	bool m_PlayerMakeTurn = false;
+	bool m_DealerMakeTurn = false;
+	bool m_ContinueTurn = false;
 
 	SharedPtr<BJGameState> m_GameState;
-	
-
 };

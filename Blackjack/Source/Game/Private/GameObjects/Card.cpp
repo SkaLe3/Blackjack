@@ -39,6 +39,11 @@ ECardRank Card::GetRank()
 	return m_Rank;
 }
 
+ECardFace Card::GetFace()
+{
+	 return m_CardFace;
+}
+
 void Card::TurnOver(float duration, byte axis /*= 0*/)
 {
 	GetAnimationComponent()->StartFlipAnimation(duration, axis);

@@ -77,9 +77,9 @@ uint32 ChipStack::GetChipsCount()
 	return m_Chips.size();
 }
 
-uint32 ChipStack::GetBetValue()
+int32 ChipStack::GetBetValue()
 {
-	uint32 sum = 0;
+	int32 sum = 0;
 	for (auto& chip : m_Chips)
 	{
 		byte chipValue = (byte)(chip->GetType());
@@ -97,4 +97,13 @@ void ChipStack::CorrectRotation()
 		GetTransform().Rotation.z = -parentRotation;
 
 	}
+}
+
+void ChipStack::Clear()
+{
+	for (auto& chip : m_Chips)
+	{
+		chip->Destroy();
+	}
+	m_Chips.clear();
 }

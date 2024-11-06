@@ -1,7 +1,7 @@
 #include "GameObjects/UserPlayer.h"
 
 #include "GameObjects/Chip.h"
-
+#include "DataStructures/BJGameState.h"
 
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
@@ -34,10 +34,16 @@ void UserPlayer::GameResult(EPlayerResult result)
 		AudioSystem::PlaySound(m_FailJingle);
 		break;
 	case EPlayerResult::Push:
-		AudioSystem::PlayMusic(m_ErrorSound);
+		AudioSystem::PlaySound(m_ErrorSound);
 		break;
 
 	}
+
+}
+
+void UserPlayer::AllowTurn()
+{
+	Super::AllowTurn();
 
 }
 
@@ -45,7 +51,7 @@ void UserPlayer::OnEvent(Event& event)
 {
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
-		if (m_State->AllowedToBet && IsMyTurn() && !HasFinishedGame())
+		if (m_State && m_State->AllowedToBet && IsMyTurn() && !HasFinishedGame())
 		{
 
 			if (event.Ev.key.keysym.sym == SDLK_1)
@@ -81,7 +87,7 @@ void UserPlayer::OnEvent(Event& event)
 				ConfirmBet();
 			}
 		}
-		if (m_State->AllowedToTurn && IsMyTurn() && !HasFinishedGame())
+		if (m_State && m_State->AllowedToTurn && IsMyTurn() && !HasFinishedGame())
 		{
 			if (event.Ev.key.keysym.sym == SDLK_h)
 			{
@@ -93,7 +99,27 @@ void UserPlayer::OnEvent(Event& event)
 			}
 			if (event.Ev.key.keysym.sym == SDLK_d)
 			{
-				DoubleDown();
+				TryDoubleDown();
+			}
+		}
+		if (m_State && m_State->AskForNextRound)
+		{
+			if (event.Ev.key.keysym.sym == SDLK_y)
+			{
+				if (GameState->MinBet < m_Balance)
+				{
+					BJ_LOG_INFO("======NEW ROUND STARTED=====");
+					GameState->OnNextRound.Broadcast();
+				}
+				else
+				{
+					BJ_LOG_INFO("NOT ENOUGH BALANCE TO START NEW ROUND");
+				}
+			}
+			if (event.Ev.key.keysym.sym == SDLK_n)
+			{
+				BJ_LOG_INFO("LEAVIGN GAME");
+				GameState->OnLeaveGame.Broadcast();
 			}
 		}
 	}

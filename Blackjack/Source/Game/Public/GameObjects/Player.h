@@ -11,7 +11,6 @@ DECLARE_DELEGATE_ONE_PARAM(ChipActionDelegate, uint32)
 
 class CardsHand;
 class Card;
-class BJGameState;
 /*
 * @class Player
 *
@@ -27,43 +26,51 @@ public:
 	//~ End Object Interface
 
 	/** Balance */
-	void SetBalance(uint32 balace);
-	void AddBalance(uint32 amount);
-	uint32 GetBalance();
+	void SetBalance(int32 balace);
+	void AddBalance(int32 amount);
+	int32 GetBalance();
 
 	/** Bet */
 	virtual void PlaceChip(EChipType chip);
 	void TakeLastChip();
 	void ConfirmBet();
+	int32 GetBetValue();
+	void ClearBet();
 
 	/** Turn */
 	void CallBlackjack();
-	void Hit();
-	void Stand();
+	virtual void Hit() override;
+	virtual void Stand() override;
+	virtual void Bust() override;
+	bool TryDoubleDown();
+	bool CanDoubleDown();
 	void DoubleDown();
+	void DealerBust();
+	void OverDealer();
+	void UnderDealer();
+	void Push();
 	void Split();	 // Later
 	// No insurance
 
 	/** Gameplay */
-	void SetState(SharedPtr<PlayerState> state);
+	void ResetState();
 	virtual void AllowToPlay();
 	virtual void AllowTurn();
 	void ForbidTurn();
 	bool IsMyTurn();
 	virtual void GameResult(EPlayerResult result) {}
 	bool HasFinishedGame();
+	void AskForNextRound();
 protected:
 
 public:
 	GetTurnDelegate OnGotTurn;
 	ChipActionDelegate OnChipAction;
 
-	SharedPtr<BJGameState> GameState;
-
 protected:
 	WeakPtr<ChipStack> m_Bet;
 	SharedPtr<PlayerState> m_State;
-	uint32 m_Balance = 0;
+	int32 m_Balance = 0;
 
 	SharedPtr<Core::SoundBase> m_ConfirmSound;
 	SharedPtr<Core::SoundBase> m_ErrorSound;

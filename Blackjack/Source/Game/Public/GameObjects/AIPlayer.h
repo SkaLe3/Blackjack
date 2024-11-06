@@ -8,7 +8,15 @@
 class AIPlayer : public Player
 {
 	DECLARE_SUPER(Player)
-public:				
+public:		
+	enum class EAIDecision
+	{
+		Hit,
+		Stand,
+		DoubleDown
+	};
+
+public:
 	//~ Begin Object Interface
 	virtual void BeginPlay() override;
 	virtual void Tick(float deltaTime) override;
@@ -23,6 +31,7 @@ public:
 
 	void PlaceBet();
 	void MakeTurn();
+	EAIDecision MakeDecision();
 
 private:
 	std::list<EChipType> SelectChips(int32 value);	

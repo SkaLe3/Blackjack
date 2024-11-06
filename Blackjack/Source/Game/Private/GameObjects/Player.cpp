@@ -2,7 +2,7 @@
 
 #include "GameObjects/ChipStack.h"
 #include "GameObjects/CardsHand.h"
-#include "GameModes/GameplayGameMode.h"
+#include "GameModes/GameplayGameMode.h"	// TODO: remove if possible
 
 
 #include <Sound/AudioSystem.h>
@@ -34,15 +34,15 @@ void Player::BeginPlay()
 	SET_BOX_DEBUG_COLOR((glm::vec4{ 1, 0, 1, 1 }));  // Magenta
 	GetBoxComponent()->SetHalfSize({ 2, 2 });
 
-	OnChipAction.Add([](uint32 value) { BJ_LOG_INFO("BetValue: %d", value); }); // TODO : Replace with UI function
+	OnChipAction.Add([](int32 value) { BJ_LOG_INFO("BetValue: %d", value); }); // TODO : Replace with UI function
 }
 
-void Player::SetBalance(uint32 balace)
+void Player::SetBalance(int32 balace)
 {
 	m_Balance = balace;
 }
 
-void Player::AddBalance(uint32 amount)
+void Player::AddBalance(int32 amount)
 {
 	m_Balance += amount;
 }
@@ -80,7 +80,7 @@ void Player::ConfirmBet()
 {
 	if (auto bet = m_Bet.lock())
 	{
-		uint32 value = bet->GetBetValue();
+		int32 value = bet->GetBetValue();
 		if (value < GameState->MinBet || value > GameState->MaxBet)
 		{
 			// To avoid redutant branching in Release build
@@ -105,6 +105,23 @@ void Player::ConfirmBet()
 
 }
 
+int32 Player::GetBetValue()
+{
+	if (const auto& bet = m_Bet.lock())
+	{
+		return bet->GetBetValue();
+	}
+	return 0;
+}
+
+void Player::ClearBet()
+{
+	if (const auto& bet = m_Bet.lock())
+	{
+		bet->Clear();
+	}
+}
+
 void Player::CallBlackjack()
 {
 	GameState->OnPlayerCallBlackjack.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
@@ -113,42 +130,83 @@ void Player::CallBlackjack()
 
 void Player::Hit()
 {
+	Super::Hit();
 	GameState->OnPlayerHit.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
-	AudioSystem::PlaySound(m_ConfirmSound);
 }
 
 void Player::Stand()
 {
+	Super::Stand();
 	GameState->OnPlayerStand.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
 	AudioSystem::PlaySound(m_ConfirmSound);
 }
 
-void Player::DoubleDown()
+void Player::Bust()
+{
+	Super::Bust();
+	GameState->OnPlayerBust.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+}
+
+bool Player::TryDoubleDown()
+{
+	bool canDD = CanDoubleDown();
+	if (canDD)
+	{
+		DoubleDown();
+		return true;
+	}
+	AudioSystem::PlaySound(m_ErrorSound);
+	return false;
+}
+
+bool Player::CanDoubleDown()
 {
 	if (auto bet = m_Bet.lock())
 	{
 		if (bet->GetBetValue() * 2 > GameState->MaxBet)
 		{
 			BJ_LOG_INFO("DoubleDown refused! Doubled bet is over max bet limit");
-			AudioSystem::PlaySound(m_ErrorSound);
-			return;
+			return false;
 		}
 		if (bet->GetBetValue() * 2 > m_Balance)
 		{
 			BJ_LOG_INFO("DoubleDown refused! Not enough balance");
-			AudioSystem::PlaySound(m_ErrorSound);
-			return;
+			return false;
 		}
 		bool doubled = bet->Double();
 		if (!doubled)
 		{
 			BJ_LOG_INFO("DoubleDown refused! exceed maximum chip count in bet");
-			AudioSystem::PlaySound(m_ErrorSound);
-			return;
+			return false;
 		}
-		GameState->OnPlayerDoubleDown.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
-		AudioSystem::PlaySound(m_ConfirmSound);
 	}
+	return true;
+}
+
+void Player::DoubleDown()
+{
+	GameState->OnPlayerDoubleDown.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+	AudioSystem::PlaySound(m_ConfirmSound);
+}
+
+void Player::DealerBust()
+{
+	GameState->OnPlayerResultWin.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+}
+
+void Player::OverDealer()
+{
+	GameState->OnPlayerResultWin.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+}
+
+void Player::UnderDealer()
+{
+	GameState->OnPlayerResultLose.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
+}
+
+void Player::Push()
+{
+	GameState->OnPlayerResultPush.Broadcast(std::static_pointer_cast<Player>(GetSelf().lock()));
 }
 
 void Player::Split()
@@ -156,12 +214,13 @@ void Player::Split()
 
 }
 
-void Player::SetState(SharedPtr<PlayerState> state)
+
+void Player::ResetState()
 {
-	m_State = state;
+	m_State = MakeShared<PlayerState>();
 }
 
-uint32 Player::GetBalance()
+int32 Player::GetBalance()
 {
 	return m_Balance;
 }
@@ -174,6 +233,7 @@ void Player::AllowToPlay()
 	GameState->OnDealingcardsStageStarted.Add([this]() { m_State->AllowedToBet = false; });
 	GameState->OnPlayerTurnStageStarted.Add([this]() { m_State->AllowedToTurn = true; });
 	GameState->OnDealerRevealStageStarted.Add([this]() { m_State->AllowedToTurn = false; });
+	GameState->OnRoundResultStageStarted.Add([this]() { m_State->AllowedToCheckResult = true; });
 
 
 	BJ_LOG_INFO("%s allowed to play", GetTag().c_str());
@@ -188,15 +248,50 @@ void Player::AllowTurn()
 	{
 		if (auto hand = m_Cards.lock())
 		{
-			if (hand->CalculateHandValue() >15)
-			{	
+			int32 handValue = hand->CalculateHandValue();
+			if (handValue == 21 && hand->GetCardCount() == 2)
+			{
 				ForbidTurn();
-				TimerManager::Get().StartTimer(2000.f, [this](){ CallBlackjack();}); // Wait a bit before ending turn
+				TimerManager::Get().StartTimer(2000.f, [this]() { CallBlackjack(); }); // Wait a bit before ending turn
+				m_State->FinishedGame = true;
+			}
+			else if (handValue > 21)
+			{
+				ForbidTurn();
+				TimerManager::Get().StartTimer(2000.f, [this]() { Bust(); });
 				m_State->FinishedGame = true;
 			}
 		}
 	}
+	if (m_State->AllowedToCheckResult)
+	{
+		ForbidTurn();
+		m_State->FinishedGame = true;
+		if (auto hand = m_Cards.lock())
+		{
+			int32 handValue = hand->CalculateHandValue();
+			if (GameState->CurrentDealerHandValue > 21)
+			{		
+				TimerManager::Get().StartTimer(2000.f, [this]() { DealerBust(); });
+			}
+			else if (GameState->CurrentDealerHandValue > handValue)
+			{
+				TimerManager::Get().StartTimer(2000.f, [this]() { UnderDealer(); });
+			}
+			else if (GameState->CurrentDealerHandValue < handValue)
+			{
+				TimerManager::Get().StartTimer(2000.f, [this]() { OverDealer(); });
+			}
+			else
+			{
+				TimerManager::Get().StartTimer(2000.f, [this]() { Push(); });
+			}
+
+		}
+	}
+	// TODO: divide on 2 functions
 }
+
 
 void Player::ForbidTurn()
 {
@@ -210,4 +305,9 @@ bool Player::IsMyTurn()
 bool Player::HasFinishedGame()
 {
 	return m_State->FinishedGame;
+}
+
+void Player::AskForNextRound()
+{
+	m_State->AskForNextRound = true;
 }

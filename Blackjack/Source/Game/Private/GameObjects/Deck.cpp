@@ -22,6 +22,16 @@ void Deck::BeginPlay()
 
 }
 
+void Deck::Destroy()
+{
+	 Super::Destroy();
+	 GetAnimationComponent()->Destroy();
+	 for (const auto& card : m_Cards)
+	 {
+		 card->Destroy();
+	 }
+}
+
 void Deck::PopulateDeck(SharedPtr<Texture> skin)
 {
 	SharedPtr<TextureAtlas> atlas = MakeShared<CardTextureAtlas>(skin);
@@ -101,6 +111,7 @@ std::vector<SharedPtr<Card>> Deck::GetCardsRef()
 {
 	return m_Cards;
 }
+
 
 SharedPtr<DeckAnimationComponent> Deck::GetAnimationComponent()
 {

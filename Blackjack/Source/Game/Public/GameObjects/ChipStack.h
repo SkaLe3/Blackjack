@@ -21,10 +21,11 @@ public:
 	bool Double();
 	void RemoveChip();
 	uint32 GetChipsCount();
-	uint32 GetBetValue();
+	int32 GetBetValue();
 
 	void CorrectRotation();
 
+	void Clear();
 
 private:
 	// Used vector instead of stack to be able to iterate through it

@@ -60,7 +60,7 @@ void CardsHand::AcceptCard(SharedPtr<Card> card, bool m_bTurnOver /*= true*/)
 		card->Move(moveDuration, inDeckPosition, inHandPosition, glm::degrees(inDeckRotation), 180 + glm::degrees(inHandRotation), false);
 		card->GetAnimationComponent()->OnFinishMoveAnim.Add(std::bind(&CardsHand::AddCard, this));
 		AudioSystem::PlaySound(m_CardTakeSound, 0.2f);
-		TimerManager::Get().StartTimer(moveDuration * 1000.f * 0.45f, [this](){ AudioSystem::PlaySound(m_CardReceiveSound, 0.2f); });
+		TimerManager::Get().StartTimer(moveDuration * 1000.f * 0.45f, [this]() { AudioSystem::PlaySound(m_CardReceiveSound, 0.2f); });
 
 
 	}
@@ -88,13 +88,15 @@ bool CardsHand::CanAcceptCard()
 int32 CardsHand::CalculateHandValue()
 {
 	int32 totalValue = 0;
-	int aceCount = 0; // To track the number of Aces in the hand
+	int aceCount = 0;
 
 	for (const auto& weakCard : m_FirstHand)
 	{
 		auto card = weakCard.lock();
 		if (card)
 		{
+			if (card->GetFace() == ECardFace::Back)
+				continue;
 			int32 cardValue = card->GetValue();
 			totalValue += cardValue;
 
@@ -112,6 +114,45 @@ int32 CardsHand::CalculateHandValue()
 		--aceCount;
 	}
 	return totalValue;
+}
+
+bool CardsHand::HasAce()
+{
+	for (const auto& weakCard : m_FirstHand)
+	{
+		auto card = weakCard.lock();
+		if (card)
+		{
+			if (card->GetFace() == ECardFace::Back)
+			continue;
+			if (card->GetRank() == ECardRank::Ace)
+			{
+				return true;
+			}
+		}
+	}  
+	return false;
+}
+
+int32 CardsHand::GetCardCount()
+{
+	 return m_FirstHand.size();
+}
+
+void CardsHand::Reveal()
+{
+	for (const auto& weakCard : m_FirstHand)
+	{
+		auto card = weakCard.lock();
+		if (card)
+		{
+			if (card->GetFace() == ECardFace::Back)
+			{
+				card->TurnOver(0.6f, 0);
+			}
+
+		}
+	}
 }
 
 void CardsHand::Clear()

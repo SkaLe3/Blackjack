@@ -20,7 +20,10 @@ public:
 	void AddCard();
 	bool CanAcceptCard();
 	int32 CalculateHandValue();
+	bool HasAce();
+	int32 GetCardCount();
 
+	void Reveal();
 	void Clear();
 private:
 	std::vector<WeakPtr<Card>> m_FirstHand;

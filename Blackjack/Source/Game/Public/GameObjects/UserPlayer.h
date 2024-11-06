@@ -14,6 +14,7 @@ public:
 
 	//~ Begin Player Interface
 	virtual void GameResult(EPlayerResult result) override;
+	virtual void AllowTurn() override;
 	//~ End Player Interface
 
 	void OnEvent(Core::Event& event);

@@ -10,6 +10,7 @@ namespace Core
 	{
 		int initStatus = Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 		BJ_ASSERT(initStatus == 0, "Failed to init SDL_mixer! Mix_Error: % s", Mix_GetError());
+		Mix_AllocateChannels(32); // Increase to 32 channels
 	}
 
 	void AudioSystem::Shutdown()
@@ -23,6 +24,11 @@ namespace Core
 		{
 			float volume = s_SDLmaxVolume * s_MasterVolume * s_SFXVolume * sc->GetVolumeMultiplier() * volumeMultiplier;
 			int32 channel = Mix_PlayChannel(-1, sc->Get(), !sc->IsOneShot());
+			if (channel == -1)
+			{
+				BJ_LOG_ERROR("SDL_mixer error: %s", Mix_GetError());
+				return ActiveSound {sc, -1};
+			}
 			Mix_Volume(channel, volume);
 			ActiveSound as = { sc, channel };
 			return as;
@@ -138,14 +144,14 @@ namespace Core
 		float devider = 1;
 		if (oldVolume == 0)
 		{
-			for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 32; i++)
 			{
 				Mix_Volume(i, s_SDLmaxVolume * s_MasterVolume * s_SFXVolume);
 			}
 		}
 		else
 		{
-			for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 32; i++)
 			{
 				float channelVolume = Mix_Volume(i, -1) / oldVolume;
 				Mix_Volume(i, newVolume * channelVolume);

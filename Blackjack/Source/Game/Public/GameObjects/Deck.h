@@ -14,6 +14,7 @@ public:
 
 	//~ Begin Object Interface
 	virtual void BeginPlay() override;
+	virtual void Destroy() override;
 	//~ End Object Interface
 
 	void PopulateDeck(SharedPtr<Core::Texture> skin);

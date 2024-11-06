@@ -3,6 +3,7 @@
 
 class CardsHand;
 class Card;
+class BJGameState;
 
 /*
 * @class Player
@@ -17,6 +18,10 @@ public:
 	virtual void BeginPlay() override;
 	//~ End Object Interface
 
+	virtual void Hit() {}
+	virtual void Stand() {}
+	virtual void Bust() {}
+
 	int32 GetHandValue();
 	bool IsAbleToTakeCard();
 	void TakeCard(SharedPtr<Card> card);
@@ -24,6 +29,9 @@ public:
 	void PlaceCard(SharedPtr<Card> card);
 
 	void ClearHand();
+
+public:
+	SharedPtr<BJGameState> GameState;
 
 protected:
 	WeakPtr<CardsHand> m_Cards;
