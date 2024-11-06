@@ -24,7 +24,7 @@ project "Core"
         "%{wks.location}/Blackjack/ThirdParty",
         "%{IncludeDir.SDL}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.nfd"
+        "%{IncludeDir.nfd}"
     }
 
     libdirs 
