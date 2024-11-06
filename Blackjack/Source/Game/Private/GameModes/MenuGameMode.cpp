@@ -6,6 +6,8 @@
 #include <World/Entities/CameraObject.h>
 #include <Scenes/GameplayScene.h>
 #include <Core/Utils.h>
+#include <Sound/AudioSystem.h>
+#include <Core/AssetManager.h>
 
 #include <filesystem>
 
@@ -14,6 +16,9 @@ using namespace Core;
 void MenuGameMode::BeginPlay()
 {
 	RestartMenu();
+	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music2")->SoundP;
+	music->SetOneShot(false);
+	AudioSystem::PlayMusic(music, 0.2f);
 }
 
 void MenuGameMode::OnEvent(Core::Event& event)

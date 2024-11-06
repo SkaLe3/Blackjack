@@ -8,6 +8,8 @@ void MenuScene::BeginPlay()
 {
 	m_GameMode = MakeShared<MenuGameMode>();
 	World::BeginPlay();
+
+
 }
 
 void MenuScene::OnEvent(Event& event)
