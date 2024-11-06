@@ -23,13 +23,15 @@ project "Core"
         "%{wks.location}/Blackjack/Source/Core/Public",
         "%{wks.location}/Blackjack/ThirdParty",
         "%{IncludeDir.SDL}",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.nfd"
     }
 
     libdirs 
     { 
         bin_out,
-        "%{wks.location}/Blackjack/ThirdParty/SDL/lib"
+        "%{wks.location}/Blackjack/ThirdParty/SDL/lib",
+        "%{wks.location}/Blackjack/ThirdParty/nfd/lib"
     }
 
     defines
@@ -43,7 +45,8 @@ project "Core"
         "SDL2_ttf",
         "SDL2_image",
         "SDL2_mixer",
-        "SDL2main"
+        "SDL2main",
+        "nfd"
     }
 
     postbuildcommands {

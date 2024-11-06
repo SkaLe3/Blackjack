@@ -14,6 +14,7 @@
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
 #include <Core/TimerManager.h>
+#include <Core/Utils.h>
 
 #include "Renderer/Sprite.h"
 
@@ -36,6 +37,15 @@ void GameplayGameMode::OnEvent(Event& event)
 
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
+		if (event.Ev.key.keysym.sym == SDLK_o)
+		{
+			String filepath = FileDialogs::OpenFile("PNG Files\0*.PNG\0All Files\0*.*\0") ;
+			if (!filepath.empty())
+			{
+				BJ_LOG_INFO("opened file: %s", filepath.c_str());
+			}
+
+		}
 #ifdef BJ_DEBUG
 		if (event.Ev.key.keysym.sym == SDLK_q)
 		{

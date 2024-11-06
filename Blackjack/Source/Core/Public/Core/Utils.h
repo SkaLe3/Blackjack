@@ -34,4 +34,11 @@ namespace Core
 	private:
 		inline static uint64 startTime = 0;
 	};
+
+
+	class FileDialogs
+	{
+	public:
+		static String OpenFile(const char* filter);
+	};
 }

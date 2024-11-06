@@ -22,7 +22,8 @@ project "Blackjack"
         "%{wks.location}/Blackjack/Source/Game/Private",
         "%{wks.location}/Blackjack/Source/Core/Public",
         "%{IncludeDir.SDL}", -- needed for SDL_main.h
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.nfd}"
     }
 
     links
