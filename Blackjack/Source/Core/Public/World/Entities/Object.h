@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CoreDefines.h"
 
-#if BJ_DEBUG
+#ifdef BJ_DEBUG
 	#define OBJECT_DEBUG_NAME() private: \
 								const char* DebugGetClassName() { return typeid(*this).name();}
 #else

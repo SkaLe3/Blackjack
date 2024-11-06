@@ -66,7 +66,13 @@ project "Core"
         runtime "Debug"
         symbols "on"
     
-    filter "configurations:Release"
+    filter "configurations:Development" -- just release with debug logging
+        defines "BJ_DEBUG"
+        runtime "Release"
+        optimize "on"
+        symbols "off"
+    
+    filter "configurations:Shipping"
         defines "BJ_RELEASE"
         runtime "Release"
         optimize "on"

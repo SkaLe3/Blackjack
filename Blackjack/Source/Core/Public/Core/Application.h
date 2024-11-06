@@ -86,5 +86,5 @@ namespace Core
 		friend TimerManager;
 	};
 
-	Application* CreateApplication(int argc, char** argv);
+	Application* CreateApplication(const std::vector<std::string>& arguments);
 }

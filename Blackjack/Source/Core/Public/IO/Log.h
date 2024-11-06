@@ -28,7 +28,6 @@ namespace Core
 	};
 }
 
-
 #ifdef BJ_DEBUG
 #define BJ_LOG_INFO(fmt, ...) Core::Logger::Log(Core::Logger::LogLevel::Info, fmt, ##__VA_ARGS__)
 #define BJ_LOG_WARN(fmt, ...) Core::Logger::Log(Core::Logger::LogLevel::Warn, fmt, ##__VA_ARGS__)

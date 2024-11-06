@@ -43,6 +43,12 @@ project "Blackjack"
         runtime "Debug"
         symbols "on"
 
+    filter "configurations:Development" -- just release with debug logging
+        defines "BJ_DEBUG"
+        runtime "Release"
+        optimize "on"
+        symbols "off"
+
     filter "configurations:Release"
         defines "BJ_RELEASE"
         runtime "Release"

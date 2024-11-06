@@ -4,7 +4,7 @@ include "Dependencies.lua"
 workspace "Blackjack"
     architecture "x64"
     startproject "Blackjack"
-    configurations { "Debug", "Release"}
+    configurations { "Debug", "Development", "Shipping"}
     platforms {"Win64"}
     buildoptions { "/MP "}
     location "..\\"
