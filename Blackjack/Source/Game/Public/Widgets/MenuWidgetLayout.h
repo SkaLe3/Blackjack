@@ -19,6 +19,7 @@ public:
 	WeakPtr<Core::ImageWidget> Background;
 	WeakPtr<Core::ButtonWidget> StartButton;
 	WeakPtr<Core::ButtonWidget> LeaveButton;
+	WeakPtr<Core::ButtonWidget> AddSkinButton;
 
 
 

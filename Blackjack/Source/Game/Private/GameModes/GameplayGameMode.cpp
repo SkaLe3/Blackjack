@@ -42,18 +42,7 @@ void GameplayGameMode::OnEvent(Event& event)
 	{
 		if (event.Ev.key.keysym.sym == SDLK_PERIOD)
 		{		
-			// cycle skins
-			if (m_SkinsList.size() >= 2)
-			{
-				m_SelectedSkinIndex = (m_SelectedSkinIndex + 1) % m_SkinsList.size();
-				m_SelectedSkinTexture = AssetManager::Get().Load<TextureAsset>(m_SkinsList[m_SelectedSkinIndex])->TextureP;
-				ChangeCardsSkin();
-				BJ_LOG_INFO("Changed Card skin");
-			}
-			else
-			{
-				BJ_LOG_INFO("No more skins to cycle");
-			}
+			CycleCardSkin();
 
 		}
 	}
@@ -686,6 +675,22 @@ void GameplayGameMode::ChangeCardsSkin()
 	{
 		card->GetSpriteComponent()->GetAtlas()->ChangeTexture(m_SelectedSkinTexture);
 		card->GetSpriteComponent()->UpdateAtlas();
+	}
+}
+
+void GameplayGameMode::CycleCardSkin()
+{
+	// cycle skins
+	if (m_SkinsList.size() >= 2)
+	{
+		m_SelectedSkinIndex = (m_SelectedSkinIndex + 1) % m_SkinsList.size();
+		m_SelectedSkinTexture = AssetManager::Get().Load<TextureAsset>(m_SkinsList[m_SelectedSkinIndex])->TextureP;
+		ChangeCardsSkin();
+		BJ_LOG_INFO("Changed Card skin");
+	}
+	else
+	{
+		BJ_LOG_INFO("No more skins to cycle");
 	}
 }
 

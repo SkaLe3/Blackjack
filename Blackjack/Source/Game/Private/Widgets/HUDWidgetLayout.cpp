@@ -8,12 +8,15 @@
 
 #include "GameObjects/BlackjackPlayerController.h"
 #include "GameObjects/Chip.h"
+#include "GameModes/GameplayGameMode.h"
 
 using namespace Core;
 
 void HUDWidgetLayout::Init()
 {
 	SharedPtr<PanelWidget> panel = MakeShared<PanelWidget>("panel");
+
+	auto clickSound = AssetManager::Get().Load<SoundAsset>("S_BtnLightClick")->SoundP;
 
 	auto uibar = MakeShared<ImageWidget>("UIBar");
 	UIBar = uibar;
@@ -64,6 +67,15 @@ void HUDWidgetLayout::Init()
 	changeSkingButton->Slot->SetSize({ 100.f, 102.f });
 	changeSkingButton->Slot->SetAlignment({ 0.f, 0.0f });
 	changeSkingButton->SetImage(Sprite::Create(changeSkinTex));
+	changeSkingButton->SetClickSound(clickSound);
+	changeSkingButton->OnButtonClick.Add([=](int32 button)
+										 {
+											 if (button == 1)
+											 {
+											 auto gameMode = std::static_pointer_cast<GameplayGameMode>(m_PlayerController->GetWorld()->GetGameMode());
+											 gameMode->CycleCardSkin();
+											 }
+										 });
 
 	SharedPtr<Texture> minusTex = AssetManager::Get().Load<TextureAsset>("T_Minus")->TextureP;
 	auto minusButton = MakeShared<ButtonWidget>("Minus");
@@ -73,23 +85,25 @@ void HUDWidgetLayout::Init()
 	minusButton->Slot->SetSize({ 80, 15 });
 	minusButton->Slot->SetAlignment({ 0.f, 0.0f });
 	minusButton->SetImage(Sprite::Create(minusTex));
+	minusButton->SetClickSound(clickSound);
 	minusButton->OnButtonClick.Add([=](int32 button)
 								   {
 									   if (button == 1)	m_PlayerController->TakeLastChip();
-								   }) ;
+								   });
 
 	SharedPtr<Texture> confirm = AssetManager::Get().Load<TextureAsset>("T_ConfirmBet")->TextureP;
 	auto confirmButton = MakeShared<ButtonWidget>("Minus");
 	ConfirmButton = confirmButton;
 	panel->AddChild(confirmButton);
-	confirmButton->Slot->SetPosition({ 1230, 1006.f });
-	confirmButton->Slot->SetSize({ 80, 15 });
-	confirmButton->Slot->SetAlignment({ 0.f, 0.0f });
-	confirmButton->SetImage(Sprite::Create(minusTex));
+	confirmButton->Slot->SetPosition({ 490, 1010 });
+	confirmButton->Slot->SetSize({ 110, 110 });
+	confirmButton->Slot->SetAlignment({ 0.f, 0.5f });
+	confirmButton->SetImage(Sprite::Create(confirm));
+	confirmButton->SetClickSound(clickSound);
 	confirmButton->OnButtonClick.Add([=](int32 button)
-								   {
-									   if (button == 1)	m_PlayerController->ConfirmSelectedBet();
-								   });
+									 {
+										 if (button == 1)	m_PlayerController->ConfirmSelectedBet();
+									 });
 
 
 	SharedPtr<Texture> chipsTex = AssetManager::Get().Load<TextureAsset>("T_ChipUIAtlas")->TextureP;
@@ -102,10 +116,11 @@ void HUDWidgetLayout::Init()
 	whiteChipButton->Slot->SetAlignment({ 0.f, 0.5f });
 	whiteChipButton->SetAtlas(chipsAtlas);
 	whiteChipButton->SetRegion("white");
+	whiteChipButton->SetClickSound(clickSound);
 	whiteChipButton->OnButtonClick.Add([=](int32 button)
-								   {
-									   if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::White);
-								   }) ;
+									   {
+										   if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::White);
+									   });
 
 
 	auto redChipButton = MakeShared<ButtonWidget>("RedChip");
@@ -116,10 +131,11 @@ void HUDWidgetLayout::Init()
 	redChipButton->Slot->SetAlignment({ 0.f, 0.5f });
 	redChipButton->SetAtlas(chipsAtlas);
 	redChipButton->SetRegion("red");
+	redChipButton->SetClickSound(clickSound);
 	redChipButton->OnButtonClick.Add([=](int32 button)
-								   {
-									   if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Red);
-								   }) ;
+									 {
+										 if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Red);
+									 });
 
 	auto blueChipButton = MakeShared<ButtonWidget>("BlueChip");
 	BlueChipButton = blueChipButton;
@@ -129,10 +145,11 @@ void HUDWidgetLayout::Init()
 	blueChipButton->Slot->SetAlignment({ 0.f, 0.5f });
 	blueChipButton->SetAtlas(chipsAtlas);
 	blueChipButton->SetRegion("blue");
+	blueChipButton->SetClickSound(clickSound);
 	blueChipButton->OnButtonClick.Add([=](int32 button)
-									 {
-										 if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Blue);
-									 });
+									  {
+										  if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Blue);
+									  });
 
 	auto grayChipButton = MakeShared<ButtonWidget>("GrayChip");
 	GrayChipButton = grayChipButton;
@@ -142,6 +159,7 @@ void HUDWidgetLayout::Init()
 	grayChipButton->Slot->SetAlignment({ 0.f, 0.5f });
 	grayChipButton->SetAtlas(chipsAtlas);
 	grayChipButton->SetRegion("gray");
+	grayChipButton->SetClickSound(clickSound);
 	grayChipButton->OnButtonClick.Add([=](int32 button)
 									  {
 										  if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Gray);
@@ -155,10 +173,11 @@ void HUDWidgetLayout::Init()
 	greenChipButton->Slot->SetAlignment({ 0.f, 0.5f });
 	greenChipButton->SetAtlas(chipsAtlas);
 	greenChipButton->SetRegion("green");
+	greenChipButton->SetClickSound(clickSound);
 	greenChipButton->OnButtonClick.Add([=](int32 button)
-									  {
-										  if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Green);
-									  });
+									   {
+										   if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Green);
+									   });
 
 	auto orangeChipButton = MakeShared<ButtonWidget>("OrangeChip");
 	OrangeChipButton = orangeChipButton;
@@ -168,10 +187,38 @@ void HUDWidgetLayout::Init()
 	orangeChipButton->Slot->SetAlignment({ 0.f, 0.5f });
 	orangeChipButton->SetAtlas(chipsAtlas);
 	orangeChipButton->SetRegion("orange");
+	orangeChipButton->SetClickSound(clickSound);
 	orangeChipButton->OnButtonClick.Add([=](int32 button)
-									   {
-										   if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Orange);
-									   });
+										{
+											if (button == 1)	m_PlayerController->PlaceSelectedChip(EChipType::Orange);
+										});
+	SharedPtr<Texture> standTex = AssetManager::Get().Load<TextureAsset>("T_stand")->TextureP;
+	auto standButton = MakeShared<ButtonWidget>("Stand");
+	StandButton = standButton;
+	panel->AddChild(standButton);
+	standButton->Slot->SetPosition({ 560, 760 });
+	standButton->Slot->SetSize({ 164, 164 });
+	standButton->Slot->SetAlignment({ 0.f, 0.0f });
+	standButton->SetImage(Sprite::Create(standTex));
+	standButton->SetClickSound(clickSound);
+	standButton->OnButtonClick.Add([=](int32 button)
+								   {
+									   if (button == 1)	m_PlayerController->CallStand();
+								   });
+
+	SharedPtr<Texture> hitTex = AssetManager::Get().Load<TextureAsset>("T_hit")->TextureP;
+	auto hitButton = MakeShared<ButtonWidget>("hit");
+	HitButton = hitButton;
+	panel->AddChild(hitButton);
+	hitButton->Slot->SetPosition({ 1200, 750 });
+	hitButton->Slot->SetSize({ 164, 164 });
+	hitButton->Slot->SetAlignment({ 0.f, 0.0f });
+	hitButton->SetImage(Sprite::Create(hitTex));
+	hitButton->SetClickSound(clickSound);
+	hitButton->OnButtonClick.Add([=](int32 button)
+								 {
+									 if (button == 1)	m_PlayerController->CallHit();
+								 });
 
 	SetRootWidget(panel);
 }
@@ -179,6 +226,6 @@ void HUDWidgetLayout::Init()
 
 void HUDWidgetLayout::SetOwner(SharedPtr<GameObject> pc)
 {
-	
+
 	m_PlayerController = std::static_pointer_cast<BlackjackPlayerController>(pc);
 }

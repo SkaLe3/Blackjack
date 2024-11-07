@@ -20,6 +20,7 @@ public:
 	void OnEvent(Core::Event& event);
 
 	bool CanBet();
+	bool CanMakeTurn();
 
 
 

@@ -16,6 +16,8 @@ public:
 	void TakeLastChip();
 	void PlaceSelectedChip(EChipType chip);
 	void ConfirmSelectedBet();
+	void CallStand();
+	void CallHit();
 
 	SharedPtr<UserPlayer> m_UserPlayer;
 

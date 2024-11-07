@@ -90,6 +90,7 @@ public:
 	void EndTurnAction();
 
 	SharedPtr<UserPlayer> GetUserPlayer();
+	void CycleCardSkin();
 	// TODO: move some functions to private section
 private:
 	void SubscribeForEvents();
@@ -110,6 +111,7 @@ private:
 	void TakeAwayBet(SharedPtr<Player> player, int32 offset);
 	// Other
 	void ChangeCardsSkin();
+;
 
 public:
 	RoundStageShiftDelegate OnStageShift;

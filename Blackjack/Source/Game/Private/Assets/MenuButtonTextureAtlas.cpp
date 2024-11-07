@@ -9,4 +9,5 @@ MenuButtonTextureAtlas::MenuButtonTextureAtlas()
 {
 	AddRegion("play", { 0, 0, 800, 160});
 	AddRegion("leave", { 0, 160, 800, 160});
+	AddRegion("addSkin", { 0, 320, 800, 160});
 }

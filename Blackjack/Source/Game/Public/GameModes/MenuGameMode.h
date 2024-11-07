@@ -18,6 +18,7 @@ public:
 
 	void RestartMenu();
 	void StartGame();
+	void AddSkin();	// Add Skin to game
 
 	void CreateMenuWidget();
 };

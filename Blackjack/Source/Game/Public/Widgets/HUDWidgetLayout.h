@@ -32,6 +32,8 @@ public:
 	WeakPtr<Core::ButtonWidget> GrayChipButton;
 	WeakPtr<Core::ButtonWidget> GreenChipButton;
 	WeakPtr<Core::ButtonWidget> OrangeChipButton;
+	WeakPtr<Core::ButtonWidget> StandButton;
+	WeakPtr<Core::ButtonWidget> HitButton;
 
 
 private:

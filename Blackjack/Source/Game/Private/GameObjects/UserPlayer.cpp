@@ -51,42 +51,7 @@ void UserPlayer::OnEvent(Event& event)
 {
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
-		if (m_State && m_State->AllowedToBet && IsMyTurn() && !HasFinishedGame())
-		{
 
-			if (event.Ev.key.keysym.sym == SDLK_1)
-			{
-				PlaceChip(EChipType::White);
-			}
-			if (event.Ev.key.keysym.sym == SDLK_2)
-			{
-				PlaceChip(EChipType::Red);
-			}
-			if (event.Ev.key.keysym.sym == SDLK_3)
-			{
-				PlaceChip(EChipType::Blue);
-			}
-			if (event.Ev.key.keysym.sym == SDLK_4)
-			{
-				PlaceChip(EChipType::Gray);
-			}
-			if (event.Ev.key.keysym.sym == SDLK_5)
-			{
-				PlaceChip(EChipType::Green);
-			}
-			if (event.Ev.key.keysym.sym == SDLK_6)
-			{
-				PlaceChip(EChipType::Orange);
-			}
-			if (event.Ev.key.keysym.sym == SDLK_MINUS)
-			{
-				TakeLastChip();
-			}
-			if (event.Ev.key.keysym.sym == SDLK_EQUALS)
-			{
-				ConfirmBet();
-			}
-		}
 		if (m_State && m_State->AllowedToTurn && IsMyTurn() && !HasFinishedGame())
 		{
 			if (event.Ev.key.keysym.sym == SDLK_h)
@@ -129,5 +94,10 @@ void UserPlayer::OnEvent(Event& event)
 bool UserPlayer::CanBet()
 {
 	return	m_State && m_State->AllowedToBet && IsMyTurn() && !HasFinishedGame();
+}
+
+bool UserPlayer::CanMakeTurn()
+{
+   return m_State && m_State->AllowedToTurn && IsMyTurn() && !HasFinishedGame();
 }
 

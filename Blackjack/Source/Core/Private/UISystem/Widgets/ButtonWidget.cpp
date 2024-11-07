@@ -1,5 +1,7 @@
 #include "UISystem/Widgets/ButtonWidget.h"
 
+#include "Sound/AudioSystem.h"
+
 namespace Core
 {
 
@@ -41,6 +43,8 @@ namespace Core
 			if (m_bHadPressBeforeRelease)
 			{
 				OnButtonClick.Broadcast(event.Ev.button.button);
+				if (m_ClickSound)
+					AudioSystem::PlaySound(m_ClickSound);
 			}
 			m_bHadPressBeforeRelease = false;
 			return true;
@@ -48,4 +52,10 @@ namespace Core
 		return false;
 
 	}
+
+	void ButtonWidget::SetClickSound(SharedPtr<SoundBase> sound)
+	{
+		 m_ClickSound = sound;
+	}
+
 }

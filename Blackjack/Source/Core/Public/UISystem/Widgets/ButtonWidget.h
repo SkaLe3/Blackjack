@@ -1,6 +1,6 @@
 #pragma once
 #include "UISystem/Widgets/ImageWidget.h"
-
+#include "Sound/Sound.h"
 
 //SDL_BUTTON_LEFT     1
 //SDL_BUTTON_MIDDLE   2
@@ -25,6 +25,7 @@ namespace Core
 		virtual bool OnButtonDown(Event& event, const glm::vec2& mousePos) override;
 		virtual bool OnButtonUp(Event& event, const glm::vec2& mousePos) override;
 
+		void SetClickSound(SharedPtr<SoundBase> sound);
 	public:
 		ButtonPressedDelegate OnButtonPressed;
 		ButtonReleasedDelegate OnButtonReleased;
@@ -32,5 +33,6 @@ namespace Core
 
 	private:
 		bool m_bHadPressBeforeRelease;
+		SharedPtr<SoundBase> m_ClickSound;
 	};
 }

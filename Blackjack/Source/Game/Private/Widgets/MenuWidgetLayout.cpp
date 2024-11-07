@@ -46,6 +46,15 @@ void MenuWidgetLayout::Init()
 	leaveButton->SetAtlas(buttonsTexture);
 	leaveButton->SetRegion("leave");
 
+	auto addSkinButton = MakeShared<ButtonWidget>("AddSkin");
+	AddSkinButton = addSkinButton;
+	panel->AddChild(addSkinButton);
+	addSkinButton->Slot->SetPosition({ 40, 740.f });
+	addSkinButton->Slot->SetSize({ 400.f, 80.f });
+	addSkinButton->Slot->SetAlignment({ 0.f, 0.5f });
+	addSkinButton->SetAtlas(buttonsTexture);
+	addSkinButton->SetRegion("addSkin");
+
 	
 
 

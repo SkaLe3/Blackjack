@@ -50,3 +50,19 @@ void BlackjackPlayerController::ConfirmSelectedBet()
 		m_UserPlayer->ConfirmBet();
 	}
 }
+
+void BlackjackPlayerController::CallStand()
+{
+	if (m_UserPlayer->CanMakeTurn())
+	{
+		m_UserPlayer->Stand();
+	 }
+}
+
+void BlackjackPlayerController::CallHit()
+{
+	if (m_UserPlayer->CanMakeTurn())
+	{
+		m_UserPlayer->Hit();
+	}
+}
