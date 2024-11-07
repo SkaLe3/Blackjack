@@ -6,6 +6,7 @@
 namespace Core
 {
 	class SceneRenderer;
+	class ScreenRenderer;
 
 	class Sprite
 	{
@@ -31,5 +32,6 @@ namespace Core
 		byte m_Flip; // 0: none, 1: horizontal, 2: vertical 
 
 		friend SceneRenderer;
+		friend ScreenRenderer;
 	};
 }

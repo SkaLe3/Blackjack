@@ -18,4 +18,6 @@ public:
 
 	void RestartMenu();
 	void StartGame();
+
+	void CreateMenuWidget();
 };

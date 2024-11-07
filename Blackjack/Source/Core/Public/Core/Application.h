@@ -9,7 +9,7 @@
 #include "World/World/World.h"
 #include "Renderer/Texture.h" // Temporary
 
-
+#include "UISystem/ViewportSystem.h"
 
 #include <filesystem>
 #include <memory>
@@ -36,12 +36,13 @@ namespace Core
 		GameplayConfig GPConfig;
 	};
 	
-
+	class ViewportClient;
 
 	class Application
 	{
 	public:
 		static Application& Get();
+		static SharedPtr<ViewportClient> GetViewportClient();
 
 	public:
 		Application(const ApplicationSpecification& appSpecs);
@@ -49,18 +50,17 @@ namespace Core
 
 		void Init();
 		void Shutdown();
-
 		void Run();
-
 		void PushLayer(const SharedPtr<Layer> layer);
 
 		SharedPtr<Window> GetWindow();
 
+		void AskToCloseGame();
 	private:
 		void ProcessEvents();
 		void OnEvent(Event& event);
-
 		bool OnWindowClose(Event& event);
+
 
 	private:
 		static Application* s_Instance;
@@ -80,6 +80,7 @@ namespace Core
 		SharedPtr<Window> m_Window;
 		UniquePtr<AssetManager> m_AssetManager;
 		UniquePtr<TimerManager> m_TimerManager;
+		UniquePtr<ViewportSystem> m_ViewportSystem;
 
 
 		friend AssetManager;

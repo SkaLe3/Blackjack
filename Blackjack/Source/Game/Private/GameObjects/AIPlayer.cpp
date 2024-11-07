@@ -11,7 +11,7 @@ using namespace Core;
 void AIPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	// TODO: Add AI component which will make all choices
+	// TODO: Add AI COntroller which will make all choices
 
 	m_WinSound = AssetManager::Get().Load<SoundAsset>("S_Tada")->SoundP;
 }

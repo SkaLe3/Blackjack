@@ -9,6 +9,8 @@
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
 
+#include "Widgets/MenuWidgetLayout.h"
+
 #include <filesystem>
 
 using namespace Core;
@@ -19,12 +21,18 @@ void MenuGameMode::BeginPlay()
 	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music2")->SoundP;
 	music->SetOneShot(false);
 	AudioSystem::PlayMusic(music, 0.3f);
+
 }
 
 void MenuGameMode::OnEvent(Core::Event& event)
 {
 	if (event.Ev.type == SDL_KEYDOWN)
 	{
+		/* 
+		* Files with the "Skin_" prefix are considered texture atlases for card skins.
+		* Use images from the Content/Files folder to load them as skins; 
+		* the prefix will be added automatically. 
+		*/
 		if (event.Ev.key.keysym.sym == SDLK_o)
 		{
 			String filepath = FileDialogs::OpenFile("PNG Files\0*.PNG\0All Files\0*.*\0");
@@ -64,38 +72,28 @@ void MenuGameMode::OnEvent(Core::Event& event)
 
 void MenuGameMode::RestartMenu()
 {
-	// 	SharedPtr<GameObject> chip = GetWorld()->SpawnGameObject<GameObject>();
-	// 	chip->SetTag("Chip");
-	// 	SharedPtr<SpriteComponent> sprite = chip->CreateComponent<SpriteComponent>();
-	// 	sprite->SetupAttachment(chip->GetBoxComponent());
-	// 	SharedPtr<Texture> chipTex = AssetManager::Get().Load<TextureAsset>("T_RedChip")->TextureP;
-	// 	sprite->SetSprite(MakeShared<Sprite>(chipTex));
-	// 
-	// 	sprite->SetOwner(chip);
-	// 	sprite->GetTransform().Scale = { 5.f, 5.f, 1.0f };
-	// 	chip->GetTransform().Translation = {2, 0, 1};
-	// 
-	// 	SharedPtr<GameObject> card = GetWorld()->SpawnGameObject<GameObject>();
-	// 	card->SetTag("Carad");
-	// 	SharedPtr<SpriteComponent> sprite2 = card->CreateComponent<SpriteComponent>();
-	// 	sprite2->SetupAttachment(card->GetBoxComponent());
-	// 	SharedPtr<Texture> cardText = AssetManager::Get().Load<TextureAsset>("T_CardKing")->TextureP;
-	// 	sprite2->SetSprite(MakeShared<Sprite>(cardText));
-	// 
-	// 	sprite2->SetOwner(card);
-	// 	sprite2->GetTransform().Scale = {5.f, 5.f, 1.f};
-	// 	card->GetTransform().Translation = {5, 0, 2};
-	// 
-	// 	SharedPtr<BoxComponent> box = chip->GetBoxComponent();
 
 	SharedPtr<CameraObject> camera = GetWorld()->SpawnGameObject<CameraObject>();
 
 	auto cameraComp = camera->GetCameraComponent();
 	cameraComp->GetCamera()->SetOrthoSize(10);
 
+	CreateMenuWidget();
+
 }
 
 void MenuGameMode::StartGame()
 {
 	World::OpenScene<GameplayScene>();
+}
+
+void MenuGameMode::CreateMenuWidget()
+{
+	if (SharedPtr<MenuWidgetLayout> myWidget = CreateWidgetLayout<MenuWidgetLayout>("Menu"))
+	{
+		myWidget->Init();
+		myWidget->AddToViewport(1);
+		myWidget->StartButton.lock()->OnButtonClick.Add([=](int32 button) { StartGame(); });
+		myWidget->LeaveButton.lock()->OnButtonClick.Add([=](int32 button) { LeaveGame(); });
+	}
 }

@@ -1,5 +1,6 @@
 #include "Scenes/MenuScene.h"
 #include "GameModes/MenuGameMode.h"
+#include "GameObjects/MenuPlayerController.h"
 
 using namespace Core;
 
@@ -7,6 +8,7 @@ using namespace Core;
 void MenuScene::BeginPlay()
 {
 	m_GameMode = MakeShared<MenuGameMode>();
+	m_PlayerController = MakeShared<MenuPlayerController>();
 	World::BeginPlay();
 
 

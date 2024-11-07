@@ -8,7 +8,7 @@
 	#define OBJECT_DEBUG_NAME()
 #endif
 
-#define DECLARE_SUPER(BaseClass) using Super = BaseClass;
+
 
 namespace Core
 {

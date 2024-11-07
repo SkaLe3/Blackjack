@@ -2,6 +2,7 @@
 #include "World/World/Registry.h"
 #include "Renderer/Camera.h"
 #include "World/Components/CameraComponent.h"
+#include "World/Entities/PlayerController.h"
 #include "Renderer/SceneRenderer.h"
 #include "Renderer/Sprite.h"
 
@@ -25,6 +26,8 @@ namespace Core
 	void World::BeginPlay()
 	{
 		m_GameMode->BeginPlay();
+		if (m_PlayerController)
+			m_PlayerController->BeginPlay();
 		m_bStarted = true;
 		auto objects = m_Registry->GetAllObjects();
 		for (auto object : objects)
@@ -36,6 +39,8 @@ namespace Core
 	void World::Tick(float deltaTime)
 	{
 		m_GameMode->Tick(deltaTime);
+		if (m_PlayerController)
+			m_PlayerController->Tick(deltaTime);
 		UpdateObjects(deltaTime);
 		RemoveDestroyed();
 		ClearDestroyed();
@@ -103,6 +108,7 @@ namespace Core
 		m_ActiveCamera = nullptr;
 		m_Registry = nullptr;
 		m_GameMode = nullptr;
+		m_PlayerController = nullptr;
 
 	}
 
@@ -115,6 +121,11 @@ namespace Core
 	SharedPtr<GameMode> World::GetGameMode()
 	{
 		 return m_GameMode;
+	}
+
+	SharedPtr<PlayerController> World::GetPlayerController()
+	{
+		return m_PlayerController;
 	}
 
 	void World::DestroyObject(WeakPtr<Object> object)

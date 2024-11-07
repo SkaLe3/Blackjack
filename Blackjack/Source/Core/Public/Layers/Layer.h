@@ -17,6 +17,8 @@ namespace Core
 	virtual void OnUpdate(float deltaTime) {}
 	virtual void OnEvent(Event& event) {}
 
+	virtual void Init() {}
+
 	inline const String& GetName() const { return m_Name; }
 
 	protected:

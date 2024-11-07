@@ -5,9 +5,10 @@
 #include "Sound/AudioSystem.h"
 #include "Core/Utils.h"
 #include "Layers/GameLayer.h"
+#include "Layers/UILayer.h"
 
-// Temporary
 #include <SDL2/SDL.h>
+// Temporary
 #include <SDL2/SDL_image.h>
 
 namespace Core
@@ -20,6 +21,11 @@ namespace Core
 	Application& Application::Get()
 	{
 		return *s_Instance;
+	}
+
+	SharedPtr<ViewportClient> Application::GetViewportClient()
+	{
+		return std::static_pointer_cast<UILayer>(Application::Get().m_LayerStack.m_Layers[1])->GetViewportClient();
 	}
 
 	Application::Application(const ApplicationSpecification& appSpecs)
@@ -53,6 +59,7 @@ namespace Core
 		m_AssetManager->SetContentPath("Content");
 		m_AssetManager->InitialLoading();
 		m_TimerManager = MakeUnique<TimerManager>();
+		m_ViewportSystem = MakeUnique<ViewportSystem>();
 	}
 
 	Application::~Application()
@@ -77,7 +84,12 @@ namespace Core
 	void Application::Run()
 	{
 		PushLayer(MakeShared<GameLayer>(m_GPConfig.StartingScene, m_Window->GetWidth(), m_Window->GetHeight()));	   
+		PushLayer(MakeShared<UILayer>(m_Window->GetWidth(), m_Window->GetHeight()));
 
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+		{
+			(*--it)->Init();
+		}
 
 		while (m_bRunning)
 		{
@@ -124,6 +136,11 @@ namespace Core
 		return m_Window;
 	}
 
+
+	void Application::AskToCloseGame()
+	{
+		m_bRunning = false;
+	}
 
 	void Application::ProcessEvents()
 	{

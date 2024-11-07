@@ -20,6 +20,8 @@ namespace Core
 	public:
 		GameLayer(std::function<SharedPtr<World>()> startingSceneFunc, uint32 viewportWidth, uint32 viewportHeight);
 
+		void Init() override;
+
 		void OnAttach() override;
 		void OnDetach() override;
 
@@ -47,23 +49,6 @@ namespace Core
 		uint32 m_ViewportWidth, m_ViewportHeight;
 
 	private:
-
-		bool startAnim = false;
-		float elapsedTime = 0;
-		float flipDuration = 0.5f;
-		bool notify = false;
-		bool triggered = false;
-		int32 selectedFace = 0;
-
-
-		glm::vec2 cardPos = { 500, 300 };
-		glm::vec2 cardHalfsize = { 109, 153 };
-		glm::vec2 curHalfsize = cardHalfsize;
-		SharedPtr<Texture> cardTex;
-
-		// Temporary
-		SharedPtr<Texture> textTex;
-		SharedPtr<Texture> chipTex;
 
 	};
 

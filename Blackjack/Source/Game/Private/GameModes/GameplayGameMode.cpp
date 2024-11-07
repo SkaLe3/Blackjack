@@ -338,7 +338,6 @@ void GameplayGameMode::OnDealCards()
 	 */
 	for (auto& player : m_ActivePlayers)
 	{
-		// TODO: Make macro for binding, like for events
 		TimerManager::Get().StartTimer(interval * i++, TIMER_FUNC(DealCard, player));
 	}
 	TimerManager::Get().StartTimer(interval * i++, TIMER_FUNC(DealCard, m_Dealer));

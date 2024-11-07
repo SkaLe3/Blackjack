@@ -13,6 +13,7 @@ namespace Core
 {
 	class Registry;
 	class CameraComponent;
+	class PlayerController;
 	
 	class World
 	{		  
@@ -39,6 +40,7 @@ namespace Core
 		SharedPtr<T> SpawnGameObject();
 
 		SharedPtr<GameMode> GetGameMode();
+		SharedPtr<PlayerController> GetPlayerController();
 
 		void DestroyObject(WeakPtr<Object> object);
 		void DestroyAll();
@@ -54,6 +56,7 @@ namespace Core
 	protected:
 		UniquePtr<Registry> m_Registry;
 		SharedPtr<GameMode> m_GameMode;
+		SharedPtr<PlayerController> m_PlayerController;
 		SharedPtr<CameraComponent> m_ActiveCamera;
 
 		SharedPtr<SceneRenderer> m_Renderer;

@@ -2,8 +2,10 @@
 #include "Core/CoreDefines.h"
 #include "World/Entities/Object.h"
 
+
 namespace Core
 {
+
 	class GameMode : public Object
 	{
 	public:
@@ -13,8 +15,7 @@ namespace Core
 		virtual void EndPlay() override {}
 		virtual void Destroy() override {}
 		//~ Eng Object Interface
-		
-	protected:
-		
+
+		void LeaveGame();
 	};
 }

@@ -124,8 +124,4 @@ void UserPlayer::OnEvent(Event& event)
 		}
 	}
 
-
-
-	// TODO: Move to widget
-	static EChipType chipType;
 }

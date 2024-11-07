@@ -8,6 +8,7 @@
 
 namespace Core
 {
+	class Application;
 	class LayerStack
 	{
 	public:
@@ -30,5 +31,7 @@ namespace Core
 
 	private:
 		std::vector<SharedPtr<Layer>> m_Layers;
+
+		friend Application;
 	};
 }
