@@ -1,11 +1,10 @@
 # Blackjack
 ![video placeholder]()
-Blackjack is my own implementation of card game Blackjack made with C++ and SDL2. This project was built within 14 days as my test task.
+Blackjack is my own implementation of the card game Blackjack, which is made with C++ and SDL2. This project was built within 14 days as my test task.
 ***
 
 ## Project Overview
-This task required to implement basic rules of Blackjack and some additional features like changing cards skin at runtime.  During this project I implemented a lot of experimental staff with what I'm not sure, and basically whole engine. Some memory leaks might be present. Approximate time spent: 100 hours (14 days)
-due to the overly ambitious size of the project, I didn't have enough time to complete some features related to the UI, but overall the game works well.
+This task required implementing basic rules of blackjack and some additional features like changing the card's skin at runtime.  During this project, I implemented a lot of experimental staff with what I'm not sure about, and basically the whole engine. Some memory leaks might be present. Approximate time spent: 100 hours (14 days). Due to the overly ambitious size of the project, I didn't have enough time to complete some features related to the UI, but overall the game works well.
 
 ## Getting Started
 <ins>**1. Downloading the repository:**</ins>
