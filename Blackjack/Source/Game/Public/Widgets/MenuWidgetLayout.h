@@ -5,6 +5,7 @@
 #include <UISystem/Widgets/ButtonWidget.h>
 
 
+
 class MenuWidgetLayout : public Core::WidgetLayout
 {
 public:	
@@ -12,9 +13,13 @@ public:
 
 	virtual void Init() override;
 
+
+
 public:
 	WeakPtr<Core::ImageWidget> Background;
 	WeakPtr<Core::ButtonWidget> StartButton;
 	WeakPtr<Core::ButtonWidget> LeaveButton;
+
+
 
 };

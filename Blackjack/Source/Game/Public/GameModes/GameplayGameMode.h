@@ -33,6 +33,7 @@ class UserPlayer;
 class AIPlayer;
 class Deck;
 class Card;
+class BlackjackPlayerController;
 
 class GameplayGameMode : public Core::GameMode
 {
@@ -88,6 +89,7 @@ public:
 	void OnRestartRound();
 	void EndTurnAction();
 
+	SharedPtr<UserPlayer> GetUserPlayer();
 	// TODO: move some functions to private section
 private:
 	void SubscribeForEvents();
@@ -136,6 +138,7 @@ private:
 	bool m_ContinueTurn = false;
 
 	SharedPtr<BJGameState> m_GameState;
+	SharedPtr<UserPlayer> m_UserPlayer;
 
 	SharedPtr<Core::SoundBase> m_ChipsSound;
 };

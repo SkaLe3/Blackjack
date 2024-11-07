@@ -9,6 +9,7 @@
 #include "GameObjects/Dealer.h"
 #include "Components/DeckAnimationComponent.h"
 #include "Components/ChipStackMovementComponent.h"
+#include "GameObjects/BlackjackPlayerController.h"
 
 #include <World/World/World.h>
 #include <World/Entities/SpriteObject.h>
@@ -195,6 +196,7 @@ void GameplayGameMode::RestartGame()
 	m_Dealer->SetTag("Dealer");
 
 	auto player = GetWorld()->SpawnGameObject<UserPlayer>();
+	m_UserPlayer = player;
 	auto bot1 = GetWorld()->SpawnGameObject<AIPlayer>();
 	auto bot2 = GetWorld()->SpawnGameObject<AIPlayer>();
 	m_Players.push_back(bot1);
@@ -219,6 +221,7 @@ void GameplayGameMode::RestartGame()
 		m_SelectedSkinTexture = AssetManager::Get().Load<TextureAsset>(m_SkinsList[0])->TextureP;
 		m_SelectedSkinIndex = 0;
 	}
+
 	
 
 	TimerManager::Get().StartTimer(3000, [this]() { m_bShouldStartRound = true; });
@@ -249,12 +252,8 @@ void GameplayGameMode::RegistrationStage()
 		else
 		{
 			//////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////
 			//////////////////////////////////////	Dont remember what i wanted here
-			//////////////////////////////////////
-			//////////////////////////////////////
 
-			//////////////////////////////////////
 		}
 		m_Dealer->GameState = m_GameState;
 	}
@@ -688,5 +687,10 @@ void GameplayGameMode::ChangeCardsSkin()
 		card->GetSpriteComponent()->GetAtlas()->ChangeTexture(m_SelectedSkinTexture);
 		card->GetSpriteComponent()->UpdateAtlas();
 	}
+}
+
+SharedPtr<UserPlayer> GameplayGameMode::GetUserPlayer()
+{
+	 return m_UserPlayer;
 }
 

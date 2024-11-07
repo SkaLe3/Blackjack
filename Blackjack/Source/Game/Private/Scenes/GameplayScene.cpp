@@ -1,9 +1,11 @@
 #include "Scenes/GameplayScene.h"
 #include "GameModes/GameplayGameMode.h"
+#include "GameObjects/BlackjackPlayerController.h"
 
 void GameplayScene::BeginPlay()
 {
 	m_GameMode = MakeShared<GameplayGameMode>();
+	m_PlayerController = MakeShared<BlackjackPlayerController>();
 	World::BeginPlay();
 }
 

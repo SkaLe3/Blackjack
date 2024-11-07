@@ -125,3 +125,9 @@ void UserPlayer::OnEvent(Event& event)
 	}
 
 }
+
+bool UserPlayer::CanBet()
+{
+	return	m_State && m_State->AllowedToBet && IsMyTurn() && !HasFinishedGame();
+}
+

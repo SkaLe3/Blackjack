@@ -5,4 +5,5 @@ class ChipTextureAtlas : public Core::TextureAtlas
 {
 public:
 	ChipTextureAtlas();
+	ChipTextureAtlas(SharedPtr<Core::Texture> texture);
 };

@@ -19,6 +19,9 @@ public:
 
 	void OnEvent(Core::Event& event);
 
+	bool CanBet();
+
+
 
 private:
 	SharedPtr<Core::SoundBase> m_WinSound;

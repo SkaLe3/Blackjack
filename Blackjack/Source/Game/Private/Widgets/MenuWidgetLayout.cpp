@@ -8,6 +8,7 @@
 #include "Assets/MenuButtonTextureAtlas.h"
 
 
+
 using namespace Core;
 
 void MenuWidgetLayout::Init()
@@ -51,3 +52,5 @@ void MenuWidgetLayout::Init()
 
 	SetRootWidget(panel);
 }
+
+
