@@ -1,11 +1,13 @@
 # Blackjack
-![video placeholder]()
-Blackjack is my own implementation of card game Blackjack made with C++ and SDL2. This project was built within 14 days as my test task.
+[![Gameplay video](https://img.youtube.com/vi/D9PmvqR0CA4/0.jpg)](https://www.youtube.com/watch?v=D9PmvqR0CA4)
+
+Blackjack is my own implementation of card game Blackjack made with C++ and SDL2. This project was a test task and built within 14 days. Not finished yet
 ***
 
 ## Project Overview
-This task required to implement basic rules of Blackjack and some additional features like changing cards skin at runtime.  During this project I implemented a lot of experimental staff with what I'm not sure, and basically whole engine. Some memory leaks might be present. Approximate time spent: 100 hours (14 days)
-due to the overly ambitious size of the project, I didn't have enough time to complete some features related to the UI, but overall the game works well.
+This project is a Blackjack game that faithfully implements the core rules of the classic card game while offering some additional features, such as the ability to change card skins at runtime. Both the game and its engine were developed entirely from scratch, covering essential gameplay mechanics, game logic, and foundational components.
+
+The project served as a platform for experimenting with game development concepts, so some experimental features and custom code structures are in place. While the UI has some planned elements that couldn't be completed within the timeline, the game itself is functional and enjoyable. Development took approximately 120 hours over two weeks, with most of the time dedicated to the foundational engine and essential gameplay.
 
 ## Getting Started
 <ins>**1. Downloading the repository:**</ins>
@@ -25,7 +27,9 @@ If changes are made, or if you want to regenerate project files, rerun the [Win-
 
 
 ## Showcase
-Will be soon
+![Menu Screenshot](Resources/Showcase/Menu.jpg)
+![Gameplay Screenshot](Resources/Showcase/Game1.jpg)
+![Gameplay Screenshot](Resources/Showcase/Game2.jpg)
 
 ## License
 Blackjack is licensed under the Apache-2.0 License. See the [LICENSE](https://github.com/SkaLe3/Blackjack/blob/main/LICENSE) file for more details.
