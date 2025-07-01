@@ -3,6 +3,7 @@
 
 #include <UISystem/Widgets/ImageWidget.h>
 #include <UISystem/Widgets/ButtonWidget.h>
+#include "Widgets/MuteButtonWidget.h"
 
 
 
@@ -20,6 +21,9 @@ public:
 	WeakPtr<Core::ButtonWidget> StartButton;
 	WeakPtr<Core::ButtonWidget> LeaveButton;
 	WeakPtr<Core::ButtonWidget> AddSkinButton;
+
+	WeakPtr<Core::ToggleButtonWidget> MuteMusicButton;
+	WeakPtr<Core::ToggleButtonWidget> MuteSoundButton;
 
 
 

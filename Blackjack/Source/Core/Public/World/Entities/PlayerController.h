@@ -8,7 +8,7 @@ namespace Core
 	{
 		DECLARE_SUPER(GameObject)
 	public:
-		
+		virtual void PostBeginPlay() {};
 		void Posses(SharedPtr<GameObject> player);
 
 	private:

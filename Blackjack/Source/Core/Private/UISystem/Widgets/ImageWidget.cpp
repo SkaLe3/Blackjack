@@ -20,7 +20,7 @@ namespace Core
 			AnchorData adata = GetParentRelatedAnchorData();
 			if (m_Image)
 			{
-				renderer->DrawWidget(adata.Position, adata.Size, adata.Alignment, m_Image);
+				renderer->DrawWidget(adata.Position, adata.Size, adata.Alignment, m_Image, m_Color);
 			}
 			else
 			{
@@ -61,7 +61,7 @@ namespace Core
 
 	void ImageWidget::SetFill(bool bFill)
 	{
-		  m_bFill = bFill;
+		m_bFill = bFill;
 	}
 
 	void ImageWidget::SetColor(const glm::vec4& color)
@@ -69,11 +69,21 @@ namespace Core
 		m_Color = color;
 	}
 
+	void ImageWidget::SetColor(const glm::vec3& color)
+	{
+		m_Color = { color, m_Color.w };
+	}
+
+	void ImageWidget::SetAlpha(float alpha)
+	{
+		m_Color.w = alpha;
+	}
+
 	void ImageWidget::SetImage(SharedPtr<Sprite> inSprite)
 	{
 		if (!m_Atlas)
 		{
-			m_Image = inSprite ;
+			m_Image = inSprite;
 		}
 		else
 		{
@@ -91,6 +101,56 @@ namespace Core
 	{
 		glm::vec4 region = m_Atlas->GetRegion(name);
 		m_Image->MapToAtlas(region);
+	}
+
+	void ImageWidget::SetHoverEnterSound(SharedPtr<SoundBase> sound)
+	{
+		m_HoverSound = sound;
+	}
+
+	void ImageWidget::SetHoverImage(SharedPtr<TextureAtlas> atlas, const String& name)
+	{
+		if (!m_DefaultImage)
+		{
+			m_DefaultImage = Sprite::Create(m_Atlas->GetTexture());
+			*m_DefaultImage = *m_Image;
+		}
+
+		if (!m_HoverImage)
+		{
+			m_HoverImage = Sprite::Create(atlas->GetTexture());
+		}
+		else
+		{
+			m_HoverImage->ChangeTexture(atlas->GetTexture());
+		}
+		glm::vec4 region = atlas->GetRegion(name);
+		m_HoverImage->MapToAtlas(region);
+	}
+
+
+	void ImageWidget::UseHoverVisuals()
+	{
+		if (m_HoverImage)
+			m_Image = m_HoverImage;
+	}
+
+	void ImageWidget::UseDefaultVisuals()
+	{
+		if (m_DefaultImage)
+			m_Image = m_DefaultImage;
+	}
+
+	void ImageWidget::UsePressVisuals()
+	{
+		if (m_PressImage)
+			m_Image = m_PressImage;
+	}
+
+	void ImageWidget::UseActiveVisuals()
+	{
+		if (m_ActiveImage)
+			m_Image = m_ActiveImage;
 	}
 
 }

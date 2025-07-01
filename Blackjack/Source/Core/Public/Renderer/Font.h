@@ -1,15 +1,16 @@
 #pragma once
 #include "Core/CoreDefines.h"
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+
 
 #include <memory>
+
+struct _TTF_Font;
+typedef _TTF_Font TTF_Font;
 
 namespace Core
 {
 	class Texture;
-
 	/*
 	* @class Texture
 	* 
@@ -21,13 +22,12 @@ namespace Core
 		Font(const String& fontPath, int32 fontSize);
 		~Font();
 
-		// TODO: Move render to FontManager or make it private and class Font as friend of the FontManager
-		SharedPtr<Texture> RenderText(const String& text, SDL_Color color);
-
 		bool IsLoaded() const;
 
 	private:
 		TTF_Font* m_Font;
+
+		friend class FontManager;
 	};
 
 }

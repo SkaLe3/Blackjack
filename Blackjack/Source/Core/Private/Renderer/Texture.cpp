@@ -7,6 +7,7 @@ namespace Core
 		: m_Texture(nullptr), m_Width(0), m_Height(0)
 	{
 		m_Texture = SDL_CreateTextureFromSurface(renderer, surface);
+		//SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_BLEND);
 		BJ_ASSERT(m_Texture, "Failed to create texture: %s", SDL_GetError());
 
 		m_Width = surface->w;

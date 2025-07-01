@@ -6,6 +6,10 @@
 #include "Core/Utils.h"
 #include "Layers/GameLayer.h"
 #include "Layers/UILayer.h"
+#include "Renderer/FontManager.h"
+
+#include "Renderer/SceneRenderer.h"
+#include "Renderer/ScreenRenderer.h"
 
 #include <SDL2/SDL.h>
 // Temporary
@@ -51,7 +55,7 @@ namespace Core
 		m_Window->SetEventCallback([this](Event& event) { Application::OnEvent(event); });
 		Renderer::Init();
 
-		Renderer::Fonts->AddFontFromFileTTF("BebasNeue-32", "./Content/Fonts/BebasNeue/BebasNeue-Regular.ttf", 32);
+		Renderer::Fonts->AddFontFromFileTTF("BebasNeue-Regular-32", "./Content/Fonts/BebasNeue/BebasNeue-Regular.ttf", 32);
 		
 		AudioSystem::Init();
 
@@ -66,6 +70,16 @@ namespace Core
 	{
 		Shutdown();
 		s_Instance = nullptr;
+	}
+
+	SharedPtr<Core::SceneRenderer> Application::GetSceneRenderer()
+	{
+		return std::static_pointer_cast<GameLayer>(Application::Get().m_LayerStack.m_Layers[0])->GetSceneRenderer();
+	}
+
+	SharedPtr<Core::ScreenRenderer> Application::GetScreenRenderer()
+	{
+		return std::static_pointer_cast<UILayer>(Application::Get().m_LayerStack.m_Layers[1])->GetScreenRenderer();
 	}
 
 	void Application::Init()

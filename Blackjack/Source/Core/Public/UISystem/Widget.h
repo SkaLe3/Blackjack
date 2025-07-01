@@ -3,6 +3,10 @@
 
 #include "UISystem/PanelSlot.h"
 #include "Core/Event.h"
+#include "Sound/Sound.h"
+
+DECLARE_DELEGATE_NO_PARAMS(WidgetBeginHoverDelegate)
+DECLARE_DELEGATE_NO_PARAMS(WidgetEndHoverDelegate)
 
 namespace Core
 {
@@ -10,6 +14,7 @@ namespace Core
 	class PanelSlot;
 	class ViewportSystem;
 	class ScreenRenderer;
+	class TextureAtlas;
 
 	class Widget : public std::enable_shared_from_this<Widget>
 	{
@@ -17,6 +22,8 @@ namespace Core
 	public:
 		Widget(const String& inName) : m_Name(inName) {}
 		virtual ~Widget() = default;
+
+		virtual void Init(){}
 
 		virtual void OnPaint(SharedPtr<ScreenRenderer> renderer);
 		AnchorData GetParentRelatedAnchorData();
@@ -37,12 +44,25 @@ namespace Core
 		virtual bool OnMouseMoved(Event& event, const glm::vec2& mousePos);
 		virtual bool OnButtonDown(Event& event, const glm::vec2& mousePos);
 		virtual bool OnButtonUp(Event& event, const glm::vec2& mousePos);
+		virtual bool OnHoverEnter();
+		virtual bool OnHoverExit();
 
 		virtual bool ProvideMousePos(const glm::vec2& mousePos);
+		void SetHoverSound(SharedPtr<SoundBase> sound);
+	protected:
+		virtual void UseHoverVisuals();
+		virtual void UseDefaultVisuals();
+		virtual void UsePressVisuals();
+		virtual void UseActiveVisuals();
+	public:
+		WidgetBeginHoverDelegate OnBeginHover;
+		WidgetEndHoverDelegate OnEndHover;
 
 	public:
 		SharedPtr<PanelSlot> Slot;
 
+	protected:
+		SharedPtr<SoundBase> m_HoverSound;
 	protected:
 		String m_Name;
 		bool m_bManagedByViewportSystem;

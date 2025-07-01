@@ -1,7 +1,9 @@
 #include "Renderer/Font.h"
 
-#include "Renderer/Renderer.h"
 #include "Renderer/Texture.h"
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 namespace Core
 {
@@ -19,19 +21,6 @@ namespace Core
 		{
 			TTF_CloseFont(m_Font);
 		}
-	}
-
-	SharedPtr<Texture> Font::RenderText(const String& text, SDL_Color color)
-	{
-		if (!m_Font) return nullptr;
-
-		SDL_Surface* textSurface = TTF_RenderText_Blended(m_Font, text.c_str(), color);
-		BJ_ASSERT(textSurface, "Failed to render text surface: %s", TTF_GetError());
-
-		auto texture = Renderer::CreateTextureFromSurface(textSurface);
-		SDL_FreeSurface(textSurface);
-
-		return texture;
 	}
 
 	bool Font::IsLoaded() const

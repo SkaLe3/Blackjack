@@ -32,6 +32,11 @@ void Person::ClearHand()
 	 m_Cards.lock()->Clear();
 }
 
+SharedPtr<CardsHand> Person::GetCardsHand()
+{
+	return m_Cards.lock();
+}
+
 void Person::BeginPlay()
 {
    Super::BeginPlay();

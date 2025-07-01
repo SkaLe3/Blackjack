@@ -9,7 +9,10 @@ namespace Core
 
 	void ViewportClient::Tick(double deltaTime)
 	{
-
+		for (auto& [widget, zOrder] : m_ViewportOverlay)
+		{
+			widget->Tick(deltaTime);
+		}
 	}
 
 	void ViewportClient::AddViewportWidgetContent(SharedPtr<Widget> content, int32 zOrder)
@@ -23,11 +26,11 @@ namespace Core
 		SharedPtr< WidgetLayout> widget = std::static_pointer_cast<WidgetLayout>(content);
 		m_ViewportOverlay.erase(
 			std::remove_if(m_ViewportOverlay.begin(), m_ViewportOverlay.end(),
-						   [&widget](const auto& elem)
-						   {
-							   return elem.first == widget;
-						   }), m_ViewportOverlay.end()
-							   );
+				[&widget](const auto& elem)
+				{
+					return elem.first == widget;
+				}), m_ViewportOverlay.end()
+					);
 	}
 
 	void ViewportClient::RemoveAll()
@@ -41,10 +44,11 @@ namespace Core
 		SortWidgets();
 		for (auto& [widget, zOrder] : m_ViewportOverlay)
 		{
-			widget->OnPaint(renderer);
+			if (widget->IsVisible())
+			{
+				widget->OnPaint(renderer);
+			}
 		}
-
-
 	}
 
 	bool ViewportClient::OnMouseMoved(Event& event, const glm::vec2& mousePos)
@@ -96,10 +100,10 @@ namespace Core
 	void ViewportClient::SortWidgets()
 	{
 		std::sort(m_ViewportOverlay.begin(), m_ViewportOverlay.end(),
-				  [](const std::pair<SharedPtr<WidgetLayout>, int32>& a, const std::pair<SharedPtr<WidgetLayout>, int32>& b)
-				  {
-					  return a.second < b.second;
-				  });
+			[](const std::pair<SharedPtr<WidgetLayout>, int32>& a, const std::pair<SharedPtr<WidgetLayout>, int32>& b)
+			{
+				return a.second < b.second;
+			});
 	}
 
 }

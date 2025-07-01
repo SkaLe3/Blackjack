@@ -60,7 +60,7 @@ void CardsHand::AcceptCard(SharedPtr<Card> card, bool m_bTurnOver /*= true*/)
 		card->Move(moveDuration, inDeckPosition, inHandPosition, glm::degrees(inDeckRotation), 180 + glm::degrees(inHandRotation), false);
 		card->GetAnimationComponent()->OnFinishMoveAnim.Add(std::bind(&CardsHand::AddCard, this));
 		AudioSystem::PlaySound(m_CardTakeSound, 0.2f);
-		TimerManager::Get().StartTimer(moveDuration * 1000.f * 0.45f, [this]() { AudioSystem::PlaySound(m_CardReceiveSound, 0.2f); });
+		TimerManager::Get().StartTimer(moveDuration * 1000.f * 0.45f, [this]() { AudioSystem::PlaySound(m_CardReceiveSound, 0.4f); });
 
 
 	}

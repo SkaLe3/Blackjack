@@ -11,6 +11,9 @@ namespace Core
 	{
 	public:
 		PanelWidget(const String& inName) : Widget(inName) {}
+		virtual void Init() override;
+		virtual void Tick(float deltaTime) override;
+
 		size_t GetChildrenCount() const;
 		int32 GetChildIndex(const SharedPtr<Widget> content) const;
 		SharedPtr<Widget> GetChildAt(int32 index) const;

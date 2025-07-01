@@ -20,6 +20,7 @@ namespace Core
 		void RemoveWidget(SharedPtr<Widget> widget);
 		PanelSlot GetWidgetSlot(const SharedPtr<Widget> widget) const;
 
+		glm::vec2 WorldToScreen(const glm::vec2& coords);
 	private:
 		void AddViewportWidget(SharedPtr<Widget>, const int32 zOrder);
 

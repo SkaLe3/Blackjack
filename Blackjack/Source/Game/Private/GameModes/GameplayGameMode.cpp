@@ -21,6 +21,7 @@
 
 #include <Renderer/TextureAtlas.h>
 #include <Renderer/Sprite.h>
+#include "DataStructures/GameSettings.h"
 
 #include <glm/ext/scalar_constants.hpp>
 #include <random>
@@ -80,11 +81,12 @@ void GameplayGameMode::BeginPlay()
 	m_ChipsSound = AssetManager::Get().Load<SoundAsset>("S_HandChips")->SoundP;
 	SharedPtr<SoundBase> music = AssetManager::Get().Load<SoundAsset>("S_Music1")->SoundP;
 	SharedPtr<SoundBase> ambient = AssetManager::Get().Load<SoundAsset>("S_PokerAmbient")->SoundP;
+	GameSettings::AmbientSound = ambient;
 	AudioSystem::SetMusicVolume(0.15f);
 	music->SetOneShot(false);
 	ambient->SetOneShot(false);
 	AudioSystem::PlayMusic(music);
-	AudioSystem::PlaySound(ambient, 1.f);
+	GameSettings::AmbientSoundActive = AudioSystem::PlaySound(ambient, 1.f);
 	RestartGame();
 }
 
@@ -94,7 +96,7 @@ void GameplayGameMode::Tick(float deltaTime)
 	if (!m_bDeckReady) { return; }
 	if (m_PlayerMakeTurn) { OnNewTurn();	MakeTurn(); }
 	if (m_DealerMakeTurn) { m_DealerMakeTurn = false;	m_Dealer->MakeTurn(); }
-	if (m_ContinueTurn) { m_ActivePlayers[m_PlayerTurn]->AllowTurn();	m_ContinueTurn = false; }
+	if (m_ContinueTurn) { if (m_PlayerTurn >= 0 && m_PlayerTurn < (int32)m_ActivePlayers.size()) m_ActivePlayers[m_PlayerTurn]->AllowTurn();	m_ContinueTurn = false; }
 	if (m_ShiftStage) { ++m_RoundStage; OnNewStage(); }
 
 	auto roundStageg = (ERoundStage)m_RoundStage;
@@ -184,6 +186,7 @@ void GameplayGameMode::RestartGame()
 	m_Dealer->SetLocation({ 0, 25 });
 	m_Dealer->SetTag("Dealer");
 
+
 	auto player = GetWorld()->SpawnGameObject<UserPlayer>();
 	m_UserPlayer = player;
 	auto bot1 = GetWorld()->SpawnGameObject<AIPlayer>();
@@ -194,7 +197,7 @@ void GameplayGameMode::RestartGame()
 	player->SetTag("User");
 	bot1->SetTag("Bot1");
 	bot2->SetTag("Bot2");
-
+	
 	player->SetLocation({ 0, -41 });
 	bot1->SetLocation({ -70, -28 });
 	bot1->GetTransform().Rotation.z = -glm::pi<float>() / 9;
@@ -207,13 +210,16 @@ void GameplayGameMode::RestartGame()
 
 	if (!m_SkinsList.empty())
 	{
-		m_SelectedSkinTexture = AssetManager::Get().Load<TextureAsset>(m_SkinsList[0])->TextureP;
-		m_SelectedSkinIndex = 0;
+		m_SelectedSkinIndex = m_SkinsList.size() - 1;
+		m_SelectedSkinTexture = AssetManager::Get().Load<TextureAsset>(m_SkinsList[m_SelectedSkinIndex])->TextureP;
+		
 	}
 
-	
-
-	TimerManager::Get().StartTimer(3000, [this]() { m_bShouldStartRound = true; });
+	// Show Game Starting widget here
+	// TimerManager::Get().StartTimer(2000, [this]() { Hide Game Starting widget }); + fade out
+	// extract fading code to separate object or function to make reusable + parameters for mapping function, etc.
+	// Round start timer
+	TimerManager::Get().StartTimer(2000, [this]() { m_bShouldStartRound = true; });
 }
 
 void GameplayGameMode::LeaveGame()
@@ -337,7 +343,7 @@ void GameplayGameMode::OnDealCards()
 	TimerManager::Get().StartTimer(interval * i++, TIMER_FUNC(DealCard, m_Dealer, false));
 
 	// Go to next stage
-	TimerManager::Get().StartTimer(interval * i + 3000, TIMER_FUNC(ShiftStage));
+	TimerManager::Get().StartTimer(interval * i + 2000, TIMER_FUNC(ShiftStage));
 }
 
 void GameplayGameMode::OnPlayersTurn()
@@ -357,7 +363,7 @@ void GameplayGameMode::OnDealerStartsReveal()
 	if (m_ActivePlayers.size() == 0)
 		m_RoundStage = ERoundStage::Restart;
 
-	TimerManager::Get().StartTimer(3000.f, TIMER_FUNC(m_Dealer->StartReveal));
+	TimerManager::Get().StartTimer(2000.f, TIMER_FUNC(m_Dealer->StartReveal));
 
 }
 
@@ -373,8 +379,9 @@ void GameplayGameMode::OnPlayerHit(SharedPtr<Player> player)
 	if (player->IsAbleToTakeCard())
 	{
 		player->TakeCard(m_Deck->PullCard());
+		player->GetPlayerState()->AllowedToTurn = false;
 	}
-	TimerManager::Get().StartTimer(2000.f, TIMER_ACTION(m_ContinueTurn = true;));
+	TimerManager::Get().StartTimer(1500.f, TIMER_ACTION(m_ContinueTurn = true; player->GetPlayerState()->AllowedToTurn = true ));
 }
 
 void GameplayGameMode::OnPlayerStand(SharedPtr<Player> player)
@@ -442,7 +449,8 @@ void GameplayGameMode::OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerRes
 	{
 		prize = (int32)(bet * 1.5f);
 		// Move chips stack to player
-		TimerManager::Get().StartTimer(3000.f, TIMER_FUNC(GivePrize, player, prize));
+		TimerManager::Get().StartTimer(2000.f, TIMER_FUNC(GivePrize, player, prize));
+		player->SetResultType(1);
 		BJ_LOG_INFO("%s Won %d", player->GetTag().c_str(), prize);
 		break;
 	}
@@ -450,7 +458,8 @@ void GameplayGameMode::OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerRes
 	{
 		prize = (int32)bet;
 		// Move chips stack to player
-		TimerManager::Get().StartTimer(3000.f, TIMER_FUNC(GivePrize, player, prize));
+		TimerManager::Get().StartTimer(2000.f, TIMER_FUNC(GivePrize, player, prize));
+		player->SetResultType(0);
 		BJ_LOG_INFO("%s Won %d", player->GetTag().c_str(), prize);
 		break;
 	}
@@ -458,12 +467,14 @@ void GameplayGameMode::OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerRes
 	{
 		prize = -(int32)bet;
 		// Move bet from player
-		TimerManager::Get().StartTimer(3000.f, TIMER_FUNC(TakeAwayBet, player, m_GameState->NumberOfFhinishedPlayers-1));
+		TimerManager::Get().StartTimer(2000.f, TIMER_FUNC(TakeAwayBet, player, m_GameState->NumberOfFhinishedPlayers-1));
+		player->SetResultType(2);
 		BJ_LOG_INFO("%s Lost %d", player->GetTag().c_str(), prize);
 		break;
 	}
 	case EPlayerResult::Push:
 	{
+		player->SetResultType(3);
 		BJ_LOG_INFO("%s Win nothing", player->GetTag().c_str());
 		break;
 	}
@@ -475,7 +486,7 @@ void GameplayGameMode::OnPlayerFinishedGame(SharedPtr<Player> player, EPlayerRes
 void GameplayGameMode::OnDealerRevealed()
 {
 	BJ_LOG_INFO("Dealer revealed");
-	TimerManager::Get().StartTimer(4000.f, TIMER_ACTION(m_DealerMakeTurn = true));
+	TimerManager::Get().StartTimer(3000.f, TIMER_ACTION(m_DealerMakeTurn = true));
 
 }
 
@@ -486,7 +497,7 @@ void GameplayGameMode::OnDealerHit()
 	{
 		m_Dealer->TakeCard(m_Deck->PullCard());
 	}
-	TimerManager::Get().StartTimer(2000.f, TIMER_ACTION(m_DealerMakeTurn = true));
+	TimerManager::Get().StartTimer(1500.f, TIMER_ACTION(m_DealerMakeTurn = true));
 }
 
 void GameplayGameMode::OnDealerStand()
@@ -504,7 +515,7 @@ void GameplayGameMode::OnDealerBust()
 void GameplayGameMode::OnDealerFinishedTurn()
 {
 	BJ_LOG_INFO("Dealer Finished Turn");
-	TimerManager::Get().StartTimer(2000.f, TIMER_ACTION(m_GameState->bDealerFinishedTurn = true));
+	TimerManager::Get().StartTimer(1500.f, TIMER_ACTION(m_GameState->bDealerFinishedTurn = true));
 }
 
 void GameplayGameMode::OnRestartRound()
@@ -512,7 +523,7 @@ void GameplayGameMode::OnRestartRound()
 	BJ_LOG_INFO("Restart Stage Started");
 	for (auto& player : m_Players)
 	{
-		TimerManager::Get().StartTimer(2000.f, TIMER_ACTION(player->AskForNextRound()));
+		TimerManager::Get().StartTimer(1500.f, TIMER_ACTION(player->AskForNextRound()));
 	}
 }
 
@@ -582,7 +593,7 @@ void GameplayGameMode::MakeTurn()
 		m_ActivePlayers[m_PlayerTurn]->ForbidTurn();
 	}
 	m_PlayerTurn++;
-	TimerManager::Get().StartTimer(2000.f, [this]()
+	TimerManager::Get().StartTimer(1500.f, [this]()
 								   {
 									   if (m_PlayerTurn >= 0 && m_PlayerTurn < (int32)m_ActivePlayers.size())
 									   {
@@ -660,13 +671,13 @@ void GameplayGameMode::GivePrize(SharedPtr<Player> player, int32 prize)
 
 void GameplayGameMode::TakeAwayBet(SharedPtr<Player> player, int32 offset)
 {
-	auto chipstack = player->GiveBetToDealer();
+	auto chipstack = player->GetBetObject();
 	chipstack->GetTransform().Translation.z = 40 + offset;
 	glm::vec2 target = {-42, 32};
 	target.x += offset * 10;
 	target.y +=	glm::abs(offset - 1) * 6;
 	chipstack->Move(2.0f, chipstack->GetLocation(), target);
-	TimerManager::Get().StartTimer(1.5f, TIMER_ACTION(AudioSystem::PlaySound(m_ChipsSound, 0.6f)));
+	TimerManager::Get().StartTimer(500.f, TIMER_ACTION(AudioSystem::PlaySound(m_ChipsSound, 0.6f)));
 }
 
 void GameplayGameMode::ChangeCardsSkin()
@@ -697,5 +708,15 @@ void GameplayGameMode::CycleCardSkin()
 SharedPtr<UserPlayer> GameplayGameMode::GetUserPlayer()
 {
 	 return m_UserPlayer;
+}
+
+std::vector<SharedPtr<Player>> GameplayGameMode::GetPlayers()
+{
+	return m_Players;
+}
+
+SharedPtr<Dealer> GameplayGameMode::GetDealer()
+{
+	return m_Dealer;
 }
 

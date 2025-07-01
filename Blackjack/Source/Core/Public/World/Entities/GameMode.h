@@ -16,6 +16,8 @@ namespace Core
 		virtual void Destroy() override {}
 		//~ Eng Object Interface
 
+		virtual void PostBeginPlay() {};
+
 		void LeaveGame();
 	};
 }

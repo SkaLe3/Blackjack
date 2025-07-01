@@ -28,6 +28,7 @@ namespace Core
 
 
 		SharedPtr<ViewportClient> GetViewportClient();
+		SharedPtr<ScreenRenderer> GetScreenRenderer();
 
 	private:
 		SharedPtr<ViewportClient> m_ViewportClient;

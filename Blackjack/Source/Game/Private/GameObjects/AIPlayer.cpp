@@ -31,7 +31,7 @@ void AIPlayer::AllowTurn()
 {
 	Super::AllowTurn();
 	if (m_State->AllowedToBet)
-		TimerManager::Get().StartTimer(1000, [this]() { PlaceBet(); });
+		TimerManager::Get().StartTimer(800, [this]() { PlaceBet(); });
 
 	if (m_State->FinishedGame)
 	{
@@ -39,7 +39,7 @@ void AIPlayer::AllowTurn()
 	}
 
 	if (m_State->AllowedToTurn)
-		TimerManager::Get().StartTimer(3000, [this]() { MakeTurn(); });
+		TimerManager::Get().StartTimer(2000, [this]() { MakeTurn(); });
 }
 
 void AIPlayer::GameResult(EPlayerResult result)
@@ -49,7 +49,7 @@ void AIPlayer::GameResult(EPlayerResult result)
 	switch (result)
 	{
 	case EPlayerResult::Lose:
-		AudioSystem::PlaySound(m_LoseSound);
+		AudioSystem::PlaySound(m_LoseSound, 0.7f);
 		break;
 	case EPlayerResult::BlackjackWin:
 	case EPlayerResult::DefaultWin:

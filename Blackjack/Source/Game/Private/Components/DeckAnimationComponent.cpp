@@ -57,7 +57,7 @@ void DeckAnimationComponent::UpdateShuffle(float deltaTime)
 			if (SharedPtr<Card> card = m_Deck->CardAt(i))
 			{
 				card->Move(m_DurationCard, m_StartPos, m_Positions[i], m_SourceRotation, m_TargetRotation);
-				TimerManager::Get().StartTimer(m_DurationCard * 1000.f * 0.45f, [this](){ AudioSystem::PlaySound(m_CardSound, 0.2); });
+				TimerManager::Get().StartTimer(m_DurationCard * 1000.f * 0.45f, [this](){ AudioSystem::PlaySound(m_CardSound, 0.4); });
 				
 				//BJ_LOG_INFO("card: %d", i);
 			}
@@ -72,7 +72,7 @@ void DeckAnimationComponent::UpdateShuffle(float deltaTime)
 			if (SharedPtr<Card> card = m_Deck->CardAt(i))
 			{
 				card->Move(m_DurationCard, m_StartPos, m_Positions[i], m_SourceRotation, m_TargetRotation);
-				TimerManager::Get().StartTimer(m_DurationCard * 1000.f * 0.45f, [this]() { AudioSystem::PlaySound(m_CardSound, 0.2); });
+				TimerManager::Get().StartTimer(m_DurationCard * 1000.f * 0.45f, [this]() { AudioSystem::PlaySound(m_CardSound, 0.4); });
 				//BJ_LOG_INFO("card: %d", i);
 			}
 		}

@@ -20,6 +20,12 @@ namespace Core
 		static void PauseMusic();
 		static void ResumeMusic();
 		static void StopMusic();
+		static bool IsMusicPlaying();
+		static bool IsMusicPaused();
+		static bool IsMusicMuted();
+		static void MuteSound();
+		static void UnmuteSound();
+		static bool IsSoundMuted();
 
 		/*
 		* In range [0, 1]
@@ -48,6 +54,9 @@ namespace Core
 
 		inline static float s_MasterVolume = 1.0f;
 		inline static float s_SDLmaxVolume = 128.0f;
+
+		inline static bool s_bMusicMuted = false;
+		inline static bool s_bSoundMuted = false;
 
 	};
 }

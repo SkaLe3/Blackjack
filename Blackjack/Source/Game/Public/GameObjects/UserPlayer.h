@@ -22,7 +22,10 @@ public:
 	bool CanBet();
 	bool CanMakeTurn();
 
-
+	bool ContinueToNextRound();
+	bool QuitGame();
+	
+	virtual void AskForNextRound() override;
 
 private:
 	SharedPtr<Core::SoundBase> m_WinSound;

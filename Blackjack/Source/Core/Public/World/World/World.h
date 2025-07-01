@@ -32,6 +32,7 @@ namespace Core
 		void Render();
 		void RenderScene(const SharedPtr<SceneRenderer>& renderer, const CameraInfo& cameraInfo);
 
+		SharedPtr<SceneRenderer> GetSceneRenderer();
 	public:
 		template<typename T>
 		SharedPtr<T> CreateComponent();

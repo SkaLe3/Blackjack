@@ -62,7 +62,7 @@ void Dealer::StartReveal()
 	{
 		hand->Reveal();
 	}
-	TimerManager::Get().StartTimer(2000.f, [this]() { m_bRevealed = true; });
+	TimerManager::Get().StartTimer(1500.f, [this]() { m_bRevealed = true; });
 }
 
 void Dealer::MakeTurn()

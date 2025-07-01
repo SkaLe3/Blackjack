@@ -6,6 +6,7 @@
 #include "Core/Event.h"
 #include "Core/AssetManager.h"
 #include "Core/TimerManager.h"
+#include "Renderer/FontManager.h"
 #include "World/World/World.h"
 #include "Renderer/Texture.h" // Temporary
 
@@ -37,6 +38,8 @@ namespace Core
 	};
 	
 	class ViewportClient;
+	class SceneRenderer;
+	class ScreenRenderer;
 
 	class Application
 	{
@@ -47,6 +50,10 @@ namespace Core
 	public:
 		Application(const ApplicationSpecification& appSpecs);
 		virtual ~Application();
+
+		SharedPtr<SceneRenderer> GetSceneRenderer();
+		SharedPtr<ScreenRenderer> GetScreenRenderer();
+
 
 		void Init();
 		void Shutdown();

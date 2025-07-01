@@ -20,6 +20,11 @@ namespace Core
 
 	ActiveSound AudioSystem::PlaySound(SharedPtr<SoundBase> sound, float volumeMultiplier /*= 1.0f*/)
 	{
+		if (s_bSoundMuted)
+		{
+			return ActiveSound();
+		}
+
 		if (SharedPtr<SoundCue> sc = std::dynamic_pointer_cast<SoundCue>(sound))
 		{
 			float volume = s_SDLmaxVolume * s_MasterVolume * s_SFXVolume * sc->GetVolumeMultiplier() * volumeMultiplier;
@@ -27,7 +32,7 @@ namespace Core
 			if (channel == -1)
 			{
 				BJ_LOG_ERROR("SDL_mixer error: %s", Mix_GetError());
-				return ActiveSound {sc, -1};
+				return ActiveSound{ sc, -1 };
 			}
 			Mix_Volume(channel, volume);
 			ActiveSound as = { sc, channel };
@@ -46,8 +51,10 @@ namespace Core
 		{
 			float volume = s_SDLmaxVolume * s_MasterVolume * s_MusicVolume * sm->GetVolumeMultiplier() * volumeMultiplier;
 			Mix_VolumeMusic(volume);
-			Mix_PlayMusic(sm->Get(), sm->IsOneShot()? 0 : -1);
+			Mix_PlayMusic(sm->Get(), sm->IsOneShot() ? 0 : -1);
 			s_CurrentMusic = sm;
+			if (s_bMusicMuted)
+				PauseMusic();
 		}
 		else
 		{
@@ -71,6 +78,7 @@ namespace Core
 		{
 			Mix_PauseMusic();
 		}
+		s_bMusicMuted = true;
 	}
 
 	void AudioSystem::ResumeMusic()
@@ -79,11 +87,42 @@ namespace Core
 		{
 			Mix_ResumeMusic();
 		}
+		s_bMusicMuted = false;
 	}
 
 	void AudioSystem::StopMusic()
 	{
 		Mix_HaltMusic();
+	}
+
+	bool AudioSystem::IsMusicPlaying()
+	{
+		return Mix_PlayingMusic();
+	}
+
+	bool AudioSystem::IsMusicPaused()
+	{
+		return Mix_PausedMusic();
+	}
+
+	bool AudioSystem::IsMusicMuted()
+	{
+		return s_bMusicMuted;
+	}
+
+	void AudioSystem::MuteSound()
+	{
+		s_bSoundMuted = true;
+	}
+
+	void AudioSystem::UnmuteSound()
+	{
+		s_bSoundMuted = false;
+	}
+
+	bool AudioSystem::IsSoundMuted()
+	{
+		return s_bSoundMuted;
 	}
 
 	void AudioSystem::SetMasterVolume(float volume)

@@ -1,9 +1,27 @@
 #include "UISystem/PanelWidget.h"
 
 #include "UISystem/PanelSlot.h"
+#include "UISystem/WidgetLayout.h"
 
 namespace Core
 {
+
+	void PanelWidget::Init()
+	{
+		Widget::Init();
+		for (SharedPtr<PanelSlot> slot : m_Slots)
+		{
+			slot->Content->Init();
+		}
+	}
+
+	void PanelWidget::Tick(float deltaTime)
+	{
+		for (auto& slot : m_Slots)
+		{
+			slot->Content->Tick(deltaTime);
+		}
+	}
 
 	size_t PanelWidget::GetChildrenCount() const
 	{
@@ -88,9 +106,9 @@ namespace Core
 	void PanelWidget::OnPaint(SharedPtr<ScreenRenderer> renderer)
 	{
 		std::sort(m_Slots.begin(), m_Slots.end(), [](const SharedPtr<PanelSlot>& a, const SharedPtr<PanelSlot>& b)
-				  {
-					  return a->GetZOrder() < b->GetZOrder();
-				  });
+			{
+				return a->GetZOrder() < b->GetZOrder();
+			});
 		for (auto& slot : m_Slots)
 		{
 			slot->Content->OnPaint(renderer);
@@ -124,7 +142,7 @@ namespace Core
 				if (handled)
 					break;
 			}
-			return true;
+			return handled;
 		}
 		return false;
 	}
@@ -143,7 +161,7 @@ namespace Core
 				if (handled)
 					break;
 			}
-			return true;
+			return handled;
 		}
 		return false;
 	}

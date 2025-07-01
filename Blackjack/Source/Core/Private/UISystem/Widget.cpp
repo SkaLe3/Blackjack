@@ -2,7 +2,7 @@
 #include "UISystem/ViewportSystem.h"
 #include "UISystem/PanelWidget.h"
 #include "Renderer/ScreenRenderer.h"
-
+#include "Sound/AudioSystem.h"
 
 namespace Core
 {
@@ -36,6 +36,7 @@ namespace Core
 		return AnchorData();
 	}
 
+
 	SharedPtr<PanelWidget> Widget::GetParent() const
 	{
 		if (Slot)
@@ -60,7 +61,6 @@ namespace Core
 
 	void Widget::Tick(float deltaTime)
 	{
-
 	}
 
 	bool Widget::OnMouseMoved(Event& event, const glm::vec2& mousePos)
@@ -79,8 +79,25 @@ namespace Core
 		return false;
 	}
 
+	bool Widget::OnHoverEnter()
+	{
+		UseHoverVisuals();
+		if (m_HoverSound)
+			AudioSystem::PlaySound(m_HoverSound);
+		OnBeginHover.Broadcast();
+		return true;
+	}
+
+	bool Widget::OnHoverExit()
+	{
+		UseDefaultVisuals();
+		OnEndHover.Broadcast();
+		return true;
+	}
+
 	bool Widget::ProvideMousePos(const glm::vec2& mousePos)
 	{
+		bool bHoverCached = m_bHovered;
 		if (Slot)
 		{
 			AnchorData adata = Slot->LayoutData;
@@ -95,14 +112,50 @@ namespace Core
 				mousePos.y < corners[1].y)
 			{
 				m_bHovered = true;
-				return m_bHovered;
 			}
-			m_bHovered = false;
-			return m_bHovered;
-
+			else
+			{
+				m_bHovered = false;
+			}
 		}
-		m_bHovered = true;
+		else
+		{
+			m_bHovered = true;
+		}
+		if (m_bHovered && !bHoverCached)
+		{
+			OnHoverEnter();
+		}
+		else if (!m_bHovered && bHoverCached)
+		{
+			OnHoverExit();
+		}
 		return m_bHovered;
+	}
+
+	void Widget::SetHoverSound(SharedPtr<SoundBase> sound)
+	{
+		m_HoverSound = sound;
+	}
+
+	void Widget::UseHoverVisuals()
+	{
+
+	}
+
+	void Widget::UseDefaultVisuals()
+	{
+
+	}
+
+	void Widget::UsePressVisuals()
+	{
+
+	}
+
+	void Widget::UseActiveVisuals()
+	{
+
 	}
 
 }

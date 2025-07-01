@@ -14,6 +14,7 @@
 namespace Core
 {
 	class World;
+	class SceneRenderer;
 
 	class GameLayer : public Layer
 	{
@@ -30,6 +31,7 @@ namespace Core
 
 		void SetWorld(SharedPtr<World> world);
 		SharedPtr<World> GetWorld();
+		SharedPtr<SceneRenderer> GetSceneRenderer();
 
 		template<typename T>
 		void OpenScene();

@@ -3,6 +3,8 @@
 #include "UISystem/ViewportClient.h"
 #include "UISystem/Widget.h"
 
+#include "Renderer/ScreenRenderer.h"
+
 namespace Core
 {
 
@@ -62,6 +64,13 @@ namespace Core
 			}
 		}
 		return PanelSlot();
+	}
+
+	glm::vec2 ViewportSystem::WorldToScreen(const glm::vec2& coords)
+	{
+		glm::mat4 worldViewProj = Application::Get().GetSceneRenderer()->GetViewProjection();
+		glm::mat4 screenProj = Application::Get().GetScreenRenderer()->GetProjectionInverse();
+		return screenProj * (worldViewProj * glm::vec4({coords, 0, 1}));
 	}
 
 	void ViewportSystem::AddViewportWidget(SharedPtr<Widget>, const int32 zOrder)

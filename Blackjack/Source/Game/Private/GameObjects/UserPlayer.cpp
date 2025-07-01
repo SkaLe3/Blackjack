@@ -2,9 +2,11 @@
 
 #include "GameObjects/Chip.h"
 #include "DataStructures/BJGameState.h"
+#include "GameObjects/BlackjackPlayerController.h"
 
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
+#include <Core/TimerManager.h>
 
 using namespace Core;
 
@@ -30,8 +32,8 @@ void UserPlayer::GameResult(EPlayerResult result)
 		AudioSystem::PlaySound(m_YipeeSound);
 		break;
 	case EPlayerResult::Lose:
-		AudioSystem::PlaySound(m_LoseSound);
-		AudioSystem::PlaySound(m_FailJingle);
+		AudioSystem::PlaySound(m_LoseSound, 0.7f);
+		AudioSystem::PlaySound(m_FailJingle, 0.7f);
 		break;
 	case EPlayerResult::Push:
 		AudioSystem::PlaySound(m_ErrorSound);
@@ -71,20 +73,11 @@ void UserPlayer::OnEvent(Event& event)
 		{
 			if (event.Ev.key.keysym.sym == SDLK_y)
 			{
-				if (GameState->MinBet < m_Balance)
-				{
-					BJ_LOG_INFO("======NEW ROUND STARTED=====");
-					GameState->OnNextRound.Broadcast();
-				}
-				else
-				{
-					BJ_LOG_INFO("NOT ENOUGH BALANCE TO START NEW ROUND");
-				}
+				ContinueToNextRound();
 			}
 			if (event.Ev.key.keysym.sym == SDLK_n)
 			{
-				BJ_LOG_INFO("LEAVIGN GAME");
-				GameState->OnLeaveGame.Broadcast();
+				QuitGame();
 			}
 		}
 	}
@@ -98,6 +91,44 @@ bool UserPlayer::CanBet()
 
 bool UserPlayer::CanMakeTurn()
 {
-   return m_State && m_State->AllowedToTurn && IsMyTurn() && !HasFinishedGame();
+	return m_State && m_State->AllowedToTurn && IsMyTurn() && !HasFinishedGame();
+}
+
+bool UserPlayer::ContinueToNextRound()
+{
+	SharedPtr<BlackjackPlayerController> pc = static_pointer_cast<BlackjackPlayerController>(GetWorld()->GetPlayerController());
+	pc->OnContinueToNextRound();
+	if (GameState)
+	{
+		if (GameState->MinBet < m_Balance)
+		{
+			BJ_LOG_INFO("======NEW ROUND STARTED=====");
+			GameState->OnNextRound.Broadcast();
+			return true;
+		}
+		else
+		{
+			BJ_LOG_INFO("NOT ENOUGH BALANCE TO START NEW ROUND");
+			return false;
+		}
+	}
+	return false;
+}
+
+bool UserPlayer::QuitGame()
+{
+	BJ_LOG_INFO("LEAVING GAME");
+	if (GameState)
+	{
+		GameState->OnLeaveGame.Broadcast();
+	}
+	return true;
+}
+
+void UserPlayer::AskForNextRound()
+{
+	Player::AskForNextRound();
+	SharedPtr<BlackjackPlayerController> pc = static_pointer_cast<BlackjackPlayerController>(GetWorld()->GetPlayerController());
+	TimerManager::Get().StartTimer(4000.f, TIMER_ACTION(pc->OnAskForNextRound(m_ResultType)));
 }
 

@@ -9,7 +9,9 @@ namespace Core
 	public:
 		WidgetLayout(const String& inName) : Widget(inName) {}
 
-		virtual void Init() = 0;
+		virtual void Init() override;
+		virtual void Tick(float deltaTime) override;
+
 
 		void AddToViewport(int32 zOrder = 0);
 		void RemoveFromViewport();

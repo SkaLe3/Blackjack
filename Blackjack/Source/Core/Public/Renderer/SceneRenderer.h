@@ -25,6 +25,7 @@ namespace Core
 		void DrawRect(const glm::mat4& transform, const glm::vec2& box, const glm::vec4& color = {1, 0, 0, 1}, bool bFill = false);
 		//void DrawText();
 
+		glm::mat4 GetViewProjection();
 	private:
 		glm::vec2 m_ViewportSize;
 		glm::vec3 m_CameraPos;

@@ -28,6 +28,7 @@ namespace Core
 
 
 	class Sprite;
+	class Texture;
 
 	class ScreenRenderer
 	{
@@ -37,10 +38,13 @@ namespace Core
 
 		glm::vec2 TransformCoordinates(const glm::vec2& screenCoords);
 
-		void DrawWidget(const glm::vec2& transltaion, const glm::vec2& box, const glm::vec2& alignment, SharedPtr<Sprite> widget);
+		void DrawWidget(const glm::vec2& transltaion, const glm::vec2& box, const glm::vec2& alignment, SharedPtr<Sprite> widget, const glm::vec4& colorTint = {1.f, 1.f, 1.f, 1.f});
 		void DrawWidget(const glm::vec2& transltaion, const glm::vec2& box, const glm::vec2& alignment,
 						const glm::vec4& color = { 1.f, 1.f, 1.f, 1.f }, bool bFill = true);
+		void DrawTexture(const glm::vec2& translation, const glm::vec2& box, const glm::vec2& alignment, SharedPtr<Texture> tex, const glm::vec4& colorTint = { 1.f, 1.f, 1.f, 1.f });
 
+		glm::mat4 GetProjection();
+		glm::mat4 GetProjectionInverse();
 	private:
 		glm::mat4 m_Projection;
 	};

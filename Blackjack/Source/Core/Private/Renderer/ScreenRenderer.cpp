@@ -32,7 +32,7 @@ namespace Core
 		return { viewportCoords.x, viewportCoords.y };
 	}
 
-	void ScreenRenderer::DrawWidget(const glm::vec2& transltaion, const glm::vec2& box, const glm::vec2& alignment, SharedPtr<Sprite> widget)
+	void ScreenRenderer::DrawWidget(const glm::vec2& transltaion, const glm::vec2& box, const glm::vec2& alignment, SharedPtr<Sprite> widget, const glm::vec4& colorTint)
 	{
 		glm::mat4 MVP = m_Projection * glm::translate(glm::mat4(1.0f), glm::vec3{ transltaion, 0.f });
 		glm::vec4 position = MVP * glm::vec4(0, 0, 0, 1);
@@ -48,7 +48,7 @@ namespace Core
 
 		glm::vec2 targetPosition = glm::vec2(position) - offset;
 
-		Renderer::DrawTexturedRect(widget->m_Texture, {widget->m_SourcePos, widget->m_SourceSize},  { targetPosition, size }, { 1.f, 1.f, 1.f, 1.f }, 0, offset,0 );
+		Renderer::DrawTexturedRect(widget->m_Texture, {widget->m_SourcePos, widget->m_SourceSize},  { targetPosition, size }, colorTint, 0, offset,0 );
 	}
 
 	void ScreenRenderer::DrawWidget(const glm::vec2& transltaion, const glm::vec2& box, const glm::vec2& alignment, const glm::vec4& color /*= {1.f, 1.f, 1.f, 1.f}*/, bool bFill /*= true*/)
@@ -75,6 +75,36 @@ namespace Core
 
 
 
+
+	void ScreenRenderer::DrawTexture(const glm::vec2& translation, const glm::vec2& box, const glm::vec2& alignment, SharedPtr<Texture> tex, const glm::vec4& colorTint)
+	{
+		glm::mat4 MVP = m_Projection * glm::translate(glm::mat4(1.0f), glm::vec3{ translation, 0.f });
+		glm::vec4 position = MVP * glm::vec4(0, 0, 0, 1);
+
+		glm::vec4 vertices[2];
+		glm::vec4 boxCorners[2] = { {0, 0, 0, 1}, {box.x, box.y, 0, 1} };
+		vertices[0] = MVP * boxCorners[0];
+		vertices[1] = MVP * boxCorners[1];
+
+		// Find sprite size in screen coordinates
+		glm::vec2 size = vertices[1] - vertices[0];
+		glm::vec2 offset = size * alignment;
+
+		glm::vec2 targetPosition = glm::vec2(position) - offset;
+
+		Renderer::DrawTexturedRect(tex, {0, 0, tex->GetSize()}, {targetPosition, size}, colorTint, 0, offset, 0);
+	}
+
+
+	glm::mat4 ScreenRenderer::GetProjection()
+	{
+		return m_Projection;
+	}
+
+	glm::mat4 ScreenRenderer::GetProjectionInverse()
+	{
+		return glm::inverse(m_Projection);
+	}
 
 	ScreenCamera::ScreenCamera()
 		: m_Size(720), m_AspectRatio(1.f), m_ProjectionMatrix(1.0f)

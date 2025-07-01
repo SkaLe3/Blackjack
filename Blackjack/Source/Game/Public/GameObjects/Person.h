@@ -30,6 +30,8 @@ public:
 
 	void ClearHand();
 
+	SharedPtr<CardsHand> GetCardsHand();
+
 public:
 	SharedPtr<BJGameState> GameState;
 

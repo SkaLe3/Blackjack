@@ -26,6 +26,7 @@ namespace Core
 		virtual bool OnButtonUp(Event& event, const glm::vec2& mousePos) override;
 
 		void SetClickSound(SharedPtr<SoundBase> sound);
+		void SetPressImage(SharedPtr<TextureAtlas> atlas, const String& region);
 	public:
 		ButtonPressedDelegate OnButtonPressed;
 		ButtonReleasedDelegate OnButtonReleased;

@@ -23,13 +23,28 @@ namespace Core
 		void UpdateAtlas();
 		void SetFill(bool bFill);
 		void SetColor(const glm::vec4& color);
+		void SetColor(const glm::vec3& color);
+		void SetAlpha(float alpha);
 		void SetImage(SharedPtr<Sprite> inSprite);
 		void SetAtlas(SharedPtr<TextureAtlas> inAtlas);
 		void SetRegion(const String& name);
 
-	private:
+		void SetHoverEnterSound(SharedPtr<SoundBase> sound);
+		void SetHoverImage(SharedPtr<TextureAtlas> atlas, const String& region);
+
+	protected:
+		virtual void UseHoverVisuals() override;
+		virtual void UseDefaultVisuals() override;
+		virtual void UsePressVisuals() override;
+		virtual void UseActiveVisuals() override;
+	protected:
+		SharedPtr<Sprite> m_DefaultImage;
+		SharedPtr<Sprite> m_HoverImage;
+		SharedPtr<Sprite> m_PressImage;
+		SharedPtr<Sprite> m_ActiveImage;
 		SharedPtr<Sprite> m_Image;
 		SharedPtr<TextureAtlas> m_Atlas;
+	private:
 		glm::vec4 m_Color;
 		bool m_bFill;
 		bool m_bUseAtalas;

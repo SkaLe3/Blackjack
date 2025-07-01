@@ -90,6 +90,8 @@ public:
 	void EndTurnAction();
 
 	SharedPtr<UserPlayer> GetUserPlayer();
+	std::vector<SharedPtr<Player>> GetPlayers();
+	SharedPtr<Dealer> GetDealer();
 	void CycleCardSkin();
 	// TODO: move some functions to private section
 private:

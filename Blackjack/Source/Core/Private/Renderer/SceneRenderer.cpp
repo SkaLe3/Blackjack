@@ -137,4 +137,9 @@ namespace Core
 		Renderer::DrawRect({ position.x - offset.x, position.y - offset.y, sizeX , sizeY }, color, bFill);
 	}
 
+	glm::mat4 SceneRenderer::GetViewProjection()
+	{
+		return m_ViewProjection;
+	}
+
 }

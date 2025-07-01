@@ -1,6 +1,8 @@
 #include "UISystem/Widgets/ButtonWidget.h"
 
 #include "Sound/AudioSystem.h"
+#include "Renderer/Sprite.h"
+#include "Renderer/TextureAtlas.h"
 
 namespace Core
 {
@@ -27,6 +29,7 @@ namespace Core
 		ProvideMousePos(mousePos);
 		if (m_bHovered)
 		{
+			UsePressVisuals();
 			OnButtonPressed.Broadcast(event.Ev.button.button);
 
 			m_bHadPressBeforeRelease = true;
@@ -39,6 +42,7 @@ namespace Core
 	{
 		if (m_bHovered)
 		{
+			UseHoverVisuals();
 			OnButtonReleased.Broadcast(event.Ev.button.button);
 			if (m_bHadPressBeforeRelease)
 			{
@@ -56,6 +60,26 @@ namespace Core
 	void ButtonWidget::SetClickSound(SharedPtr<SoundBase> sound)
 	{
 		 m_ClickSound = sound;
+	}
+
+	void ButtonWidget::SetPressImage(SharedPtr<TextureAtlas> atlas, const String& name)
+	{
+		if (!m_DefaultImage)
+		{
+			m_DefaultImage = Sprite::Create(m_Atlas->GetTexture());
+			*m_DefaultImage = *m_Image;
+		}
+
+		if (!m_PressImage)
+		{
+			m_PressImage = Sprite::Create(atlas->GetTexture());
+		}
+		else
+		{
+			m_PressImage->ChangeTexture(atlas->GetTexture());
+		}
+		glm::vec4 region = atlas->GetRegion(name);
+		m_PressImage->MapToAtlas(region);
 	}
 
 }

@@ -34,6 +34,9 @@ namespace Core
 		{
 			object->BeginPlay();
 		}
+		m_GameMode->PostBeginPlay();
+		if (m_PlayerController)
+			m_PlayerController->PostBeginPlay();
 	}
 
 	void World::Tick(float deltaTime)
@@ -77,6 +80,11 @@ namespace Core
 #endif
 
 		renderer->EndScene();
+	}
+
+	SharedPtr<Core::SceneRenderer> World::GetSceneRenderer()
+	{
+		return m_Renderer;
 	}
 
 	void World::DestroyAll()

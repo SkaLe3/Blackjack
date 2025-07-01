@@ -21,6 +21,11 @@ namespace Core
 	}
 
 
+	void SoundBase::SetVolumeMultiplier(float volume)
+	{
+		m_VolumeMultiplier = std::min(std::max(volume, 0.0f), 1.0f);
+	}
+
 	SoundCue::SoundCue(Mix_Chunk* chunk) : m_Chunk(chunk)
 	{
 		m_bOneShot = true;

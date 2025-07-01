@@ -69,4 +69,9 @@ namespace Core
 		 return m_ViewportClient;
 	}
 
+	SharedPtr<Core::ScreenRenderer> UILayer::GetScreenRenderer()
+	{
+		return m_Renderer;
+	}
+
 }

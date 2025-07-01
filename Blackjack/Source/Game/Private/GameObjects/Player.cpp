@@ -4,7 +4,6 @@
 #include "GameObjects/CardsHand.h"
 #include "GameModes/GameplayGameMode.h"	// TODO: remove if possible
 
-
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
 #include <Core/TimerManager.h>
@@ -37,14 +36,16 @@ void Player::BeginPlay()
 	OnChipAction.Add([](int32 value) { BJ_LOG_INFO("BetValue: %d", value); }); // TODO : Replace with UI function
 }
 
-void Player::SetBalance(int32 balace)
+void Player::SetBalance(int32 balance)
 {
-	m_Balance = balace;
+	m_Balance = balance;
+	OnPlayerBalanceChanged.Broadcast(m_Balance);
 }
 
 void Player::AddBalance(int32 amount)
 {
 	m_Balance += amount;
+	OnPlayerBalanceChanged.Broadcast(m_Balance);
 }
 
 void Player::PlaceChip(EChipType chip)
@@ -83,7 +84,7 @@ void Player::ConfirmBet()
 		int32 value = bet->GetBetValue();
 		if (value < GameState->MinBet || value > GameState->MaxBet)
 		{
-			// To avoid redutant branching in Release build
+			// To avoid redundant branching in Release build
 #ifdef BJ_DEBUG
 			if (value < GameState->MinBet)
 			{
@@ -129,7 +130,7 @@ void Player::ResetBetPosition()
 	m_Bet.lock()->GetTransform().Translation.z = 10;
 }
 
-SharedPtr<ChipStack> Player::GiveBetToDealer()
+SharedPtr<ChipStack> Player::GetBetObject()
 {
 	 return m_Bet.lock();
 }
@@ -267,13 +268,13 @@ void Player::TurnInitialCheck()
 		if (handValue == 21 && hand->GetCardCount() == 2)
 		{
 			ForbidTurn();
-			TimerManager::Get().StartTimer(2000.f, [this]() { CallBlackjack(); }); // Wait a bit before ending turn
+			TimerManager::Get().StartTimer(1500.f, [this]() { CallBlackjack(); }); // Wait a bit before ending turn
 			m_State->FinishedGame = true;
 		}
 		else if (handValue > 21)
 		{
 			ForbidTurn();
-			TimerManager::Get().StartTimer(2000.f, [this]() { Bust(); });
+			TimerManager::Get().StartTimer(1500.f, [this]() { Bust(); });
 			m_State->FinishedGame = true;
 		}
 	}
@@ -288,19 +289,19 @@ void Player::CheckResult()
 		int32 handValue = hand->CalculateHandValue();
 		if (GameState->CurrentDealerHandValue > 21)
 		{
-			TimerManager::Get().StartTimer(2000.f, [this]() { DealerBust(); });
+			TimerManager::Get().StartTimer(1500.f, [this]() { DealerBust(); });
 		}
 		else if (GameState->CurrentDealerHandValue > handValue)
 		{
-			TimerManager::Get().StartTimer(2000.f, [this]() { UnderDealer(); });
+			TimerManager::Get().StartTimer(1500.f, [this]() { UnderDealer(); });
 		}
 		else if (GameState->CurrentDealerHandValue < handValue)
 		{
-			TimerManager::Get().StartTimer(2000.f, [this]() { OverDealer(); });
+			TimerManager::Get().StartTimer(1500.f, [this]() { OverDealer(); });
 		}
 		else
 		{
-			TimerManager::Get().StartTimer(2000.f, [this]() { Push(); });
+			TimerManager::Get().StartTimer(1500.f, [this]() { Push(); });
 		}
 
 	}
@@ -323,4 +324,14 @@ bool Player::HasFinishedGame()
 void Player::AskForNextRound()
 {
 	m_State->AskForNextRound = true;
+}
+
+void Player::SetResultType(int32 resultType)
+{
+	m_ResultType = resultType;
+}
+
+SharedPtr<PlayerState> Player::GetPlayerState()
+{
+	return m_State;
 }

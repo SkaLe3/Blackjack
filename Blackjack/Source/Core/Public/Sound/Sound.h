@@ -17,6 +17,7 @@ namespace Core
 		void SetOneShot(bool os);
 
 		virtual float GetVolumeMultiplier();
+		void SetVolumeMultiplier(float volume);
 
 	protected:
 		bool m_bOneShot = true;

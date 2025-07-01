@@ -7,11 +7,19 @@ namespace Core
 
 	void WidgetLayout::Init()
 	{
+		Widget::Init();
+		RootWidget->Init();
+		RootWidget->Slot = Slot;
+	}
 
+	void WidgetLayout::Tick(float deltaTime)
+	{
+		RootWidget->Tick(deltaTime);
 	}
 
 	void WidgetLayout::AddToViewport(int32 zOrder /*= 0*/)
 	{
+		Init();
 		ViewportSystem& vs = ViewportSystem::Get();
 		PanelSlot slot;
 		if (m_bManagedByViewportSystem)
@@ -42,7 +50,10 @@ namespace Core
 
 	void WidgetLayout::OnPaint(SharedPtr<ScreenRenderer> renderer)
 	{
-		RootWidget->OnPaint(renderer);
+		if (IsVisible())
+		{
+			RootWidget->OnPaint(renderer);
+		}
 	}
 
 	bool WidgetLayout::OnMouseMoved(Event& event, const glm::vec2& mousePos)

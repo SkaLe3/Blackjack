@@ -8,6 +8,7 @@
 
 DECLARE_DELEGATE_NO_PARAMS(GetTurnDelegate);
 DECLARE_DELEGATE_ONE_PARAM(ChipActionDelegate, uint32)
+DECLARE_DELEGATE_ONE_PARAM(BalanceChangeDelegate, uint32);
 
 class CardsHand;
 class Card;
@@ -26,7 +27,7 @@ public:
 	//~ End Object Interface
 
 	/** Balance */
-	void SetBalance(int32 balace);
+	void SetBalance(int32 balance);
 	void AddBalance(int32 amount);
 	int32 GetBalance();
 
@@ -37,7 +38,7 @@ public:
 	int32 GetBetValue();
 	void ClearBet();
 	void ResetBetPosition();
-	SharedPtr<ChipStack> GiveBetToDealer();
+	SharedPtr<ChipStack> GetBetObject();
 
 	/** Turn */
 	void CallBlackjack();
@@ -64,17 +65,21 @@ public:
 	bool IsMyTurn();
 	virtual void GameResult(EPlayerResult result) {}
 	bool HasFinishedGame();
-	void AskForNextRound();
+	virtual void AskForNextRound();
+	void SetResultType(int32 resultType);
+	SharedPtr<PlayerState> GetPlayerState();
 protected:
 
 public:
 	GetTurnDelegate OnGotTurn;
 	ChipActionDelegate OnChipAction;
+	BalanceChangeDelegate OnPlayerBalanceChanged;
 
 protected:
 	WeakPtr<ChipStack> m_Bet;
 	SharedPtr<PlayerState> m_State;
 	int32 m_Balance = 0;
+	int32 m_ResultType;
 
 	SharedPtr<Core::SoundBase> m_ConfirmSound;
 	SharedPtr<Core::SoundBase> m_ErrorSound;

@@ -72,6 +72,11 @@ namespace Core
 	   return m_CurrentWorld;
 	}
 
+	SharedPtr<Core::SceneRenderer> GameLayer::GetSceneRenderer()
+	{
+		return m_CurrentWorld->GetSceneRenderer();
+	}
+
 	bool GameLayer::OnKeyPressed(Event& event)
 	{
 		return true;
