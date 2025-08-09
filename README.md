@@ -1,7 +1,7 @@
 # Blackjack
 [![Gameplay video](https://img.youtube.com/vi/D9PmvqR0CA4/0.jpg)](https://www.youtube.com/watch?v=D9PmvqR0CA4)
 
-Blackjack is my own implementation of card game Blackjack made with C++ and SDL2. This project was a test task and built within 14 days. Not finished yet
+Blackjack is my own implementation of card game Blackjack made with C++ and SDL2. This project was a test task and built within 14 days and had improved UI later.
 ***
 
 ## Project Overview
@@ -27,9 +27,9 @@ If changes are made, or if you want to regenerate project files, rerun the [Win-
 
 
 ## Showcase
-![Menu Screenshot](Resources/Showcase/Menu.jpg)
-![Gameplay Screenshot](Resources/Showcase/Game1.jpg)
-![Gameplay Screenshot](Resources/Showcase/Game2.jpg)
+![Menu Screenshot](Resources/Showcase/Menu.png)
+![Gameplay Screenshot](Resources/Showcase/Game1.png)
+![Gameplay Screenshot](Resources/Showcase/Game2.png)
 
 ## License
 Blackjack is licensed under the Apache-2.0 License. See the [LICENSE](https://github.com/SkaLe3/Blackjack/blob/main/LICENSE) file for more details.

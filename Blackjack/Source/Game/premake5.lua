@@ -13,13 +13,15 @@ project "Blackjack"
     files
     {
         "%{wks.location}/Blackjack/Source/Game/**.h",
-        "%{wks.location}/Blackjack/Source/Game/**.cpp"
+        "%{wks.location}/Blackjack/Source/Game/**.cpp",
+        "%{wks.location}/Blackjack/Source/Game/Resources/**.*"
     }
 
     includedirs
     {
         "%{wks.location}/Blackjack/Source/Game/Public",
         "%{wks.location}/Blackjack/Source/Game/Private",
+        "%{wks.location}/Blackjack/Source/Game/Resources",
         "%{wks.location}/Blackjack/Source/Core/Public",
         "%{IncludeDir.SDL}", -- needed for SDL_main.h
         "%{IncludeDir.glm}",

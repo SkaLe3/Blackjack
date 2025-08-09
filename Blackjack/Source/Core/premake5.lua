@@ -15,6 +15,7 @@ project "Core"
         "%{wks.location}/Blackjack/Source/Core/**.cpp",
         "%{wks.location}/Blackjack/ThirdParty/glm/glm/**.hpp",
         "%{wks.location}/Blackjack/ThirdParty/glm/glm/**.inl"
+
     }
 
     includedirs
