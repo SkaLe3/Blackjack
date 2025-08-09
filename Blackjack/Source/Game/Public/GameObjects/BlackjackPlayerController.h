@@ -27,6 +27,7 @@ public:
 	void ProcessCardsHands(std::vector<SharedPtr<CardsHand>> hands);
 	void OnAskForNextRound(int32 resultType);
 	void OnContinueToNextRound();
+	void OnTurnChanged(const String& playerName);
 
 	SharedPtr<UserPlayer> m_UserPlayer;
 	WeakPtr<HUDWidgetLayout> m_HUD;

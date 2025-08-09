@@ -21,6 +21,7 @@ public:
 	void SetOwner(SharedPtr<Core::GameObject> pc);
 	void RoundOverScreen(bool bStatus,int32 resultType, float fadeTime = 1.f);
 	void RoundOverScreenTick(float deltaTime);
+	void FpsCounterTick(float deltaTime);
 
 	void SetResultWin();
 	void SetResultBlackjack();
@@ -28,8 +29,11 @@ public:
 	void SetResultPush();
 	void HideResult();
 	void ResultTick(float deltaTime);
+
+	void SetTurnText(const String& inPlayerName);
 public:
 	WeakPtr<Core::ImageWidget> UIBar;
+	WeakPtr<Core::ImageWidget> TurnPlate;
 	WeakPtr<Core::ImageWidget> Dollar;
 	WeakPtr<Core::ImageWidget> MinMaxBet;
 	WeakPtr<Core::ImageWidget> BetAmount;
@@ -59,9 +63,11 @@ public:
 
 	WeakPtr<Core::ImageWidget> AfterRound;
 	WeakPtr<Core::TextWidget> ResultText;
+	WeakPtr<Core::TextWidget> TurnText;
 
 	WeakPtr<Core::ImageWidget> Vingete; // TODO: Make separate
 
+	WeakPtr<Core::TextWidget> FpsCounter;
 
 private:
 	SharedPtr<BlackjackPlayerController> m_PlayerController;

@@ -3,6 +3,7 @@
 #include "GameObjects/ChipStack.h"
 #include "GameObjects/CardsHand.h"
 #include "GameModes/GameplayGameMode.h"	// TODO: remove if possible
+#include "GameObjects/BlackjackPlayerController.h"
 
 #include <Sound/AudioSystem.h>
 #include <Core/AssetManager.h>
@@ -257,6 +258,9 @@ void Player::AllowTurn()
 
 	if (m_State->AllowedToTurn) { TurnInitialCheck(); }
 	if (m_State->AllowedToCheckResult) { CheckResult(); }
+	
+	SharedPtr<BlackjackPlayerController> pc = static_pointer_cast<BlackjackPlayerController>(GetWorld()->GetPlayerController());
+	pc->OnTurnChanged(m_Tag);
 }
 
 

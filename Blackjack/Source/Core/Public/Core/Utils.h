@@ -28,8 +28,8 @@ namespace Core
 	class Time
 	{
 	public:
-		static float GetTime();
-		static float GetTimeMillis();
+		static uint64 GetTime();
+		static uint64 GetTimeMillis();
 
 	private:
 		inline static uint64 startTime = 0;

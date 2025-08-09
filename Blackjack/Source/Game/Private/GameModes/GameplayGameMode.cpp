@@ -194,7 +194,7 @@ void GameplayGameMode::RestartGame()
 	m_Players.push_back(bot1);
 	m_Players.push_back(player);
 	m_Players.push_back(bot2);
-	player->SetTag("User");
+	player->SetTag("Player");
 	bot1->SetTag("Bot1");
 	bot2->SetTag("Bot2");
 	

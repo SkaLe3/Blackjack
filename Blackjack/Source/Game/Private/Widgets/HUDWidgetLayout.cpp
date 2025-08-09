@@ -75,7 +75,17 @@ void HUDWidgetLayout::Init()
 	uibar->Slot->SetPosition({ 0, 1080 });
 	uibar->Slot->SetSize({ 1920, 160 });
 	uibar->Slot->SetAlignment({ 0.f, 1.f });
+	uibar->Slot->SetZOrder(-1);
 	uibar->SetImage(Sprite::Create(AssetManager::Get().Load<TextureAsset>("T_UIBar")->TextureP));
+
+	auto turnPlate = MakeShared<ImageWidget>("turnPlate");
+	TurnPlate = turnPlate;
+	panel->AddChild(turnPlate);
+	turnPlate->Slot->SetPosition({ 1880, 250 });
+	turnPlate->Slot->SetSize({ 350, 175 });
+	turnPlate->Slot->SetAlignment({ 1.0f, 0.f });
+	turnPlate->SetImage(Sprite::Create(AssetManager::Get().Load<TextureAsset>("T_TurnPlate")->TextureP));
+
 
 	auto vingete = MakeShared<ImageWidget>("Vingete");
 	Vingete = vingete;
@@ -494,6 +504,31 @@ void HUDWidgetLayout::Init()
 	resultText->Slot->SetZOrder(20);
 	resultText->SetVisibility(false);
 
+	auto turnText = MakeShared<TextWidget>("Turn");
+	TurnText = turnText;
+	panel->AddChild(turnText);
+	turnText->Slot->SetPosition({ 1560, 340 });
+	turnText->Slot->SetSize({ 100, 100 });
+	turnText->Slot->SetAlignment({ 0.0f, 0.5f });
+	turnText->SetText("Turn: ");
+	turnText->SetFont("BebasNeue-Regular-60");
+	turnText->SetColor({ 1.f, 0.82f, 0.f, 1.f });
+	turnText->Slot->SetZOrder(15);
+
+
+
+	auto fpsCounter = MakeShared<TextWidget>("Fps");
+	FpsCounter = fpsCounter;
+	panel->AddChild(fpsCounter);
+	fpsCounter->Slot->SetPosition({ 1918, 2 });
+	fpsCounter->Slot->SetSize({ 100, 100 });
+	fpsCounter->Slot->SetAlignment({ 1.0f, 0.0f });
+	fpsCounter->SetText("100");
+	fpsCounter->SetFont("BebasNeue-Regular-30");
+	fpsCounter->SetColor({ 0.f, 1.f, 0.f, 1.f });
+	fpsCounter->Slot->SetZOrder(20);
+	fpsCounter->SetVisibility(false);
+
 	WidgetLayout::Init();
 }
 
@@ -504,6 +539,8 @@ void HUDWidgetLayout::Tick(float deltaTime)
 
 	RoundOverScreenTick(deltaTime);
 	ResultTick(deltaTime);
+	FpsCounterTick(deltaTime);
+	
 }
 
 void HUDWidgetLayout::SetOwner(SharedPtr<GameObject> pc)
@@ -592,6 +629,14 @@ void HUDWidgetLayout::RoundOverScreenTick(float deltaTime)
 		{
 			quitButton->SetAlpha(m_RoundOverScreenAlpha);
 		}
+	}
+}
+
+void HUDWidgetLayout::FpsCounterTick(float deltaTime)
+{
+	if (SharedPtr<TextWidget> fpsCounter = FpsCounter.lock())
+	{
+		fpsCounter->SetText(std::to_string(static_cast<int32>(1.f / deltaTime)));
 	}
 }
 
@@ -691,5 +736,13 @@ void HUDWidgetLayout::ResultTick(float deltaTime)
 			resultText->SetAlpha(m_ResultAlpha);
 		}
 
+	}
+}
+
+void HUDWidgetLayout::SetTurnText(const String& inPlayerName)
+{
+	if (SharedPtr<TextWidget> turnText = TurnText.lock())
+	{
+		turnText->SetText(String("Turn:   ") + inPlayerName);
 	}
 }

@@ -150,3 +150,12 @@ void BlackjackPlayerController::OnContinueToNextRound()
 		hud->RoundOverScreen(false,0, 0.8f);
 	}
 }
+
+void BlackjackPlayerController::OnTurnChanged(const String& playerName)
+{
+	SharedPtr<HUDWidgetLayout> hud = m_HUD.lock();
+	if (hud != nullptr)
+	{
+		hud->SetTurnText(playerName);
+	}
+}

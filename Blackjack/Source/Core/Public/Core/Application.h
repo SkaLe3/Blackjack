@@ -82,7 +82,7 @@ namespace Core
 
 		float m_DeltaTime = 0.0f;
 		float m_FrameTime = 0.0f;
-		float m_LastFrameTime = 0.0f;
+		uint64 m_LastFrameTime = 0.0f;
 
 		SharedPtr<Window> m_Window;
 		UniquePtr<AssetManager> m_AssetManager;

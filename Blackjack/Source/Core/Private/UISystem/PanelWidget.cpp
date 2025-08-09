@@ -122,7 +122,8 @@ namespace Core
 		{
 			if (slot->Content)
 			{
-				slot->Content->OnMouseMoved(event, mousePos);
+				if (slot->Content->IsVisible())
+					slot->Content->OnMouseMoved(event, mousePos);
 			}
 		}
 		return false;
@@ -137,7 +138,8 @@ namespace Core
 			{
 				if (slot->Content)
 				{
-					handled |= slot->Content->OnButtonDown(event, mousePos);
+					if (slot->Content->IsVisible())
+						handled |= slot->Content->OnButtonDown(event, mousePos);
 				}
 				if (handled)
 					break;
@@ -156,7 +158,8 @@ namespace Core
 			{
 				if (slot->Content)
 				{
-					handled |= slot->Content->OnButtonUp(event, mousePos);
+					if (slot->Content->IsVisible())
+						handled |= slot->Content->OnButtonUp(event, mousePos);
 				}
 				if (handled)
 					break;

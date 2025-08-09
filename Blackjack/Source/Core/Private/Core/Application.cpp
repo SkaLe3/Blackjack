@@ -107,8 +107,8 @@ namespace Core
 
 		while (m_bRunning)
 		{
-			float time = Time::GetTime();
-			m_DeltaTime = time - m_LastFrameTime;
+			uint64 time = Time::GetTimeMillis();
+			m_DeltaTime = (time - m_LastFrameTime) * 0.001f;
 			m_LastFrameTime = time;
 			if (m_DeltaTime > 0.05)
 			{
@@ -127,6 +127,7 @@ namespace Core
 			for (SharedPtr<Layer> layer : m_LayerStack)
 			{
 				layer->OnUpdate(m_DeltaTime);
+
 			}
 
 			Renderer::EndFrame();

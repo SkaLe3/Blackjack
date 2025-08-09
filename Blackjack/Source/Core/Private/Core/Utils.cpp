@@ -6,16 +6,16 @@
 namespace Core
 {
 
-	float Time::GetTime()
+	uint64 Time::GetTime()
 	{
 		Uint64 currentTime = SDL_GetPerformanceCounter();
-		return static_cast<float>((float)(currentTime - startTime) / (float)SDL_GetPerformanceFrequency());
+		return static_cast<uint64>((currentTime - startTime) * 1000 / SDL_GetPerformanceFrequency()) / 1000.f;
 	}
 
-	float Time::GetTimeMillis()
+	uint64 Time::GetTimeMillis()
 	{
 		Uint64 currentTime = SDL_GetPerformanceCounter();
-		return static_cast<float>((float)(currentTime - startTime) * 1000 / (float)SDL_GetPerformanceFrequency());
+		return static_cast<uint64>((currentTime - startTime) * 1000 / SDL_GetPerformanceFrequency());
 	}
 
 	String FileDialogs::OpenFile(const char* filter)

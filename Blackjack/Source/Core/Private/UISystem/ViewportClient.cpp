@@ -56,7 +56,8 @@ namespace Core
 		for (auto it = m_ViewportOverlay.rbegin(); it != m_ViewportOverlay.rend(); ++it)
 		{
 			auto& [widget, zOrder] = (*it);
-			widget->OnMouseMoved(event, mousePos);
+			if (widget->IsVisible())
+				widget->OnMouseMoved(event, mousePos);
 		}
 		return false;
 	}
